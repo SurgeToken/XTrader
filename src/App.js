@@ -57,7 +57,8 @@ async function walletConnect () {
 }
 
 function App() {
-    const [ showSidebar, setShowSidebar ] = useState(true);
+    // AT: Initial state for the slide out must be false
+    const [ showSidebar, setShowSidebar ] = useState(false);
 
     useEffect(() => {
         (async () => {
