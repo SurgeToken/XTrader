@@ -12,6 +12,8 @@ import { Menu } from 'grommet-icons';
 // Common Functions
 import {connectWallet} from "./common/walletConnect"
 import {connectMetamask} from "./common/metamask"
+import { buy } from "./common/trade";
+import { Contracts } from "./common/contracts";
 
 const AppBar = (props) => (
     <Box
