@@ -45,10 +45,6 @@ const Sidebar = () => (
             margin="small"
             onClick={walletConnect}
         >Wallet connect</Button>
-        <Button
-            margin="small"
-            onClick={metaMask}
-        >Login Metamask</Button>
     </Box>
 );
 
