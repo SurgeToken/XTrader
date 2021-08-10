@@ -5,6 +5,9 @@
   "defaultMode": "dark",
   "global": {
     "colors": {
+      "green": "#21BBB1",
+      "spaceBlue": "#060818",
+      "white": "#FFFFFF",
       "brand": {
         "light": "#7700cc",
         "dark": "#2fb3ab"
