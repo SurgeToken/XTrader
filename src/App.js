@@ -1,5 +1,5 @@
 // Libs
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 
 // Components
 import Trade from "./components/NativeSurgeTrader"
@@ -11,7 +11,6 @@ import { Menu } from 'grommet-icons';
 
 // Common Functions
 import {connectWallet} from "./common/walletConnect"
-import {connectMetamask} from "./common/metamask"
 
 const AppBar = (props) => (
     <Box
@@ -26,16 +25,18 @@ const AppBar = (props) => (
     />
 );
 
-function walletConnect () {
-    connectWallet();
-}
-
-async function metaMask()  {
-    await connectMetamask();
+async function walletConnect () {
+    await connectWallet();
 }
 
 function App() {
     const [ showSidebar, setShowSidebar ] = useState(true);
+
+    useEffect(() => {
+        (async () => {
+            await connectWallet();
+        })();
+    }, []);
 
     return (
         <Grommet theme={grommetTheme} full>
@@ -62,9 +63,6 @@ function App() {
                             <Button
                                 onClick={walletConnect}
                             >Login Wallet connect</Button>
-                            <Button
-                                onClick={metaMask}
-                            >Login Metamask</Button>
                         </Box>
                     )}
                 </Box>
