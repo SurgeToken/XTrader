@@ -44,8 +44,7 @@ const SellForm = () => {
     )
 }
 
-
-export default () => {
+const nativeSurgeTrader = () => {
     return (
         <Box border small round align={"center"} pad={"medium"} background={"dark-1"} >
             <Tabs>
@@ -63,3 +62,5 @@ export default () => {
         </Box>
     );
 }
+
+export default nativeSurgeTrader;
