@@ -44,7 +44,7 @@ const Sidebar = () => (
         <Button
             alignSelf="end"
             className=""
-            icon={<Add/>}
+            icon={<Add color="spaceBlue"/>}
             onClick={addTradingComponent}
         />
         <Button
@@ -80,7 +80,7 @@ function App() {
                         <AppBar>
                             <Heading level="3" margin="none"><img src={logo} alt="Logo" height="25px" /></Heading>
                             <Button
-                                icon={<Menu/>}
+                                icon={<Menu color="spaceBlue"/>}
                                 onClick={() => setShowSidebar(!showSidebar)}
                             />
                         </AppBar>
@@ -106,7 +106,7 @@ function App() {
                                         direction="row"
                                     >
                                         <Button
-                                            icon={<FormClose/>}
+                                            icon={<FormClose color="spaceBlue"/>}
                                             onClick={() => setShowSidebar(false)}
                                         />
                                     </Box>
