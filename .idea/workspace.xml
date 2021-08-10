@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3347a67a-a6c7-4c1b-8ad3-6d6d751e5ac6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/common/metamask.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common/walletConnect.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -47,6 +46,8 @@
       <option name="presentableId" value="Default" />
       <updated>1628598928632</updated>
       <workItem from="1628598930449" duration="6138000" />
+      <workItem from="1628605524978" duration="25000" />
+      <workItem from="1628605562812" duration="366000" />
     </task>
     <servers />
   </component>
@@ -63,6 +64,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />

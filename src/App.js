@@ -1,7 +1,5 @@
 // Libs
 import React, { useState } from "react";
-// import Web3Modal from "web3modal"
-// import WalletConnectProvider from "@walletconnect/web3-provider";
 
 // Components
 import Trade from "./components/NativeSurgeTrader"
@@ -11,27 +9,9 @@ import grommetTheme from "./themes/theme.json";
 import { Box, Button, Heading, Grommet } from "grommet";
 import { Menu } from 'grommet-icons';
 
-/*const providerOptions = {
-    walletconnect: {
-        package: WalletConnectProvider, // required
-        options: {
-            infuraId: "INFURA_ID", // required
-        },
-    },
-};*/
-
-/*
-const web3Modal = new Web3Modal({
-    network: "mainnet", // optional
-    cacheProvider: true, // optional
-    providerOptions, // required
-});
-*/
-
-
-// const provider = web3Modal.connect();
-
-// const web3 = new Web3(provider);
+// Common Functions
+import {connectWallet} from "./common/walletConnect"
+import {connectMetamask} from "./common/metamask"
 
 const AppBar = (props) => (
     <Box
@@ -46,8 +26,12 @@ const AppBar = (props) => (
     />
 );
 
-function loginFunction () {
-    alert("let me in!")
+function walletConnect () {
+    connectWallet();
+}
+
+async function metaMask()  {
+    await connectMetamask();
 }
 
 function App() {
@@ -76,8 +60,11 @@ function App() {
                             justify="center"
                         >
                             <Button
-                                onClick={loginFunction}
-                            >Login</Button>
+                                onClick={walletConnect}
+                            >Login Wallet connect</Button>
+                            <Button
+                                onClick={metaMask}
+                            >Login Metamask</Button>
                         </Box>
                     )}
                 </Box>
