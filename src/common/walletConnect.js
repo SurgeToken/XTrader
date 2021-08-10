@@ -1,14 +1,17 @@
+import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from "web3";
 
 const providerOptions = {
     walletConnectMainNet: {
+        network: "binance",
         rpc: {
             56: "https://bsc-dataseed1.binance.org/"
         },
         chainId: 56
     },
-    walletConnectTetsNet: {
+    walletConnectTestNet: {
+        network: "binance",
         rpc: {
             56: "https://data-seed-prebsc-1-s1.binance.org:8545/"
         },
@@ -16,38 +19,50 @@ const providerOptions = {
     }
 };
 
-export const provider = new WalletConnectProvider(providerOptions.walletConnectMainNet);
-const web3 = new Web3(provider)
+export let provider;
 
-
-export function connectWallet() {
-    provider.enable()
-        .catch(
-            e => {
-                console.log(e)
-                provider.close()
+export async function connectWallet() {
+    try {
+        const web3Modal = new Web3Modal({
+            network: "binance",
+            providerOptions: {
+                walletconnect: {
+                    package: WalletConnectProvider,
+                    options: providerOptions.walletConnectMainNet
+                }
             }
-        );
+        });
+        provider = await web3Modal.connect();
+    } catch (err) {
+        console.log("Failed to connect wallet", err)
+        await provider.close();
+    }
 }
 
 export async function disconnectWallet() {
     if (provider.connected) {
-        provider.disconnect()
-            .catch(e => {
-            });
-        await provider.close()
+        return;
     }
+
+    try {
+        await provider.disconnect();
+    } catch (err) {
+        console.log("Failed to disconnect wallet", err);
+    }
+
+    await provider.close()
 }
 
-export function getAccount() {
-    const accounts = provider.getAccounts()
+export async function getAccount() {
+    const accounts = await provider.getAccounts();
     return accounts[0] || null
 }
 
 export function isConnected() {
-    return provider.connected;
+    return provider && provider.connected;
 }
 
 export function numberToWei(num) {
-    return parseInt(web3.utils.toWei(String(num), "ether")).toString(16)
+    const web3 = new Web3(provider);
+    return parseInt(web3.utils.toWei(String(num), "ether")).toString(16);
 }
