@@ -1,6 +1,5 @@
-import {Box, Form, FormField, Button, TextInput, Heading, Select, Tab, Tabs} from "grommet";
+import {Box, Form, FormField, Button, TextInput, Select, Tab, Tabs} from "grommet";
 import React from "react";
-import Web3 from "web3";
 
 const BuyForm = () => {
     return (
@@ -24,7 +23,7 @@ const BuyForm = () => {
 }
 
 const SellForm = () => {
-    const [value, setValue] = React.useState({});
+    // const [value, setValue] = React.useState({});
     return (
 
         <Form>
