@@ -12,6 +12,9 @@ import { Menu, Add, FormClose } from 'grommet-icons';
 // Styles
 import './App.css';
 
+// Assets
+import logo from './assets/xsurge-logo.png';
+
 // Common Functions
 import {connectWallet} from "./common/walletConnect"
 
@@ -75,7 +78,7 @@ function App() {
                 {size => (
                     <Box fill>
                         <AppBar>
-                            <Heading level="3" margin="none">xSurge</Heading>
+                            <Heading level="3" margin="none"><img src={logo} alt="Logo" height="25px" /></Heading>
                             <Button
                                 icon={<Menu/>}
                                 onClick={() => setShowSidebar(!showSidebar)}
