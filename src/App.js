@@ -15,6 +15,9 @@ import './App.css';
 // Common Functions
 import {connectWallet} from "./common/walletConnect"
 
+import { buy } from "./common/trade";
+import { Contracts } from "./common/contracts";
+
 const AppBar = (props) => (
     <Box
         tag="header"
