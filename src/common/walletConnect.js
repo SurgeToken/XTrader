@@ -1,8 +1,13 @@
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
+// import {WalletLink} from "walletlink";
+import Web3 from "web3";
+import coinbaseLogo from '../images/coinbase.svg';
+
 const providerOptions = {
     walletConnectMainNet: {
+        appName: 'xSurge',
         network: "binance",
         rpc: {
             56: "https://bsc-dataseed1.binance.org/"
@@ -10,6 +15,7 @@ const providerOptions = {
         chainId: 56
     },
     walletConnectTestNet: {
+        appName: 'xSurge',
         network: "binance",
         rpc: {
             56: "https://data-seed-prebsc-1-s1.binance.org:8545/"
@@ -29,6 +35,7 @@ export async function connectWallet() {
                 walletconnect: {
                     package: WalletConnectProvider,
                     options: providerOptions.walletConnectMainNet
+
                 },
                 // 'custom-coinbase': { //TODO still working on it, leave it here
                 //     display: {
@@ -48,26 +55,30 @@ export async function connectWallet() {
                 //         return provider;
                 //     },
                 // }
-            }
+            },
+
         });
         provider = await web3Modal.connect();
     } catch (err) {
         console.log("Failed to connect wallet", err)
-        await provider.close();
+        if (provider) {
+            await provider.close();
+        }
     }
 }
 
 export async function disconnectWallet() {
-    if (provider.connected) {
-        return;
-    }
+    if (provider) {
+        if (provider.connected) {
+            return;
+        }
 
-    try {
-        await provider.disconnect();
-    } catch (err) {
-        console.log("Failed to disconnect wallet", err);
-    }
+        try {
+            await provider.disconnect();
+        } catch (err) {
+            console.log("Failed to disconnect wallet", err);
+        }
 
-    await provider.close()
+        await provider.close()
+    }
 }
-

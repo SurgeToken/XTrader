@@ -1,19 +1,28 @@
 // Libs
-import React, {useEffect, useState} from "react";
+import React, { useEffect } from "react";
 
 // Components
-import NativeSurgeTrader from "./components/NativeSurgeTrader"
-import XTokenTrader from "./components/XTokenTrader"
+import Trade from "./components/NativeSurgeTrader"
+
 // Grommet Stuff
 import grommetTheme from "./themes/theme.json";
+
 import {Box, Button, Collapsible, Heading, Grommet, Layer, ResponsiveContext} from "grommet";
 import {Menu, Add, FormClose} from 'grommet-icons';
+
 
 // Styles
 import './App.css';
 
+// Assets
+import logo from './assets/xsurge-logo.png';
+
 // Common Functions
 import {connectWallet, provider} from "./common/walletConnect"
+
+
+import { buy } from "./common/trade";
+import { Contracts } from "./common/contracts";
 
 const AppBar = (props) => (
     <Box
@@ -26,26 +35,6 @@ const AppBar = (props) => (
         style={{zIndex: '1'}}
         {...props}
     />
-);
-
-const Sidebar = () => (
-    <Box
-        flex
-        width="small"
-        background="white"
-        justify="start"
-    >
-        <Button
-            alignSelf="end"
-            className=""
-            icon={<Add/>}
-            onClick={addTradingComponent}
-        />
-        <Button
-            margin="small"
-            onClick={walletConnect}
-        >Wallet connect</Button>
-    </Box>
 );
 
 function addTradingComponent() {
@@ -62,6 +51,7 @@ function App() {
     useEffect(() => {
         (async () => {
                 await connectWallet().catch(() => {}) // You need to catch this
+
         })();
     }, []);
 
@@ -71,11 +61,24 @@ function App() {
                 {size => (
                     <Box fill>
                         <AppBar>
-                            <Heading level="3" margin="none">xSurge</Heading>
-                            <Button
-                                icon={<Menu/>}
-                                onClick={() => setShowSidebar(!showSidebar)}
-                            />
+                            <div>
+                                <a href="/"><img src={logo} alt="Logo" height="25px"/></a>
+                            </div>
+                            <div>
+                                <Button
+                                    primary
+                                    size="medium"
+                                    onClick={walletConnect}
+                                    label="Connect Wallet"
+                                />
+                                <Button
+                                    secondary
+                                    size="small"
+                                    alignSelf="end"
+                                    icon={<Add color="spaceBlue"/>}
+                                    onClick={addTradingComponent}
+                                />
+                            </div>
                         </AppBar>
                         <Box direction="row" flex overflow={{horizontal: 'hidden'}} fill className="appBody">
                             <Box flex align="center" justify="center" background="spaceBlue">
@@ -83,38 +86,8 @@ function App() {
                                      background="spaceBlue" className="appBodyToolbar">
 
                                 </Box>
-                                <NativeSurgeTrader/>
-                                <XTokenTrader/>
-
+                                <Trade/>
                             </Box>
-                            {(!showSidebar || size !== 'small') ? (
-                                <Collapsible direction="horizontal" open={showSidebar}>
-                                    <Sidebar/>
-                                </Collapsible>
-                            ) : (
-                                <Layer>
-                                    <Box
-                                        background="white"
-                                        tag="header"
-                                        justify="end"
-                                        align="center"
-                                        direction="row"
-                                    >
-                                        <Button
-                                            icon={<FormClose/>}
-                                            onClick={() => setShowSidebar(false)}
-                                        />
-                                    </Box>
-                                    <Box
-                                        fill
-                                        background="white"
-                                        align="center"
-                                        justify="center"
-                                    >
-                                        <Sidebar/>
-                                    </Box>
-                                </Layer>
-                            )}
                         </Box>
                     </Box>
                 )}
