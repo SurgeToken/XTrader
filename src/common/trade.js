@@ -16,7 +16,7 @@ export async function buy(contract, amount) {
         value: numberToWei(amount)
     };
 
-    const result = await web3.eth.sendTransaction(tx);
+    return web3.eth.sendTransaction(tx);
 }
 
 /**

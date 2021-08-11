@@ -54,8 +54,9 @@ export async function disconnectWallet() {
 }
 
 export async function getAccount() {
-    const accounts = await provider.getAccounts();
-    return accounts[0] || null
+    const web3 = new Web3(provider);
+    const accounts = await web3.eth.getAccounts();
+    return accounts[0] || null;
 }
 
 export function isConnected() {
@@ -64,5 +65,5 @@ export function isConnected() {
 
 export function numberToWei(num) {
     const web3 = new Web3(provider);
-    return parseInt(web3.utils.toWei(String(num), "ether")).toString(16);
+    return parseInt(web3.utils.toWei(String(num), "ether"));
 }
