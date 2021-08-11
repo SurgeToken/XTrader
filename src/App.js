@@ -65,7 +65,7 @@ function App() {
 
     useEffect(() => {
         (async () => {
-            if (isConnected()) {
+            if (isConnected()) { //modal not going to appear if user still connected
                 await connectWallet().catch(() => {}) // You need to catch this
             }
         })();
