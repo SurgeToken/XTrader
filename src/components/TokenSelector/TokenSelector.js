@@ -1,21 +1,28 @@
-import {FormField, Select} from "grommet";
+import {Select} from "grommet";
 import {useEffect, useState} from "react";
 import {getAllContracts} from "../../common/contracts";
 
-export default function TokenSelector() {
+export default function TokenSelector({onSelect, defaultToken}) {
     const [tokens, setTokens] = useState([]);
-    const [selectedToken, setSelectedToken] = useState(null);
+    const [selectedToken, setSelectedToken] = useState(defaultToken);
 
     useEffect(() => {
         const allContracts = getAllContracts();
         setTokens(allContracts);
     }, []);
 
-    return <FormField
-        label="Surge"
-        name="xToken"
-        component={Select}
-        onChange={(event) => console.log(event)}
-        options={tokens.map(t => t.name)}
+    const onTokenChange = ({ option }) => {
+        setSelectedToken(option);
+
+        if (onSelect) {
+            onSelect(option);
+        }
+    };
+
+    return <Select
+        onChange={onTokenChange}
+        options={tokens}
+        value={selectedToken}
+        labelKey="name"
     />
 }

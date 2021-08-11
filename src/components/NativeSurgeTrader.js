@@ -21,6 +21,7 @@ const BuyForm = () => {
     const [amount, setAmount] = useState(0);
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
+    const [selectedToken, setSelectedToken] = useState(Contracts.SurgeBnb);
 
     const onAmountChange = (event) => {
         const errorMessage = validateAmount(event.target.value);
@@ -37,12 +38,16 @@ const BuyForm = () => {
         setAmountErrorMessage("");
     };
 
+    const onSelectedTokenChange = (token) => {
+        setSelectedToken(token);
+    };
+
     const buyTokens = async () => {
         if (!amountValid) {
             return;
         }
 
-        const result = await buy(Contracts.SurgeBnb, amount);
+        const result = await buy(selectedToken, amount);
 
         console.log('Transaction result', result);
     };
@@ -50,7 +55,7 @@ const BuyForm = () => {
     return (
         <Form>
             <Box align={"center"} pad={"medium"}>
-                <TokenSelector />
+                <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken} />
                 <TextInput
                     label="To"
                     placeholder={"amount"}
@@ -70,6 +75,7 @@ const SellForm = () => {
     const [amount, setAmount] = useState(0);
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
+    const [selectedToken, setSelectedToken] = useState(Contracts.SurgeBnb);
 
     const onAmountChange = (event) => {
         const errorMessage = validateAmount(event.target.value);
@@ -86,12 +92,16 @@ const SellForm = () => {
         setAmountErrorMessage("");
     };
 
+    const onSelectedTokenChange = (token) => {
+        setSelectedToken(token);
+    };
+
     const sellTokens = async () => {
         if (!amountValid) {
             return;
         }
 
-        const result = await sell(Contracts.SurgeBnb, amount);
+        const result = await sell(selectedToken, amount);
 
         console.log('Transaction result', result);
     };
@@ -99,8 +109,7 @@ const SellForm = () => {
     return (
         <Form>
             <Box align={"center"} pad={"medium"}>
-                <TokenSelector />
-
+                <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken} />
                 <TextInput
                     label="To"
                     placeholder={"quantity"}
