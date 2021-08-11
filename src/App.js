@@ -15,7 +15,7 @@ import {Add} from 'grommet-icons';
 import './App.css';
 
 // Assets
-import logo from './assets/xsurge-logo.png';
+import logo from './assets/xsurge-logo.svg';
 
 // Common Functions
 import {connectWallet} from "./common/walletConnect"
