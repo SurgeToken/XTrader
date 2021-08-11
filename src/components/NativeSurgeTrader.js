@@ -59,12 +59,6 @@ const BuyForm = () => {
                     <Heading level={4} textAlign={"end"}>Native Surge</Heading>
                     <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken} />
                 </Grid>
-                <Grid columns={["small", "flex"]} gap={"small"} align={"center"} >
-                    <Heading level={4} textAlign={"end"}>X Token</Heading>
-                    <Select
-                        options={['xsBNB', 'xsUSD', 'xsETH']} // TODO retrieve these from a database
-                    />
-                </Grid>
                 <Grid columns={["small", "flex"]} gap={"small"} align={"center"}>
                     <Heading level={4} textAlign={"end"}>Quantity</Heading>
                     <TextInput
@@ -147,13 +141,17 @@ const NativeSurgeTrader = () => {
     const [action, setAction] = React.useState(0);
     return (
         <Card small round pad={"xsmall"} background={"rgb(45, 45, 45)"} >
-            <Grid columns={["80%", "20%"]} direction={"row"} pad={"none"}>
+            <Grid columns={["auto", "auto"]}>
                 <Heading margin={{'left': '1%'}} level={4}>
                     Native Surge Trader
                 </Heading>
-                <Box align={"center"} direction={"row"} gap={"medium"}>
-                    <Anchor color={action ? "brand" : "status-unknown"} onClick={() => setAction(!action)}><u>Buy</u></Anchor>
-                    <Anchor color={action ? "status-unknown" : "brand"} onClick={() => setAction(!action)}><u>Sell</u></Anchor>
+                <Box align={"center"} justify={"end"} direction={"row"} gap={"medium"} pad={"small"}>
+                    <Anchor onClick={() => setAction(true)} color="white">
+                        <Button label="Buy" plain={!action} />
+                    </Anchor>
+                    <Anchor onClick={() => setAction(false)} color="white">
+                        <Button label="Sell" plain={action} />
+                    </Anchor>
                 </Box>
             </Grid>
             {action ? BuyForm() : SellForm()}

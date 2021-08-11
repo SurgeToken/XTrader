@@ -11,8 +11,8 @@ export const Contracts = {
     },
     SurgeEth: {
         name: 'sETH',
-        address: "0x0000000000000000000000000000000000000000", //TODO wait for sETH contract
-        abi: require("../abi/SurgeBNB.json"),
+        address: "0x5B1d1BBDCc432213F83b15214B93Dc24D31855Ef",
+        abi: require("../abi/SurgeETH.json"),
     },
 };
 
