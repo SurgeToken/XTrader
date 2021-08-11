@@ -150,7 +150,7 @@ const NativeSurgeTrader = () => {
                         <Button label="Buy" plain={!action} />
                     </Anchor>
                     <Anchor onClick={() => setAction(false)} color="white">
-                        <Button label="Sell" plain={action} />
+                        <Button label="Sell" plain={!!action} />
                     </Anchor>
                 </Box>
             </Grid>

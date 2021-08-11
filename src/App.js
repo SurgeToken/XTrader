@@ -10,7 +10,6 @@ import grommetTheme from "./themes/theme.json";
 import {Box, Button, Grommet, ResponsiveContext} from "grommet";
 import {Add} from 'grommet-icons';
 
-
 // Styles
 import './App.css';
 
@@ -45,7 +44,6 @@ function App() {
     useEffect(() => {
         (async () => {
                 await connectWallet().catch(() => {}) // You need to catch this
-
         })();
     }, []);
 
