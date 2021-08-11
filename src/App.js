@@ -17,6 +17,7 @@ import {connectWallet} from "./common/walletConnect"
 
 import { buy } from "./common/trade";
 import { Contracts } from "./common/contracts";
+import {isConnected} from "./common/wallet";
 
 const AppBar = (props) => (
     <Box
@@ -64,7 +65,9 @@ function App() {
 
     useEffect(() => {
         (async () => {
-            await connectWallet().catch(() => {}) // You need to catch this
+            if (isConnected()) {
+                await connectWallet().catch(() => {}) // You need to catch this
+            }
         })();
     }, []);
 

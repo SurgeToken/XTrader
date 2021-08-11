@@ -1,6 +1,5 @@
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import Web3 from "web3";
 
 const providerOptions = {
     walletConnectMainNet: {
@@ -53,18 +52,3 @@ export async function disconnectWallet() {
     await provider.close()
 }
 
-export async function getAccount() {
-    if (!provider || !provider.connected) {return;}
-    console.log('testing', provider)
-    const accounts = await provider.getAccounts();
-    return accounts[0] || null
-}
-
-export function isConnected() {
-    return provider && provider.connected;
-}
-
-export function numberToWei(num) {
-    const web3 = new Web3(provider);
-    return parseInt(web3.utils.toWei(String(num), "ether")).toString(16);
-}
