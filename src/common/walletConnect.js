@@ -1,5 +1,6 @@
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
+
 // import {WalletLink} from "walletlink";
 import Web3 from "web3";
 import coinbaseLogo from '../images/coinbase.svg';
@@ -29,10 +30,12 @@ export async function connectWallet() {
     try {
         const web3Modal = new Web3Modal({
             network: "binance",
+            cacheProvider: true,
             providerOptions: {
                 walletconnect: {
                     package: WalletConnectProvider,
-                    options: providerOptions.walletConnectMainNet,
+                    options: providerOptions.walletConnectMainNet
+
                 },
                 // 'custom-coinbase': { //TODO still working on it, leave it here
                 //     display: {
@@ -53,6 +56,7 @@ export async function connectWallet() {
                 //     },
                 // }
             },
+
         });
         provider = await web3Modal.connect();
     } catch (err) {
@@ -77,19 +81,4 @@ export async function disconnectWallet() {
 
         await provider.close()
     }
-}
-
-export async function getAccount() {
-    const web3 = new Web3(provider);
-    const accounts = await web3.eth.getAccounts();
-    return accounts[0] || null;
-}
-
-export function isConnected() {
-    return provider && provider.connected;
-}
-
-export function numberToWei(num) {
-    const web3 = new Web3(provider);
-    return parseInt(web3.utils.toWei(String(num), "ether"));
 }

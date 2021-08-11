@@ -2,7 +2,8 @@ import {Box, Form, FormField, Button, TextInput, Select,
     Grid, Heading, Header, Menu, Anchor,
     Tab, Tabs, Card, CardHeader, CardFooter, CardBody} from "grommet";
 import React, {useEffect, useState} from "react";
-import {provider, isConnected, getAccount, connectWallet} from "../common/walletConnect";
+import {provider, connectWallet} from "../common/walletConnect";
+import {getAccount, isConnected} from "../common/wallet";
 
 const BuyForm = () => {
     return (
