@@ -6,8 +6,8 @@ import Trade from "./components/NativeSurgeTrader"
 
 // Grommet Stuff
 import grommetTheme from "./themes/theme.json";
-import { Box, Button, Collapsible, Heading, Grommet, Layer, ResponsiveContext } from "grommet";
-import { Menu, Add, FormClose } from 'grommet-icons';
+import {Box, Button, Collapsible, Heading, Grommet, Layer, ResponsiveContext} from "grommet";
+import {Menu, Add, FormClose} from 'grommet-icons';
 
 // Styles
 import './App.css';
@@ -15,8 +15,7 @@ import './App.css';
 // Common Functions
 import {connectWallet} from "./common/walletConnect"
 
-import { buy } from "./common/trade";
-import { Contracts } from "./common/contracts";
+import {isConnected} from "./common/wallet";
 
 const AppBar = (props) => (
     <Box
@@ -25,8 +24,8 @@ const AppBar = (props) => (
         align="center"
         justify="between"
         background="green"
-        pad={{ left: 'medium', right: 'small', vertical: 'small' }}
-        style={{ zIndex: '1' }}
+        pad={{left: 'medium', right: 'small', vertical: 'small'}}
+        style={{zIndex: '1'}}
         {...props}
     />
 );
@@ -55,17 +54,18 @@ function addTradingComponent() {
     alert('Add another trading component to the body');
 }
 
-async function walletConnect () {
+async function walletConnect() {
     await connectWallet();
 }
 
 function App() {
     // AT: Initial state for the slide out must be false
-    const [ showSidebar, setShowSidebar ] = useState(false);
+    const [showSidebar, setShowSidebar] = useState(false);
 
     useEffect(() => {
         (async () => {
-            await connectWallet();
+            if (!isConnected())
+                await connectWallet();
         })();
     }, []);
 
@@ -81,9 +81,9 @@ function App() {
                                 onClick={() => setShowSidebar(!showSidebar)}
                             />
                         </AppBar>
-                        <Box direction="row" flex overflow={{ horizontal: 'hidden' }} fill className="appBody">
+                        <Box direction="row" flex overflow={{horizontal: 'hidden'}} fill className="appBody">
                             <Box flex align="center" justify="center" background="spaceBlue">
-                                <Box flex="shrink" height={{ min: "48px" }} width={{ min: "48px" }}
+                                <Box flex="shrink" height={{min: "48px"}} width={{min: "48px"}}
                                      background="spaceBlue" className="appBodyToolbar">
 
                                 </Box>

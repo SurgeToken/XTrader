@@ -1,8 +1,5 @@
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import {WalletLink} from "walletlink";
-import Web3 from "web3";
-import coinbaseLogo from '../images/coinbase.svg';
 
 const providerOptions = {
     walletConnectMainNet: {
@@ -79,17 +76,3 @@ export async function disconnectWallet() {
     }
 }
 
-export async function getAccount() {
-    const web3 = new Web3(provider);
-    const accounts = await web3.eth.getAccounts();
-    return accounts[0] || null;
-}
-
-export function isConnected() {
-    return provider && provider.connected;
-}
-
-export function numberToWei(num) {
-    const web3 = new Web3(provider);
-    return parseInt(web3.utils.toWei(String(num), "ether"));
-}
