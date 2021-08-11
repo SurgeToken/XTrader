@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import FormFieldError from "./FormFieldError/FormFieldError";
 import {buy, sell} from "../common/trade";
 import {Contracts} from "../common/contracts";
+import TokenSelector from "./TokenSelector/TokenSelector";
 
 function validateAmount(amount) {
     if (isNaN(parseFloat(amount))) {
@@ -49,13 +50,7 @@ const BuyForm = () => {
     return (
         <Form>
             <Box align={"center"} pad={"medium"}>
-                <FormField
-                    label="Surge"
-                    name="xToken"
-                    component={Select}
-                    onChange={(event) => console.log(event)}
-                    options={['sBNB', 'sUSD', 'sBTC', 'sETH']}
-                />
+                <TokenSelector />
                 <TextInput
                     label="To"
                     placeholder={"amount"}
@@ -104,12 +99,7 @@ const SellForm = () => {
     return (
         <Form>
             <Box align={"center"} pad={"medium"}>
-                <FormField
-                    label="Surge"
-                    component={Select}
-                    onChange={(event) => console.log(event)}
-                    options={['sBNB', 'sUSD', 'sBTC', 'sETH']}
-                />
+                <TokenSelector />
 
                 <TextInput
                     label="To"
