@@ -1,4 +1,0 @@
-# https://www.robotstxt.org/robotstxt.html
-User-agent: *
-# TODO: Remove disallow / when ready to go live (specify needed dirs for indexing or allow all)
-Disallow: /
