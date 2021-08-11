@@ -1,4 +1,4 @@
-import {Box, Form, FormField, Button, TextInput, Select, Tab, Tabs} from "grommet";
+import {Box, Button, TextInput, Select, Card, CardBody, Grid, Heading, Anchor} from "grommet";
 import React, {useState} from "react";
 import FormFieldError from "./FormFieldError/FormFieldError";
 import {buy, sell} from "../common/trade";
