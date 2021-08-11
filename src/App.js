@@ -41,16 +41,11 @@ const Sidebar = () => (
         background="white"
         justify="start"
     >
-        <Button
-            alignSelf="end"
-            className=""
-            icon={<Add color="spaceBlue"/>}
-            onClick={addTradingComponent}
-        />
-        <Button
+        <div>Do we need this?</div>
+        {/*<Button
             margin="small"
             onClick={walletConnect}
-        >Wallet connect</Button>
+        >Wallet connect</Button>*/}
     </Box>
 );
 
@@ -78,11 +73,30 @@ function App() {
                 {size => (
                     <Box fill>
                         <AppBar>
-                            <Heading level="3" margin="none"><img src={logo} alt="Logo" height="25px" /></Heading>
-                            <Button
-                                icon={<Menu color="spaceBlue"/>}
-                                onClick={() => setShowSidebar(!showSidebar)}
-                            />
+                            <div>
+                                <a href="/"><img src={logo} alt="Logo" height="25px" /></a>
+                            </div>
+                           <div>
+                               <Button
+                                   primary
+                                   size="medium"
+                                   onClick={walletConnect}
+                                   label="Connect Wallet"
+                               />
+                               <Button
+                                   secondary
+                                   size="small"
+                                   alignSelf="end"
+                                   icon={<Add color="spaceBlue"/>}
+                                   onClick={addTradingComponent}
+                               />
+                               <Button
+                                   secondary
+                                   size="small"
+                                   icon={<Menu color="spaceBlue"/>}
+                                   onClick={() => setShowSidebar(!showSidebar)}
+                               />
+                           </div>
                         </AppBar>
                         <Box direction="row" flex overflow={{ horizontal: 'hidden' }} fill className="appBody">
                             <Box flex align="center" justify="center" background="spaceBlue">
