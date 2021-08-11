@@ -53,21 +53,32 @@ const BuyForm = () => {
     };
 
     return (
-        <Form>
-            <Box align={"center"} pad={"medium"}>
-                <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken} />
-                <TextInput
-                    label="To"
-                    placeholder={"amount"}
-                    onChange={onAmountChange}
-                />
-                <FormFieldError message={amountErrorMessage} />
+        <CardBody align={"center"} background={"black"} pad={"medium"} gap={"medium"} small round>
+            <Box pad={"small"} gap={"xsmall"}>
+                <Grid columns={["small", "flex"]} gap={"small"} align={"center"}>
+                    <Heading level={4} textAlign={"end"}>Native Surge</Heading>
+                    <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken} />
+                </Grid>
+                <Grid columns={["small", "flex"]} gap={"small"} align={"center"} >
+                    <Heading level={4} textAlign={"end"}>X Token</Heading>
+                    <Select
+                        options={['xsBNB', 'xsUSD', 'xsETH']} // TODO retrieve these from a database
+                    />
+                </Grid>
+                <Grid columns={["small", "flex"]} gap={"small"} align={"center"}>
+                    <Heading level={4} textAlign={"end"}>Quantity</Heading>
+                    <TextInput
+                        suggestions={[...Array(20).keys()].map((key) => `${100 - (key * 5)}%`)}
+                        onChange={onAmountChange}
+                    />
+                    <FormFieldError message={amountErrorMessage} />
+                </Grid>
             </Box>
-            <Box direction="row" gap="medium" >
-                <Button type="submit"  label="Accept" size={"large"} onClick={buyTokens}/>
+            <Box direction="row" gap="large">
+                <Button type="submit" label="Accept" size={"large"} onClick={buyTokens}/>
                 <Button type="reset" label="Clear" size={"large"}/>
             </Box>
-        </Form>
+        </CardBody>
     )
 }
 
@@ -107,37 +118,48 @@ const SellForm = () => {
     };
 
     return (
-        <Form>
-            <Box align={"center"} pad={"medium"}>
-                <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken} />
-                <TextInput
-                    label="To"
-                    placeholder={"quantity"}
-                    onChange={onAmountChange}
-                />
-                <FormFieldError message={amountErrorMessage} />
+        <CardBody align={"center"} background={"black"} pad={"medium"} gap={"medium"} small round>
+            <Box pad={"small"} gap={"xsmall"}>
+                <Grid columns={["small", "flex"]} gap={"small"}  align={"center"}>
+                    <Heading level={4} textAlign={"end"}>Native Surge Trader</Heading>
+                    <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken} />
+
+                </Grid>
+                <Grid columns={["small", "flex"]} gap={"small"} align={"center"}>
+                    <Heading level={4} textAlign={"end"}>Quantity</Heading>
+                    <TextInput
+                        suggestions={[...Array(20).keys()].map((key) => `${100 - (key * 5)}%`)}
+                        onChange={onAmountChange}
+                    />
+                    <FormFieldError message={amountErrorMessage} />
+                </Grid>
             </Box>
-            <Box direction="row" gap="medium" >
-                <Button type="submit"  label="Accept" size={"large"} onClick={sellTokens}/>
+            <Box direction="row" gap="large">
+                <Button type="submit" label="Accept" size={"large"} onClick={sellTokens}/>
                 <Button type="reset" label="Clear" size={"large"}/>
             </Box>
-        </Form>
+        </CardBody>
     )
 }
 
-const nativeSurgeTrader = () => {
+
+const NativeSurgeTrader = () => {
+    const [action, setAction] = React.useState(0);
     return (
-        <Box border small round align={"center"} pad={"medium"} background={"dark-1"} >
-            <Tabs>
-                <Tab title={"Buy"}>
-                    <BuyForm/>
-                </Tab>
-                <Tab title={"Sell"}>
-                    <SellForm/>
-                </Tab>
-            </Tabs>
-        </Box>
+        <Card small round pad={"xsmall"} background={"rgb(45, 45, 45)"} >
+            <Grid columns={["80%", "20%"]} direction={"row"} pad={"none"}>
+                <Heading margin={{'left': '1%'}} level={4}>
+                    Native Surge Trader
+                </Heading>
+                <Box align={"center"} direction={"row"} gap={"medium"}>
+                    <Anchor color={action ? "brand" : "status-unknown"} onClick={() => setAction(!action)}><u>Buy</u></Anchor>
+                    <Anchor color={action ? "status-unknown" : "brand"} onClick={() => setAction(!action)}><u>Sell</u></Anchor>
+                </Box>
+            </Grid>
+            {action ? BuyForm() : SellForm()}
+
+        </Card>
     );
 }
 
-export default nativeSurgeTrader;
+export default NativeSurgeTrader;
