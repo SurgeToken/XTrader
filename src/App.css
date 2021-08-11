@@ -1,3 +1,4 @@
-body {
-    margin: 0;
+@font-face {
+    font-family: 'SurgeFont';
+    src: local('SurgeFont'), url(./fonts/SurgeFont.otf) format('opentype');
 }

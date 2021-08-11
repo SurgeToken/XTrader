@@ -16,7 +16,7 @@ export async function buy(contract, amount) {
         value: numberToWei(amount)
     };
 
-    return web3.eth.sendTransaction(tx);
+    const result = await web3.eth.sendTransaction(tx);
 }
 
 /**
@@ -25,22 +25,5 @@ export async function buy(contract, amount) {
  * @param {number} amount The amount of surge tokens to sell
  */
 export async function sell(contract, amount) {
-    if (isNaN(parseFloat(amount)) || Number(amount) <= 0) {
-        throw Error("Invalid amount");
-    }
-
     const web3 = new Web3(provider);
-    const Contract = new web3.eth.Contract(contract.abi, contract.address);
-
-    const fromAddress = await getAccount();
-
-    if (!fromAddress) {
-        throw new Error("No from address found");
-    }
-
-    const sanitizedAmount = Number(amount);
-
-    return Contract.methods.sell(sanitizedAmount).send({
-        from: fromAddress
-    });
 }
