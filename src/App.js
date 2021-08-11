@@ -7,8 +7,8 @@ import Trade from "./components/NativeSurgeTrader"
 // Grommet Stuff
 import grommetTheme from "./themes/theme.json";
 
-import {Box, Button, Collapsible, Heading, Grommet, Layer, ResponsiveContext} from "grommet";
-import {Menu, Add, FormClose} from 'grommet-icons';
+import {Box, Button, Grommet, ResponsiveContext} from "grommet";
+import {Add} from 'grommet-icons';
 
 
 // Styles
@@ -18,11 +18,7 @@ import './App.css';
 import logo from './assets/xsurge-logo.png';
 
 // Common Functions
-import {connectWallet, provider} from "./common/walletConnect"
-
-
-import { buy } from "./common/trade";
-import { Contracts } from "./common/contracts";
+import {connectWallet} from "./common/walletConnect"
 
 const AppBar = (props) => (
     <Box
@@ -46,8 +42,6 @@ async function walletConnect() {
 }
 
 function App() {
-    const [showSidebar, setShowSidebar] = useState(true);
-
     useEffect(() => {
         (async () => {
                 await connectWallet().catch(() => {}) // You need to catch this
