@@ -1,7 +1,8 @@
 import {Box, Form, FormField, Button, TextInput, Select,
     Grid, Heading, Header, Menu, Anchor,
     Tab, Tabs, Card, CardHeader, CardFooter, CardBody} from "grommet";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {provider, isConnected, getAccount, connectWallet} from "../common/walletConnect";
 
 const BuyForm = () => {
     return (
@@ -11,14 +12,14 @@ const BuyForm = () => {
                 <Grid columns={["small", "flex"]} gap={"small"} align={"center"}>
                     <Heading level={4} textAlign={"end"}>Native Surge</Heading>
                     <Select
-                        options={['sBNB', 'sUSD', 'sETH']} // TODO retrieve these from a database
+                        options={['sBNB', 'sUSD', 'sETH']}
                     />
 
                 </Grid>
                 <Grid columns={["small", "flex"]} gap={"small"} align={"center"} >
                     <Heading level={4} textAlign={"end"}>X Token</Heading>
                     <Select
-                        options={['xsBNB', 'xsUSD', 'xsETH']} // TODO retrieve these from a database
+                        options={['xsBNB', 'xsUSD', 'xsETH']}
                     />
                 </Grid>
                 <Grid columns={["small", "flex"]} gap={"small"} align={"center"}>
@@ -33,16 +34,16 @@ const BuyForm = () => {
         </CardBody>
     )
 }
-
 
 const SellForm = () => {
+    // const [value, setValue] = React.useState({});
     return (
-        <CardBody align={"center"} background={"black"} pad={"medium"} gap={"medium"} small round>
+        <CardBody disabled={!isConnected()} align={"center"} background={"black"} pad={"medium"} gap={"medium"} small round>
             <Box pad={"small"} gap={"xsmall"}>
                 <Grid columns={["small", "flex"]} gap={"small"}  align={"center"}>
-                    <Heading level={4} textAlign={"end"}>Native Surge Trader</Heading>
+                    <Heading level={4} textAlign={"end"}>X Token</Heading>
                     <Select
-                        options={['sBNB', 'sUSD', 'sETH']} // TODO Retrieve these from a database
+                        options={['xsBNB', 'xsUSD', 'xsETH']}
                     />
 
                 </Grid>
@@ -59,14 +60,26 @@ const SellForm = () => {
     )
 }
 
+const Disconnected = () => {
 
-const NativeSurgeTrader = () => {
+}
+
+
+const XTokenTrader = () => {
+    const [account, setAccount] = useState(0);
+    useEffect(() => {
+        (async() => {
+            let act = await getAccount().catch(); // You need to catch this
+            setAccount(act);
+        })()
+
+    }, []);
     const [action, setAction] = React.useState(0);
     return (
-        <Card small round pad={"xsmall"} background={"rgb(45, 45, 45)"} >
-            <Grid columns={["80%", "20%"]} direction={"row"} pad={"none"}>
-                <Heading margin={{'left': '1%'}} level={4}>
-                    Native Surge Trader
+        <Card  small round pad={"xsmall"} background={"rgb(45, 45, 45)"} >
+            <Grid columns={["75%", "25%"]} direction={"row"} pad={"none"}>
+                <Heading margin={{'left': '5%'}} level={4}>
+                    X Token Trader
                 </Heading>
                 <Box align={"center"} direction={"row"} gap={"medium"}>
                     <Anchor color={action ? "brand" : "status-unknown"} onClick={() => setAction(!action)}><u>Buy</u></Anchor>
@@ -74,9 +87,9 @@ const NativeSurgeTrader = () => {
                 </Box>
             </Grid>
             {action ? BuyForm() : SellForm()}
-
         </Card>
+
     );
 }
 
-export default NativeSurgeTrader;
+export default XTokenTrader;
