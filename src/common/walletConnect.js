@@ -28,7 +28,25 @@ export async function connectWallet() {
                 walletconnect: {
                     package: WalletConnectProvider,
                     options: providerOptions.walletConnectMainNet
-                }
+                },
+                // 'custom-coinbase': { //TODO still working on it, leave it here
+                //     display: {
+                //         logo: coinbaseLogo,
+                //         name: 'Coinbase',
+                //         description: 'Scan with WalletLink to connect',
+                //     },
+                //     options: providerOptions.walletConnectMainNet,
+                //     package: WalletLink,
+                //     connector: async (_, options) => {
+                //         const { appName, networkUrl, chainId } = options
+                //         const walletLink = new WalletLink({
+                //             appName: 'xSurge'
+                //         });
+                //         const provider = walletLink.makeWeb3Provider(providerOptions.walletConnectMainNet.rpc["56"], 56);
+                //         await provider.enable();
+                //         return provider;
+                //     },
+                // }
             }
         });
         provider = await web3Modal.connect();

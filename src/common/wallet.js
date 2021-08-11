@@ -11,9 +11,7 @@ export async function getAccount() {
 }
 
 export function isConnected() {
-    if( provider && provider.connected)
-        return true
-    else return false;
+    return provider && provider.connected;
 }
 
 export function numberToWei(num) {
