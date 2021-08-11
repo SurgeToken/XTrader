@@ -1,5 +1,6 @@
 import Web3 from "web3";
-import { getAccount, numberToWei, provider } from "./walletConnect";
+import { provider } from "./walletConnect";
+import {getAccount, numberToWei} from "./wallet";
 
 /**
  * Buy surge tokens
