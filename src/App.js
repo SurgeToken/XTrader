@@ -1,13 +1,13 @@
 // Libs
-import React, { useEffect } from "react";
+import React, {useEffect} from "react";
 
 // Components
 import Trade from "./components/NativeSurgeTrader"
 
 // Grommet Stuff
 import grommetTheme from "./themes/theme.json";
-import { Box, Button, Grommet, ResponsiveContext } from "grommet";
-import { Add } from 'grommet-icons';
+import {Box, Button, Grommet, ResponsiveContext} from "grommet";
+import {Add} from 'grommet-icons';
 
 // Styles
 import './App.css';
@@ -16,10 +16,8 @@ import './App.css';
 import logo from './assets/xsurge-logo.png';
 
 // Common Functions
-import { connectWallet } from "./common/walletConnect"
-
-import { buy } from "./common/trade";
-import { Contracts } from "./common/contracts";
+import {connectWallet} from "./common/walletConnect"
+import {isConnected} from "./common/wallet";
 
 const AppBar = (props) => (
     <Box
@@ -28,8 +26,8 @@ const AppBar = (props) => (
         align="center"
         justify="between"
         background="green"
-        pad={{ left: 'medium', right: 'small', vertical: 'small' }}
-        style={{ zIndex: '1' }}
+        pad={{left: 'medium', right: 'small', vertical: 'small'}}
+        style={{zIndex: '1'}}
         {...props}
     />
 );
@@ -45,7 +43,9 @@ async function walletConnect() {
 function App() {
     useEffect(() => {
         (async () => {
-            await connectWallet();
+            if (isConnected())
+                await connectWallet();
+
         })();
     }, []);
 
@@ -74,9 +74,9 @@ function App() {
                                 />
                             </div>
                         </AppBar>
-                        <Box direction="row" flex overflow={{ horizontal: 'hidden' }} fill className="appBody">
+                        <Box direction="row" flex overflow={{horizontal: 'hidden'}} fill className="appBody">
                             <Box flex align="center" justify="center" background="spaceBlue">
-                                <Box flex="shrink" height={{ min: "48px" }} width={{ min: "48px" }}
+                                <Box flex="shrink" height={{min: "48px"}} width={{min: "48px"}}
                                      background="spaceBlue" className="appBodyToolbar">
 
                                 </Box>
