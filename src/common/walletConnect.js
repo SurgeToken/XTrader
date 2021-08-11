@@ -24,6 +24,7 @@ export async function connectWallet() {
     try {
         const web3Modal = new Web3Modal({
             network: "binance",
+            cacheProvider: true,
             providerOptions: {
                 walletconnect: {
                     package: WalletConnectProvider,
