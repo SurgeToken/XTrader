@@ -9,6 +9,11 @@ export const Contracts = {
         address: "0x14fEe7d23233AC941ADd278c123989b86eA7e1fF",
         abi: require("../abi/SurgeBNB.json"),
     },
+    SurgeEth: {
+        name: 'sETH',
+        address: "0x0000000000000000000000000000000000000000", //TODO wait for sETH contract
+        abi: require("../abi/SurgeBNB.json"),
+    },
 };
 
 /**
@@ -23,4 +28,12 @@ export function getAllContracts() {
     }
 
     return contracts;
+}
+
+/**
+ * Get a specific contract by his key
+ * @return {name, address, abi}
+ * */
+export function getContractByName(key) {
+    return Contracts[key];
 }
