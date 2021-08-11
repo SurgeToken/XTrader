@@ -43,7 +43,7 @@ export async function getBNBBalance(account) {
  * @return Promise<string>
  * */
 export async function getSurgeBalance(account, surgeContract, abi) {
-    if (!provider) return ;
+    if (!provider) return null;
     const web3 = new Web3(provider)
     const contract = new web3.eth.Contract(abi, surgeContract)
     const balance = await contract.methods.balanceOf(account).call()
