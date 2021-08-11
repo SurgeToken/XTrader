@@ -79,7 +79,7 @@ const SellForm = () => {
     const onAmountChange = (event) => {
         const errorMessage = validateAmount(event.target.value);
 
-        if (errorMessage != null) {
+        if (errorMessage) {
             setAmount(0);
             setAmountValid(false);
             setAmountErrorMessage(errorMessage);
