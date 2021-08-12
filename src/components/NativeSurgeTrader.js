@@ -157,8 +157,8 @@ const SellForm = (props) => {
                 </Grid>
             </Box>
             <Box direction="row" gap="large">
-                <Button type="submit" label="Accept" size={"large"} onClick={sellTokens}/>
                 <Button type="reset" label="Clear" size={"large"}/>
+                <Button type="submit" label="Accept" size={"large"} onClick={sellTokens} primary/>
             </Box>
         </CardBody>
     )

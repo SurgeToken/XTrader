@@ -123,14 +123,15 @@
     "primary": {
       "border": {
         "width": "2px",
-        "color": "spaceBlue"
+        "color": "green"
       },
       "background": {
+        "dark": "green",
+        "light": "green"
+      },
+      "color": {
         "dark": "spaceBlue",
         "light": "spaceBlue"
-      },
-      "text": {
-
       }
     },
     "secondary": {
