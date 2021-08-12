@@ -2,8 +2,7 @@ import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
 // import {WalletLink} from "walletlink";
-import Web3 from "web3";
-import coinbaseLogo from '../images/coinbase.svg';
+// import coinbaseLogo from '../images/coinbase.svg';
 
 const providerOptions = {
     walletConnectMainNet: {
@@ -64,12 +63,13 @@ export async function connectWallet() {
         if (provider) {
             await provider.close();
         }
+        return;
     }
 }
 
 export async function disconnectWallet() {
     if (provider) {
-        if (provider.connected) {
+        if (!provider.connected) {
             return;
         }
 
