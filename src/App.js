@@ -14,7 +14,7 @@ import {Add} from 'grommet-icons';
 import './App.css';
 
 // Assets
-import logo from './assets/xsurge-logo.svg';
+import logo from './assets/xsurge-logo.png';
 
 // Common Functions
 import {connectWallet} from "./common/walletConnect"
@@ -25,7 +25,7 @@ const AppBar = (props) => (
         direction="row"
         align="center"
         justify="between"
-        background="green"
+        background="spaceBlue"
         pad={{left: 'medium', right: 'small', vertical: 'small'}}
         style={{zIndex: '1'}}
         {...props}
@@ -63,7 +63,6 @@ function App() {
                             </div>
                             <div>
                                 <Button
-                                    primary
                                     size="medium"
                                     onClick={walletConnect}
                                     label={size === 'medium' ? "Connect Wallet" : "Wallet"}
@@ -72,7 +71,9 @@ function App() {
                                     secondary
                                     size="small"
                                     alignSelf="end"
-                                    icon={<Add color="spaceBlue"/>}
+                                    icon={<Add color="white"/>}
+                                    plain
+                                    style={ (size === 'small') ? {marginLeft: 12, marginRight: 12} : {marginLeft: 20, marginRight: 15}}
                                     onClick={addTradingComponent}
                                 />
                             </div>
