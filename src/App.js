@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 
 // Components
 import Trade from "./components/NativeSurgeTrader"
+import WalletButton from "./components/Wallet";
 
 // Grommet Stuff
 import grommetTheme from "./themes/theme.json";
@@ -36,20 +37,17 @@ function addTradingComponent() {
     alert('Add another trading component to the body');
 }
 
-async function walletConnect() {
-    await connectWallet();
-}
-
 function App() {
     useEffect(() => {
-        (async () => {
-            try {
-                await connectWallet();
-            } catch (err) {
-                console.log("Failed to connect wallet", err);
-                return;
-            }
-        })();
+        //Moved into component Wallet.js
+        // (async () => {
+        //     try {
+        //         await connectWallet();
+        //     } catch (err) {
+        //         console.log("Failed to connect wallet", err);
+        //         return;
+        //     }
+        // })();
     }, []);
 
     return (
@@ -62,11 +60,7 @@ function App() {
                                 <a href="/"><img src={logo} alt="Logo" height={size === 'medium' ? "25px" : "20px"}/></a>
                             </Box>
                             <Box>
-                                <Button
-                                    size="medium"
-                                    onClick={walletConnect}
-                                    label={size === 'medium' ? "Connect Wallet" : "Wallet"}
-                                />
+                                <WalletButton/>
                             </Box>
                         </AppBar>
                         <Box direction="row" flex overflow={{horizontal: 'scroll'}} fill className="appBody" pad={"medium"}>
