@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 
 // Components
 import Trade from "./components/NativeSurgeTrader"
+import WalletButton from "./components/Wallet";
 
 // Grommet Stuff
 import grommetTheme from "./themes/theme.json";
@@ -36,10 +37,6 @@ function addTradingComponent() {
     alert('Add another trading component to the body');
 }
 
-async function walletConnect() {
-    await connectWallet();
-}
-
 function App() {
     useEffect(() => {
         (async () => {
@@ -62,11 +59,7 @@ function App() {
                                 <a href="/"><img src={logo} alt="Logo" height={size === 'medium' ? "25px" : "20px"}/></a>
                             </div>
                             <div>
-                                <Button
-                                    size="medium"
-                                    onClick={walletConnect}
-                                    label={size === 'medium' ? "Connect Wallet" : "Wallet"}
-                                />
+                                <WalletButton size={size}/>
                                 <Button
                                     secondary
                                     size="small"
