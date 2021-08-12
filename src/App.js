@@ -79,10 +79,6 @@ function App() {
                         </AppBar>
                         <Box direction="row" flex overflow={{horizontal: 'hidden'}} fill className="appBody">
                             <Box flex align="center" justify="center">
-                                <Box flex="shrink" height={{min: "48px"}} width={{min: "48px"}}
-                                     background="spaceBlue" className="appBodyToolbar">
-
-                                </Box>
                                 <Trade/>
                             </Box>
                         </Box>

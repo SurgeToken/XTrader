@@ -84,6 +84,16 @@
       "border": {
         "color": "green"
       }
+    },
+    "elevation": {
+      "dark": {
+        "none": "none",
+        "xsmall": "0px 2px 2px #060818",
+        "small": "0px 4px 4px #060818",
+        "medium": "0px 6px 8px rgba(33, 187, 177, .4)",
+        "large": "0px 8px 16px #060818",
+        "xlarge": "0px 12px 24px #060818"
+      }
     }
   },
   "text": {

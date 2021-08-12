@@ -54,7 +54,7 @@ const BuyForm = (props) => {
     };
 
     const onTokenSliderChange = (value) => {
-        const percentage = value / 100;
+        const percentage = (value || 0) / 100;
         const calculatedAmount = percentage * props.tokenBalance;
         setAmount(calculatedAmount);
     };
@@ -70,7 +70,7 @@ const BuyForm = (props) => {
     };
 
     return (
-        <CardBody align={"center"} background={"black"} pad={"medium"} gap={"medium"} small round>
+        <CardBody align={"center"} pad={"medium"} gap={"medium"} small round>
             <Box pad={"small"} gap={"xsmall"}>
                 <Grid columns={["small", "flex"]} gap={"small"} align={"center"}>
                     <Heading level={4} textAlign={"end"}>Native Surge</Heading>
@@ -124,7 +124,7 @@ const SellForm = (props) => {
     };
 
     const onTokenSliderChange = (value) => {
-        const percentage = value / 100;
+        const percentage = (value || 0) / 100;
         const calculatedAmount = percentage * props.tokenBalance;
         setAmount(calculatedAmount);
     };
@@ -140,12 +140,11 @@ const SellForm = (props) => {
     };
 
     return (
-        <CardBody align={"center"} background={"black"} pad={"medium"} gap={"medium"} small round>
+        <CardBody align={"center"} pad={"medium"} gap={"medium"} small round>
             <Box pad={"small"} gap={"xsmall"}>
                 <Grid columns={["small", "flex"]} gap={"small"}  align={"center"}>
-                    <Heading level={4} textAlign={"end"}>Native Surge Trader</Heading>
+                    <Heading level={4} textAlign={"end"}>Surge Token</Heading>
                     <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken} />
-
                 </Grid>
                 <Grid columns={["small", "flex"]} gap={"small"} align={"center"}>
                     <Heading level={4} textAlign={"end"}>Quantity</Heading>
@@ -185,7 +184,7 @@ const NativeSurgeTrader = () => {
     };
 
     return (
-        <Card small round pad={"xsmall"} background={"rgb(45, 45, 45)"} >
+        <Card small round pad={{top: "medium", bottom: "small", right: "medium", left: "medium"}} background={"spaceBlue"} elevation={"medium"} style={{border: "solid 1px #21BBB1"}}>
             <Grid columns={["auto", "auto"]}>
                 <Heading margin={{'left': '1%'}} level={4}>
                     Native Surge Trader
