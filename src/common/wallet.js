@@ -45,5 +45,6 @@ export async function getSurgeBalance(contract, account) {
     if (!provider) return null;
     const web3 = new Web3(provider);
     const Contract = new web3.eth.Contract(contract.abi, contract.address);
-    return Contract.methods.balanceOf(account).call();
+    const balance = await Contract.methods.balanceOf(account).call();
+    return parseFloat(balance);
 }

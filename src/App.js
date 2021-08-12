@@ -1,13 +1,13 @@
 // Libs
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 
 // Components
-import Trade from "./components/NativeSurgeTrader"
+import Trade from "./components/NativeSurgeTrader/NativeSurgeTrader"
 
 // Grommet Stuff
 import grommetTheme from "./themes/theme.json";
 
-import {Box, Button, Grommet, ResponsiveContext} from "grommet";
+import {Box, Button, Grommet, ResponsiveContext, Spinner, Text} from "grommet";
 import {Add} from 'grommet-icons';
 
 // Styles
@@ -17,7 +17,7 @@ import './App.css';
 import logo from './assets/xsurge-logo.png';
 
 // Common Functions
-import {connectWallet} from "./common/walletConnect"
+import {connectWallet, onProviderInit} from "./common/walletConnect"
 
 const AppBar = (props) => (
     <Box
@@ -41,7 +41,12 @@ async function walletConnect() {
 }
 
 function App() {
+    const [providerInitialized, setProviderInitialized] = useState(false);
+
     useEffect(() => {
+        // Listen for web3 provider initialization
+        onProviderInit(() => setProviderInitialized(true));
+
         (async () => {
             try {
                 await connectWallet();
@@ -79,7 +84,7 @@ function App() {
                         </AppBar>
                         <Box direction="row" flex overflow={{horizontal: 'hidden'}} fill className="appBody">
                             <Box flex align="center" justify="center">
-                                <Trade/>
+                                {providerInitialized ? <Trade/> : <Spinner size={"large"}/>}
                             </Box>
                         </Box>
                     </Box>

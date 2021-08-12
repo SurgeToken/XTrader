@@ -26,6 +26,8 @@ const providerOptions = {
 
 export let provider;
 
+const providerInitCallbacks = [];
+
 export async function connectWallet() {
     try {
         const web3Modal = new Web3Modal({
@@ -59,6 +61,8 @@ export async function connectWallet() {
 
         });
         provider = await web3Modal.connect();
+
+        providerInitCallbacks.forEach(cb => cb());
     } catch (err) {
         console.log("Failed to connect wallet", err)
         if (provider) {
@@ -81,4 +85,13 @@ export async function disconnectWallet() {
 
         await provider.close()
     }
+}
+
+export function onProviderInit(callback) {
+    if (!!provider) {
+        callback();
+        return;
+    }
+
+    providerInitCallbacks.push(callback);
 }

@@ -1,11 +1,12 @@
-import {Box, Button, TextInput, Select, Card, CardBody, Grid, Heading, Anchor} from "grommet";
+import {Box, Button, TextInput, Select, Card, CardBody, Grid, Heading, Anchor, Text} from "grommet";
 import React, {useEffect, useState} from "react";
-import FormFieldError from "./FormFieldError/FormFieldError";
-import {buy, sell} from "../common/trade";
-import {Contracts} from "../common/contracts";
-import TokenSelector from "./TokenSelector/TokenSelector";
-import TokenAmountSlider from "./TokenAmountSlider";
-import {getAccount, getSurgeBalance} from "../common/wallet";
+import FormFieldError from "../FormFieldError/FormFieldError";
+import {buy, sell} from "../../common/trade";
+import {Contracts} from "../../common/contracts";
+import TokenSelector from "../TokenSelector/TokenSelector";
+import TokenAmountSlider from "../TokenAmountSlider";
+import {getAccount, getSurgeBalance} from "../../common/wallet";
+import styles from "./NativeSurgeTrader.module.css";
 
 function validateAmount(amount) {
     if (isNaN(parseFloat(amount))) {
@@ -71,17 +72,21 @@ const BuyForm = (props) => {
 
     return (
         <CardBody align={"center"} pad={"medium"} gap={"medium"} small round>
-            <Box pad={"small"} gap={"xsmall"}>
-                <Grid columns={["small", "flex"]} gap={"small"} align={"center"}>
+            <Box gap={"xsmall"}>
+                <Grid columns={["30%", "flex"]} gap={"small"} align={"center"}>
                     <Heading level={4} textAlign={"end"}>Native Surge</Heading>
                     <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken} />
                 </Grid>
-                <Grid columns={["small", "flex"]} gap={"small"} align={"center"}>
+                <Grid columns={["30%", "flex"]} gap={"small"} align={"center"}>
                     <Heading level={4} textAlign={"end"}>Quantity</Heading>
-                    <TextInput
-                        value={amount}
-                        onChange={onAmountChange}
-                    />
+                    <div className={styles.bnbInputWrapper}>
+                        <TextInput
+                            value={amount}
+                            onChange={onAmountChange}
+                            className={styles.bnbInputAmount}
+                        />
+                        <Text className={styles.bnbInputSuffix} color={"white"}>BNB</Text>
+                    </div>
                     <FormFieldError message={amountErrorMessage} />
                     <TokenAmountSlider onValueChange={onTokenSliderChange} defaultValue={0}/>
                 </Grid>
@@ -141,17 +146,21 @@ const SellForm = (props) => {
 
     return (
         <CardBody align={"center"} pad={"medium"} gap={"medium"} small round>
-            <Box pad={"small"} gap={"xsmall"}>
-                <Grid columns={["small", "flex"]} gap={"small"}  align={"center"}>
+            <Box gap={"xsmall"}>
+                <Grid columns={["30%", "flex"]} gap={"small"}  align={"center"}>
                     <Heading level={4} textAlign={"end"}>Surge Token</Heading>
                     <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken} />
                 </Grid>
-                <Grid columns={["small", "flex"]} gap={"small"} align={"center"}>
+                <Grid columns={["30%", "flex"]} gap={"small"} align={"center"}>
                     <Heading level={4} textAlign={"end"}>Quantity</Heading>
-                    <TextInput
-                        value={amount}
-                        onChange={onAmountChange}
-                    />
+                    <div className={styles.bnbInputWrapper}>
+                        <TextInput
+                            value={amount}
+                            onChange={onAmountChange}
+                            className={styles.bnbInputAmount}
+                        />
+                        <Text className={styles.bnbInputSuffix} color={"white"}>BNB</Text>
+                    </div>
                     <FormFieldError message={amountErrorMessage} />
                     <TokenAmountSlider onValueChange={onTokenSliderChange} defaultValue={0}/>
                 </Grid>
@@ -174,12 +183,14 @@ const NativeSurgeTrader = () => {
             // Update the initial token balance
             const balance = await getTokenBalance(Contracts.SurgeBnb);
             setCurrentTokenBalance(balance);
+
+
         })();
     }, []);
 
     const onTokenChange = async (token) => {
         // Update the token balance after changing the selected token
-        const balance = getTokenBalance(token);
+        const balance = await getTokenBalance(token);
         setCurrentTokenBalance(balance);
     };
 
@@ -189,7 +200,7 @@ const NativeSurgeTrader = () => {
                 <Heading margin={{'left': '1%'}} level={4}>
                     Native Surge Trader
                 </Heading>
-                <Box align={"center"} justify={"end"} direction={"row"} gap={"medium"} pad={"small"}>
+                <Box align={"center"} justify={"end"} direction={"row"} gap={"medium"}>
                     <Anchor onClick={() => setAction(true)} color="white">
                         <Button label="Buy" plain={!action} />
                     </Anchor>
