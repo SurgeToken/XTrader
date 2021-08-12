@@ -43,7 +43,12 @@ async function walletConnect() {
 function App() {
     useEffect(() => {
         (async () => {
-                await connectWallet().catch(() => {}) // You need to catch this
+            try {
+                await connectWallet();
+            } catch (err) {
+                console.log("Failed to connect wallet", err);
+                return;
+            }
         })();
     }, []);
 
