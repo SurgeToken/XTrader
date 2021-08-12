@@ -88,23 +88,17 @@
     "elevation": {
       "dark": {
         "none": "none",
-        "xsmall": "0px 2px 2px #060818",
-        "small": "0px 4px 4px #060818",
-        "medium": "0px 6px 8px rgba(33, 187, 177, .4)",
-        "large": "0px 8px 16px #060818",
-        "xlarge": "0px 12px 24px #060818"
+        "xsmall": "0px 0px 2px rgba(33, 187, 177, .4)",
+        "small": "0px 0px 5px rgba(33, 187, 177, .4)",
+        "medium": "0px 0px 8px rgba(33, 187, 177, .4)",
+        "large": "0px 0px 10px rgba(33, 187, 177, .4)",
+        "xlarge": "0px 0px 15px rgba(33, 187, 177, .4)"
       }
-    }
-  },
-  "text": {
-    "small": {
-      "size": ".75rem"
     },
-    "medium": {
-      "size": "1.2rem"
-    },
-    "large": {
-      "size": "1.4"
+    "breakpoints": {
+      "xsmall": {
+        "value": 455
+      }
     }
   },
   "button": {
@@ -123,14 +117,15 @@
     "primary": {
       "border": {
         "width": "2px",
-        "color": "spaceBlue"
+        "color": "green"
       },
       "background": {
+        "dark": "green",
+        "light": "green"
+      },
+      "color": {
         "dark": "spaceBlue",
         "light": "spaceBlue"
-      },
-      "text": {
-
       }
     },
     "secondary": {
