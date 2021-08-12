@@ -26,7 +26,7 @@ const AppBar = (props) => (
         align="center"
         justify="between"
         background="spaceBlue"
-        pad={{left: 'medium', right: 'small', vertical: 'small'}}
+        pad={{left: 'medium', right: 'medium', vertical: 'medium'}}
         style={{zIndex: '1'}}
         {...props}
     />
@@ -58,30 +58,32 @@ function App() {
                 {size => (
                     <Box fill>
                         <AppBar>
-                            <div>
+                            <Box>
                                 <a href="/"><img src={logo} alt="Logo" height={size === 'medium' ? "25px" : "20px"}/></a>
-                            </div>
-                            <div>
+                            </Box>
+                            <Box>
                                 <Button
                                     size="medium"
                                     onClick={walletConnect}
                                     label={size === 'medium' ? "Connect Wallet" : "Wallet"}
                                 />
-                                <Button
-                                    secondary
-                                    size="small"
-                                    alignSelf="end"
-                                    icon={<Add color="white"/>}
-                                    plain
-                                    style={ (size === 'small') ? {marginLeft: 12, marginRight: 12} : {marginLeft: 20, marginRight: 15}}
-                                    onClick={addTradingComponent}
-                                />
-                            </div>
+                            </Box>
                         </AppBar>
-                        <Box direction="row" flex overflow={{horizontal: 'hidden'}} fill className="appBody">
+                        <Box direction="row" flex overflow={{horizontal: 'scroll'}} fill className="appBody" pad={"medium"}>
                             <Box flex align="center" justify="center">
                                 <Trade/>
                             </Box>
+                        </Box>
+                        <Box pad={"medium"}>
+                            <Button
+                                secondary
+                                size="small"
+                                alignSelf="end"
+                                icon={<Add color="white"/>}
+                                plain
+                                style={ (size === 'small') ? {marginLeft: 12, marginRight: 12} : {marginLeft: 20, marginRight: 15}}
+                                onClick={addTradingComponent}
+                            />
                         </Box>
                     </Box>
                 )}
