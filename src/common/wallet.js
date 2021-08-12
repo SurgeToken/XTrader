@@ -2,11 +2,11 @@ import Web3 from "web3";
 import {provider} from "./walletConnect";
 
 export async function getAccount() {
-    if (!provider || !provider.connected) {
+    if (!provider) {
         return;
     }
-    console.log('testing', provider)
-    const accounts = await provider.getAccounts();
+    const web3 = new Web3(provider);
+    const accounts = await web3.eth.getAccounts();
     return accounts[0] || null
 }
 
@@ -31,21 +31,19 @@ export function numberFromWei(wei) {
  * */
 export async function getBNBBalance(account) {
     if (!provider) return null;
-    const web3 = new Web3(provider)
-    const balance = await web3.eth.getBalance(account)
-    return numberFromWei(balance)
+    const web3 = new Web3(provider);
+    const balance = await web3.eth.getBalance(account);
+    return numberFromWei(balance);
 }
 
 /**
+ * @param {any} contract the surge contract to read the balance from
  * @param {string} account the account of the wallet
- * @param {string} surgeContract the account of the wallet
- * @param {json} abi the account of the wallet
  * @return Promise<string>
  * */
-export async function getSurgeBalance(account, surgeContract, abi) {
+export async function getSurgeBalance(contract, account) {
     if (!provider) return null;
-    const web3 = new Web3(provider)
-    const contract = new web3.eth.Contract(abi, surgeContract)
-    const balance = await contract.methods.balanceOf(account).call()
-    return balance
+    const web3 = new Web3(provider);
+    const Contract = new web3.eth.Contract(contract.abi, contract.address);
+    return Contract.methods.balanceOf(account).call();
 }

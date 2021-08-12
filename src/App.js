@@ -10,7 +10,6 @@ import grommetTheme from "./themes/theme.json";
 import {Box, Button, Grommet, ResponsiveContext} from "grommet";
 import {Add} from 'grommet-icons';
 
-
 // Styles
 import './App.css';
 
@@ -44,8 +43,12 @@ async function walletConnect() {
 function App() {
     useEffect(() => {
         (async () => {
-                await connectWallet().catch(() => {}) // You need to catch this
-
+            try {
+                await connectWallet();
+            } catch (err) {
+                console.log("Failed to connect wallet", err);
+                return;
+            }
         })();
     }, []);
 
@@ -75,11 +78,7 @@ function App() {
                             </div>
                         </AppBar>
                         <Box direction="row" flex overflow={{horizontal: 'hidden'}} fill className="appBody">
-                            <Box flex align="center" justify="center" background="spaceBlue">
-                                <Box flex="shrink" height={{min: "48px"}} width={{min: "48px"}}
-                                     background="spaceBlue" className="appBodyToolbar">
-
-                                </Box>
+                            <Box flex align="center" justify="center">
                                 <Trade/>
                             </Box>
                         </Box>

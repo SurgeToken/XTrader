@@ -1,3 +1,7 @@
 body {
     margin: 0;
 }
+
+.appBody {
+    background: linear-gradient(150deg, #060818 0%, #060818 20%, #21BBB1 220%);
+}
