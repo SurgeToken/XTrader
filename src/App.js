@@ -14,7 +14,7 @@ import {Add} from 'grommet-icons';
 import './App.css';
 
 // Assets
-import logo from './assets/xsurge-logo.png';
+import logo from './assets/xsurge-logo.svg';
 
 // Common Functions
 import {connectWallet, onProviderInit} from "./common/walletConnect"
@@ -64,14 +64,14 @@ function App() {
                     <Box fill>
                         <AppBar>
                             <div>
-                                <a href="/"><img src={logo} alt="Logo" height="25px"/></a>
+                                <a href="/"><img src={logo} alt="Logo" height={size === 'medium' ? "25px" : "20px"}/></a>
                             </div>
                             <div>
                                 <Button
                                     primary
                                     size="medium"
                                     onClick={walletConnect}
-                                    label="Connect Wallet"
+                                    label={size === 'medium' ? "Connect Wallet" : "Wallet"}
                                 />
                                 <Button
                                     secondary
