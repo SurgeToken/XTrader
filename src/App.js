@@ -39,14 +39,15 @@ function addTradingComponent() {
 
 function App() {
     useEffect(() => {
-        (async () => {
-            try {
-                await connectWallet();
-            } catch (err) {
-                console.log("Failed to connect wallet", err);
-                return;
-            }
-        })();
+        //Moved into component Wallet.js
+        // (async () => {
+        //     try {
+        //         await connectWallet();
+        //     } catch (err) {
+        //         console.log("Failed to connect wallet", err);
+        //         return;
+        //     }
+        // })();
     }, []);
 
     return (
@@ -59,7 +60,7 @@ function App() {
                                 <a href="/"><img src={logo} alt="Logo" height={size === 'medium' ? "25px" : "20px"}/></a>
                             </div>
                             <div>
-                                <WalletButton size={size}/>
+                                <WalletButton/>
                                 <Button
                                     secondary
                                     size="small"

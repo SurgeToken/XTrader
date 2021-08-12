@@ -63,12 +63,13 @@ export async function connectWallet() {
         if (provider) {
             await provider.close();
         }
+        return;
     }
 }
 
 export async function disconnectWallet() {
     if (provider) {
-        if (provider.connected) {
+        if (!provider.connected) {
             return;
         }
 
