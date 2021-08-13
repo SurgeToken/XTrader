@@ -29,9 +29,10 @@ export default () => {
                 pad={{top: "small", bottom: "small", right: "medium", left: "medium"}}
             >
                 <Box
+                    fill={true}
                     // margin={(size === "xsmall" ? "medium" : "small")}
                 >
-                    <Text
+                    <Text textAlign={"center"}
                         // size={((size === "xsmall" || size === "small") ? "large" : "large")}
                     >sBNB</Text>
                 </Box>
