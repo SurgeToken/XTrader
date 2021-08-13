@@ -208,7 +208,7 @@ const Trader = () => {
     };
 
     return (
-            <Draggable>
+            <Draggable disabled={(size === "small" || size === "xsmall")}>
                 <Card width={"medium"}
                       small round
                       background={"spaceBlue"}
