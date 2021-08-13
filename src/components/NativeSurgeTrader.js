@@ -41,6 +41,8 @@ const BuyForm = (props) => {
     const [ amountValid, setAmountValid ] = useState(true);
     const [ amountErrorMessage, setAmountErrorMessage ] = useState("");
     const [ selectedToken, setSelectedToken ] = useState(props.defaultToken || Contracts.SurgeBnb);
+    // noinspection JSCheckFunctionSignatures
+    const size = React.useContext(ResponsiveContext);
 
     const onAmountChange = (event) => {
         const errorMessage = validateAmount(event.target.value);
@@ -82,26 +84,28 @@ const BuyForm = (props) => {
     };
 
     return (
-        <CardBody align={"center"} pad={"medium"} gap={"medium"} small round>
-            <Box pad={"small"} gap={"xsmall"}>
-                <Grid columns={[ "small", "flex" ]} gap={"small"} align={"center"}>
-                    <Heading level={4} textAlign={"end"}>Native Surge</Heading>
+        <CardBody align={"center"} pad={(size === "small"? "xlarge" : "medium")} small round>
+            <Box gap={"medium"}>
+                <Box gap={"small"}>
+                    <Text>Native Surge:</Text>
                     <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken}/>
-                </Grid>
-                <Grid columns={[ "small", "flex" ]} gap={"small"} align={"center"}>
-                    <Heading level={4} textAlign={"end"}>Quantity</Heading>
+                </Box>
+                <Box gap={"small"}>
+                    <Text>Quantity:</Text>
                     <TextInput
                         value={amount}
                         onChange={onAmountChange}
                     />
                     <FormFieldError message={amountErrorMessage}/>
+                </Box>
+                <Box gap={"small"}>
                     <TokenAmountSlider onValueChange={onTokenSliderChange} defaultValue={0}/>
-                </Grid>
+                </Box>
             </Box>
-            <Box direction="row" gap="large">
-                <Button type="submit" label="Accept" size={"large"} onClick={buyTokens}/>
+            <CardFooter direction="row" gap="medium" margin={"small"}>
                 <Button type="reset" label="Clear" size={"large"}/>
-            </Box>
+                <Button type="submit" label="Accept" size={"large"} onClick={buyTokens} primary/>
+            </CardFooter>
         </CardBody>
     )
 }
