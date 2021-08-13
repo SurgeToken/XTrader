@@ -3,9 +3,9 @@ import { provider } from "./walletConnect";
 import {getAccount, numberToWei} from "./wallet";
 
 /**
- * Buy surge tokens
+ * Buy surge contracts
  * @param {Contract} contract The contract of the surge token to buy
- * @param {number} amount The amount of the input token to buy surge tokens for
+ * @param {number} amount The amount of the input token to buy surge contracts for
  */
 export async function buy(contract, amount) {
     const web3 = new Web3(provider);
@@ -21,9 +21,9 @@ export async function buy(contract, amount) {
 }
 
 /**
- * Sell surge tokens
+ * Sell surge contracts
  * @param {Contract} contract The contract of the surge token to sell
- * @param {number} amount The amount of surge tokens to sell
+ * @param {number} amount The amount of surge contracts to sell
  */
 export async function sell(contract, amount) {
     if (isNaN(parseFloat(amount)) || Number(amount) <= 0) {
