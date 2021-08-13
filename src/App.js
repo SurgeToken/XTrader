@@ -55,7 +55,7 @@ function App() {
                                 <WalletButton/>
                             </Box>
                         </AppBar>
-                        <Box direction="row" flex overflow={{horizontal: 'scroll'}} fill className="appBody" pad={"medium"}>
+                        <Box direction="row" flex overflow={{horizontal: 'hidden'}} fill className="appBody" pad={"medium"}>
                             <Box flex align="center" justify="center" direction={"row"}>
                                 <Trader/>
                                 <Chart/>
