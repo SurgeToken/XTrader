@@ -1,11 +1,16 @@
-import {DataChart, Card, Box, Text, Anchor, Button, CardBody, Menu,
-    CardHeader, FormField, Header, Tab, Tabs} from "grommet";
+import {
+    DataChart, Card, Box, Text, Anchor, Button, CardBody, Menu,
+    CardHeader, FormField, Header, Tab, Tabs, ResponsiveContext,
+} from "grommet";
 import Draggable from "react-draggable";
 import {Contracts} from "../common/contracts";
 import React from "react";
 
 export default () => {
     const data = [];
+    // noinspection JSCheckFunctionSignatures
+    const size = React.useContext(ResponsiveContext);
+
     for (let i = 1; i < 8; i += 1) {
         const v = Math.sin(i / 2.0);
         data.push({
@@ -13,7 +18,7 @@ export default () => {
             percent: Math.round(Math.abs(v * 100)),
         });
     }
-    return ( <Draggable>
+    return ( <Draggable disabled={(size === "small" || size === "xsmall")}>
         <Card width={"large"}
               height={"medium"}
               small
