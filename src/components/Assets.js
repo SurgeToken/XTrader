@@ -4,34 +4,48 @@ import Draggable from "react-draggable";
 import {Contracts} from "../common/contracts";
 import React from "react";
 
+const formatTotal = (value) => {
+    return `\$${value.toFixed(2)}`;
+}
+
 export default () => {
     const columns = [
         {
             property: 'Token',
-            header: <Text>Token</Text>
+            primary: true,
+            header: <Text>Token</Text>,
+            align: "center",
+            footer: "Total"
         },
         {
             property: 'Quantity',
+            align: "center",
             header: <Text>Quantity</Text>
 
         },
         {
-            property: '24H',
-            header: <Text>24H</Text>
+            property: 'Change',
+            size: "xxsmall",
+            render: (col) => <Text color={col.Change > 50 ? "green" : "red"}>{col.Change.toFixed(0)}%</Text>,
+            align: "center",
+            header: <Text>24H</Text>,
 
         },
         {
             property: 'Value',
-            header: <Text>Value</Text>
-
+            align: "center",
+            header: 'Value',
+            render: (data) => formatTotal(data.Value),
+            aggregate: 'sum',
+            footer: { aggregate: true },
         }
     ]
     const data = ['SBNB', 'XSBNB', 'SETH'].map((val) => {
         return {
             Token: val,
             Quantity: Math.trunc(Math.random() * 100000),
-            Change: '',
-            Value: `\$ ${(Math.random()*1000).toFixed(2)}`}
+            Change: Math.random() * 100,
+            Value: Math.random()*1000}
     });
     return ( <Draggable>
             <Card width={"medium"}
@@ -50,16 +64,17 @@ export default () => {
                 >
                     <Box
                         align={"center"}
+                        fill={true}
                         // margin={(size === "xsmall" ? "medium" : "small")}
                     >
-                        <Text
+                        <Text textAlign={"center"}
                             // size={((size === "xsmall" || size === "small") ? "large" : "large")}
                         >Assets</Text>
                     </Box>
                 </CardHeader>
                 <CardBody pad={"small"}            align={"center"}
                 >
-                    <DataTable fill={"true"} columns={columns} data={data}/>
+                    <DataTable pin fill={"true"} columns={columns} data={data}/>
                 </CardBody>
             </Card>
         </Draggable>
