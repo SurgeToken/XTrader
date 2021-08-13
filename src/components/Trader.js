@@ -18,6 +18,10 @@ import TokenAmountSlider from "./TokenAmountSlider";
 import {getAccount, getSurgeBalance} from "../common/wallet";
 import Draggable from 'react-draggable';
 
+const contractMapping = {
+    "sBNB": null
+}
+
 function validateAmount(amount) {
     if (isNaN(parseFloat(amount))) {
         return "Amount is not a number"
@@ -86,11 +90,11 @@ const BuyForm = (props) => {
         <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
             <Box gap={"medium"}>
                 <Box gap={"small"}>
-                    <Text>Native Surge:</Text>
+                    <Text>Token</Text>
                     <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken}/>
                 </Box>
                 <Box gap={"small"}>
-                    <Text>Quantity:</Text>
+                    <Text>Quantity</Text>
                     <TextInput
                         value={amount}
                         onChange={onAmountChange}
@@ -160,11 +164,11 @@ const SellForm = (props) => {
         <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
             <Box gap={"medium"}>
                 <Box gap={"small"}>
-                    <Text>Surge Token:</Text>
+                    <Text>Token</Text>
                     <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken}/>
                 </Box>
                 <Box gap={"small"}>
-                    <Text>Quantity:</Text>
+                    <Text>Quantity</Text>
                     <TextInput
                         value={amount}
                         onChange={onAmountChange}
@@ -183,7 +187,7 @@ const SellForm = (props) => {
     )
 }
 
-const NativeSurgeTrader = () => {
+const Trader = () => {
     const [action, setAction] = React.useState(0);
     const [currentTokenBalance, setCurrentTokenBalance] = useState(0);
     // noinspection JSCheckFunctionSignatures
@@ -204,10 +208,9 @@ const NativeSurgeTrader = () => {
     };
 
     return (
-
             <Draggable>
-
-                <Card small round
+                <Card width={"medium"}
+                      small round
                       background={"spaceBlue"}
                       elevation={"large"}
                       style={{border: "solid 1px #21BBB1"}}>
@@ -221,7 +224,7 @@ const NativeSurgeTrader = () => {
                         <Box margin={(size === "xsmall" ? "medium" : "small")}>
                             <Text
                                 size={((size === "xsmall" || size === "small") ? "large" : "large")}
-                            >Native Surge Trader</Text>
+                            >Trade</Text>
                         </Box>
                         <Box
                             align={"center"}
@@ -251,10 +254,9 @@ const NativeSurgeTrader = () => {
                         />}
                     </CardBody>
                 </Card>
-
             </Draggable>
 
     );
 }
 
-export default NativeSurgeTrader;
+export default Trader;
