@@ -1,5 +1,5 @@
 // Libs
-import React, { useEffect } from "react";
+import React, {useEffect} from "react";
 
 // Components
 import Trade from "./components/NativeSurgeTrader"
@@ -18,7 +18,6 @@ import './App.css';
 import logo from './assets/xsurge-logo.png';
 
 // Common Functions
-import {connectWallet} from "./common/walletConnect"
 
 const AppBar = (props) => (
     <Box
