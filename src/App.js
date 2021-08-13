@@ -2,8 +2,10 @@
 import React, { useEffect } from "react";
 
 // Components
-import Trade from "./components/NativeSurgeTrader"
+import Trader from "./components/Trader"
 import WalletButton from "./components/Wallet";
+import Chart from "./components/Chart";
+import Assets from "./components/Assets";
 
 // Grommet Stuff
 import grommetTheme from "./themes/theme.json";
@@ -64,8 +66,10 @@ function App() {
                             </Box>
                         </AppBar>
                         <Box direction="row" flex overflow={{horizontal: 'scroll'}} fill className="appBody" pad={"medium"}>
-                            <Box flex align="center" justify="center">
-                                <Trade/>
+                            <Box flex align="center" justify="center" direction={"row"}>
+                                <Trader/>
+                                <Chart/>
+                                <Assets/>
                             </Box>
                         </Box>
                         <Box pad={"medium"}>
