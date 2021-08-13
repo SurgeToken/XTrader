@@ -5,11 +5,9 @@ import {
     ResponsiveContext,
     Card,
     CardBody,
-    Grid,
-    Heading,
     Anchor,
     CardHeader,
-    Text, CardFooter,
+    Text,
 } from "grommet";
 import React, { useEffect, useState } from "react";
 import FormFieldError from "./FormFieldError/FormFieldError";
@@ -84,7 +82,7 @@ const BuyForm = (props) => {
     };
 
     return (
-        <CardBody align={"center"} pad={(size === "small"? "xlarge" : "medium")} small round>
+        <Box align={"center"} pad={(size === "small"? "xlarge" : "medium")} small round>
             <Box gap={"medium"}>
                 <Box gap={"small"}>
                     <Text>Native Surge:</Text>
@@ -102,11 +100,11 @@ const BuyForm = (props) => {
                     <TokenAmountSlider onValueChange={onTokenSliderChange} defaultValue={0}/>
                 </Box>
             </Box>
-            <CardFooter direction="row" gap="medium" margin={"small"}>
+            <Box direction="row" gap="medium" margin={"small"}>
                 <Button type="reset" label="Clear" size={"large"}/>
                 <Button type="submit" label="Accept" size={"large"} onClick={buyTokens} primary/>
-            </CardFooter>
-        </CardBody>
+            </Box>
+        </Box>
     )
 }
 
@@ -158,7 +156,7 @@ const SellForm = (props) => {
     };
 
     return (
-        <CardBody align={"center"} pad={(size === "small"? "xlarge" : "medium")} small round>
+        <Box align={"center"} pad={(size === "small"? "xlarge" : "medium")} small round>
             <Box gap={"medium"}>
                 <Box gap={"small"}>
                     <Text>Surge Token:</Text>
@@ -176,11 +174,11 @@ const SellForm = (props) => {
                     <TokenAmountSlider onValueChange={onTokenSliderChange} defaultValue={0}/>
                 </Box>
             </Box>
-            <CardFooter direction="row" gap="medium" margin={"small"}>
+            <Box direction="row" gap="medium" margin={"small"}>
                 <Button type="reset" label="Clear" size={"large"}/>
                 <Button type="submit" label="Accept" size={"large"} onClick={sellTokens} primary/>
-            </CardFooter>
-        </CardBody>
+            </Box>
+        </Box>
     )
 }
 
