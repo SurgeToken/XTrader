@@ -82,7 +82,15 @@
     },
     "focus": {
       "border": {
-        "color": "green"
+        "color": "none"
+      },
+      "outline": {
+        "color": "none",
+        "size": "0px"
+      },
+      "shadow": {
+        "color": "none",
+        "size": "0px"
       }
     },
     "elevation": {
