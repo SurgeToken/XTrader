@@ -39,15 +39,6 @@ function addTradingComponent() {
 
 function App() {
     useEffect(() => {
-        //Moved into component Wallet.js
-        // (async () => {
-        //     try {
-        //         await connectWallet();
-        //     } catch (err) {
-        //         console.log("Failed to connect wallet", err);
-        //         return;
-        //     }
-        // })();
     }, []);
 
     return (
