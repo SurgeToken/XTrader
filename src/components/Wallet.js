@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from "react";
-import {Button} from "grommet";
+import { Button, ResponsiveContext } from "grommet";
 import {connectWallet, disconnectWallet} from "../common/walletConnect";
 import {getAccount} from "../common/wallet";
 
 const WalletButton = () => {
     const [isConnected, setConnected] = useState(false);
     const [account, setAccount] = useState("");
+    // noinspection JSCheckFunctionSignatures
+    const size = React.useContext(ResponsiveContext);
 
     const onConnectWallet = async () => {
         try {
@@ -51,7 +53,7 @@ const WalletButton = () => {
         <Button
             size="medium"
             onClick={buttonAction}
-            label={isConnected ? account : "Connect Wallet"}
+            label={isConnected ? account : (size === "xsmall" ? "Wallet" : "Connect Wallet")}
         />
     )
 }
