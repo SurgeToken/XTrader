@@ -1,8 +1,7 @@
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-
-// import {WalletLink} from "walletlink";
-// import coinbaseLogo from '../images/coinbase.svg';
+import {WalletLink} from "walletlink";
+import coinbaseLogo from '../images/coinbase.svg';
 
 const providerOptions = {
     walletConnectMainNet: {
@@ -36,34 +35,35 @@ export async function connectWallet() {
                     options: providerOptions.walletConnectMainNet
 
                 },
-                // 'custom-coinbase': { //TODO still working on it, leave it here
-                //     display: {
-                //         logo: coinbaseLogo,
-                //         name: 'Coinbase',
-                //         description: 'Scan with WalletLink to connect',
-                //     },
-                //     options: providerOptions.walletConnectMainNet,
-                //     package: WalletLink,
-                //     connector: async (_, options) => {
-                //         const { appName, networkUrl, chainId } = options
-                //         const walletLink = new WalletLink({
-                //             appName: 'xSurge'
-                //         });
-                //         const provider = walletLink.makeWeb3Provider(providerOptions.walletConnectMainNet.rpc["56"], 56);
-                //         await provider.enable();
-                //         return provider;
-                //     },
-                // }
+                'custom-coinbase': {
+                    display: {
+                        logo: coinbaseLogo,
+                        name: 'Coinbase',
+                        description: 'Scan with WalletLink to connect',
+                    },
+                    options: providerOptions.walletConnectMainNet,
+                    package: WalletLink,
+                    connector: async () => {
+                        const walletLink = new WalletLink({
+                            appName: providerOptions.walletConnectMainNet.appName
+                        });
+                        const provider = walletLink.makeWeb3Provider(providerOptions.walletConnectMainNet.rpc["56"], 56);
+                        await provider.enable();
+                        return provider;
+                    },
+                }
             },
 
         });
-        provider = await web3Modal.connect();
+        provider = await web3Modal.connect()
     } catch (err) {
-        console.log("Failed to connect wallet", err)
+        if (err === undefined) {
+            alert('If you are having trouble connecting to MetaMask, please check if you still have a pending connection request') //TODO still checking web3Modal library to catch MetamskError better
+        }
         if (provider) {
             await provider.close();
         }
-        return;
+        throw err;
     }
 }
 

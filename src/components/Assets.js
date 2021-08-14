@@ -1,5 +1,7 @@
-import {DataChart, Card, Box, Text, Anchor, Button, CardBody, Menu,
-    CardHeader, FormField, Header, Tab, Tabs, DataTable} from "grommet";
+import {
+    DataChart, Card, Box, Text, Anchor, Button, CardBody, Menu,
+    CardHeader, FormField, Header, Tab, Tabs, DataTable, ResponsiveContext,
+} from "grommet";
 import Draggable from "react-draggable";
 import {Contracts} from "../common/contracts";
 import React from "react";
@@ -47,9 +49,11 @@ export default () => {
             Change: Math.random() * 100,
             Value: Math.random()*1000}
     });
-    return ( <Draggable>
-            <Card width={"medium"}
-                  height={"medium"}
+    // noinspection JSCheckFunctionSignatures
+    const size = React.useContext(ResponsiveContext);
+
+    return ( <Draggable disabled={true}>
+            <Card  height={"medium"}
                   small
                   round
                   background={"spaceBlue"}

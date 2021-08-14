@@ -17,7 +17,6 @@ const WalletButton = () => {
             setConnected(true)
         } catch (e) {
             console.log('Failed to connect wallet...', e)
-            return;
         }
     }
 
@@ -31,14 +30,6 @@ const WalletButton = () => {
     }
 
     useEffect(() => {
-        (async () => {
-            try {
-                await onConnectWallet()
-            } catch (err) {
-                console.log("Failed to connect wallet", err);
-                return;
-            }
-        })();
     }, []);
 
     const buttonAction = async () => {
