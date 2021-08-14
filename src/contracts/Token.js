@@ -1,7 +1,5 @@
+import {web3} from "./Contract";
 
-import Web3 from "web3";
-
-export const web3 = new Web3('https://bsc-dataseed1.binance.org:443');
 
 /*
     This is a generic token wrapper class. It's main purpose is to remove the abi argument to the
@@ -11,22 +9,21 @@ export const web3 = new Web3('https://bsc-dataseed1.binance.org:443');
 export const Token = (abiJSON) => {
     return class GenericToken extends web3.eth.Contract {
         _totalSupply = 0;
-        constructor(addressOfContract) {
+        constructor(addressOfContract, addressOfSender) {
             super(abiJSON, addressOfContract);
+            this.senderAddress = addressOfSender;
         }
 
         async totalSupply() {
-            return this.methods.totalSupply.call();
+            return this.methods.totalSupply().call();
         }
 
-        async get decimals(){
-
-            this._decimals = this.methods.decimals.call()
-            return this._decimals;
+        async decimals(){
+            return this.methods.decimals().call();
         }
 
-        get balance() {
-            return this.methods.balanceOf();
+        async balance() {
+            return this.methods.balanceOf(this.senderAddress).call();
         }
 
         /* approves */

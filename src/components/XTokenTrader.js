@@ -1,96 +1,261 @@
-import {Box, Form, FormField, Button, TextInput, Select,
-    Grid, Heading, Header, Menu, Anchor,
-    Tab, Tabs, Card, CardHeader, CardFooter, CardBody} from "grommet";
+import {
+    Box,
+    Button,
+    TextInput,
+    ResponsiveContext,
+    Card,
+    CardBody,
+    Anchor,
+    CardHeader,
+    Text,
+} from "grommet";
 import React, {useEffect, useState} from "react";
-import {provider, connectWallet} from "../common/walletConnect";
-import {getAccount, isConnected} from "../common/wallet";
+import FormFieldError from "./FormFieldError/FormFieldError";
+import {buy, sell} from "../common/trade";
+import {Contracts} from "../common/contracts";
+import TokenSelector from "./TokenSelector/TokenSelector";
+import TokenAmountSlider from "./TokenAmountSlider";
+import {getAccount, getSurgeBalance} from "../common/wallet";
+import Draggable from 'react-draggable';
 
-const BuyForm = () => {
-    return (
-
-        <CardBody align={"center"} background={"black"} pad={"medium"} gap={"medium"} small round>
-            <Box pad={"small"} gap={"xsmall"}>
-                <Grid columns={["small", "flex"]} gap={"small"} align={"center"}>
-                    <Heading level={4} textAlign={"end"}>Native Surge</Heading>
-                    <Select
-                        options={['sBNB', 'sUSD', 'sETH']}
-                    />
-
-                </Grid>
-                <Grid columns={["small", "flex"]} gap={"small"} align={"center"} >
-                    <Heading level={4} textAlign={"end"}>X Token</Heading>
-                    <Select
-                        options={['xsBNB', 'xsUSD', 'xsETH']}
-                    />
-                </Grid>
-                <Grid columns={["small", "flex"]} gap={"small"} align={"center"}>
-                    <Heading level={4} textAlign={"end"}>Quantity</Heading>
-                    <TextInput suggestions={[...Array(20).keys()].map((key) => `${100 - (key * 5)}%`)}/>
-                </Grid>
-            </Box>
-            <Box direction="row" gap="large">
-                <Button type="submit" label="Accept" size={"large"}/>
-                <Button type="reset" label="Clear" size={"large"}/>
-            </Box>
-        </CardBody>
-    )
+const contractMapping = {
+    "sBNB": null
 }
 
-const SellForm = () => {
-    // const [value, setValue] = React.useState({});
-    return (
-        <CardBody disabled={!isConnected()} align={"center"} background={"black"} pad={"medium"} gap={"medium"} small round>
-            <Box pad={"small"} gap={"xsmall"}>
-                <Grid columns={["small", "flex"]} gap={"small"}  align={"center"}>
-                    <Heading level={4} textAlign={"end"}>X Token</Heading>
-                    <Select
-                        options={['xsBNB', 'xsUSD', 'xsETH']}
-                    />
+function validateAmount(amount) {
+    if (isNaN(parseFloat(amount))) {
+        return "Amount is not a number"
+    }
 
-                </Grid>
-                <Grid columns={["small", "flex"]} gap={"small"} align={"center"}>
-                    <Heading level={4} textAlign={"end"}>Quantity</Heading>
-                    <TextInput suggestions={[...Array(20).keys()].map((key) => `${100 - (key * 5)}%`)}/>
-                </Grid>
-            </Box>
-            <Box direction="row" gap="large">
-                <Button type="submit" label="Accept" size={"large"}/>
-                <Button type="reset" label="Clear" size={"large"}/>
-            </Box>
-        </CardBody>
-    )
+    if (Number(amount) <= 0) {
+        return "Amount must be greater than 0"
+    }
+
+    return ""
 }
 
-const Disconnected = () => {
-
+async function getTokenBalance(contract) {
+    const address = await getAccount();
+    return getSurgeBalance(contract, address);
 }
 
+const BuyForm = (props) => {
+    const [amount, setAmount] = useState(0);
+    const [amountValid, setAmountValid] = useState(true);
+    const [amountErrorMessage, setAmountErrorMessage] = useState("");
+    const [selectedToken, setSelectedToken] = useState(props.defaultToken || Contracts.SurgeBnb);
+    // noinspection JSCheckFunctionSignatures
+    const size = React.useContext(ResponsiveContext);
 
-const XTokenTrader = () => {
-    const [account, setAccount] = useState(0);
-    useEffect(() => {
-        (async() => {
-            let act = await getAccount().catch(); // You need to catch this
-            setAccount(act);
-        })()
+    const onAmountChange = (event) => {
+        const errorMessage = validateAmount(event.target.value);
 
-    }, []);
-    const [action, setAction] = React.useState(0);
+        if (errorMessage) {
+            setAmount(0);
+            setAmountValid(false);
+            setAmountErrorMessage(errorMessage);
+            return;
+        }
+
+        setAmount(parseFloat(event.target.value));
+        setAmountValid(true);
+        setAmountErrorMessage("");
+    };
+
+    const onSelectedTokenChange = (token) => {
+        setSelectedToken(token);
+
+        if (props.onTokenChange) {
+            props.onTokenChange(token);
+        }
+    };
+
+    const onTokenSliderChange = (value) => {
+        const percentage = (value || 0) / 100;
+        const calculatedAmount = percentage * props.tokenBalance;
+        setAmount(calculatedAmount);
+    };
+
+    const buyTokens = async () => {
+        if (!amountValid) {
+            return;
+        }
+
+        const result = await buy(selectedToken, amount);
+
+        console.log('Transaction result', result);
+    };
+
     return (
-        <Card  small round pad={"xsmall"} background={"rgb(45, 45, 45)"} >
-            <Grid columns={["75%", "25%"]} direction={"row"} pad={"none"}>
-                <Heading margin={{'left': '5%'}} level={4}>
-                    X Token Trader
-                </Heading>
-                <Box align={"center"} direction={"row"} gap={"medium"}>
-                    <Anchor color={action ? "brand" : "status-unknown"} onClick={() => setAction(!action)}><u>Buy</u></Anchor>
-                    <Anchor color={action ? "status-unknown" : "brand"} onClick={() => setAction(!action)}><u>Sell</u></Anchor>
+        <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
+            <Box gap={"medium"}>
+                <Box gap={"small"}>
+                    <Text>Token</Text>
+                    <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken}/>
                 </Box>
-            </Grid>
-            {action ? BuyForm() : SellForm()}
-        </Card>
+                <Box gap={"small"}>
+                    <Text>Quantity</Text>
+                    <TextInput
+                        value={amount}
+                        onChange={onAmountChange}
+                    />
+                    <FormFieldError message={amountErrorMessage}/>
+                </Box>
+                <Box gap={"small"}>
+                    <TokenAmountSlider onValueChange={onTokenSliderChange} defaultValue={0}/>
+                </Box>
+            </Box>
+            <Box direction="row" gap="medium" margin={"small"}>
+                <Button type="reset" label="Clear" size={"large"}/>
+                <Button type="submit" label="Accept" size={"large"} onClick={buyTokens} primary/>
+            </Box>
+        </Box>
+    )
+}
+
+const SellForm = (props) => {
+    const [amount, setAmount] = useState(0);
+    const [amountValid, setAmountValid] = useState(true);
+    const [amountErrorMessage, setAmountErrorMessage] = useState("");
+    const [selectedToken, setSelectedToken] = useState(props.defaultToken || Contracts.SurgeBnb);
+    // noinspection JSCheckFunctionSignatures
+    const size = React.useContext(ResponsiveContext);
+
+    const onAmountChange = (event) => {
+        const errorMessage = validateAmount(event.target.value);
+
+        if (errorMessage) {
+            setAmount(0);
+            setAmountValid(false);
+            setAmountErrorMessage(errorMessage);
+            return;
+        }
+
+        setAmount(parseFloat(event.target.value));
+        setAmountValid(true);
+        setAmountErrorMessage("");
+    };
+
+    const onSelectedTokenChange = (token) => {
+        setSelectedToken(token);
+
+        if (props.onTokenChange) {
+            props.onTokenChange(token);
+        }
+    };
+
+    const onTokenSliderChange = (value) => {
+        const percentage = (value || 0) / 100;
+        const calculatedAmount = percentage * props.tokenBalance;
+        setAmount(calculatedAmount);
+    };
+
+    const sellTokens = async () => {
+        if (!amountValid) {
+            return;
+        }
+
+        const result = await sell(selectedToken, amount);
+
+        console.log('Transaction result', result);
+    };
+
+    return (
+        <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
+            <Box gap={"medium"}>
+                <Box gap={"small"}>
+                    <Text>Token</Text>
+                    <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken}/>
+                </Box>
+                <Box gap={"small"}>
+                    <Text>Quantity</Text>
+                    <TextInput
+                        value={amount}
+                        onChange={onAmountChange}
+                    />
+                    <FormFieldError message={amountErrorMessage}/>
+                </Box>
+                <Box gap={"small"}>
+                    <TokenAmountSlider onValueChange={onTokenSliderChange} defaultValue={0}/>
+                </Box>
+            </Box>
+            <Box direction="row" gap="medium" margin={"small"}>
+                <Button type="reset" label="Clear" size={"large"}/>
+                <Button type="submit" label="Accept" size={"large"} onClick={sellTokens} primary/>
+            </Box>
+        </Box>
+    )
+}
+
+const Trader = () => {
+    const [action, setAction] = React.useState(0);
+    const [currentTokenBalance, setCurrentTokenBalance] = useState(0);
+    // noinspection JSCheckFunctionSignatures
+    const size = React.useContext(ResponsiveContext);
+
+    useEffect(() => {
+        (async () => {
+            // Update the initial token balance
+            const balance = await getTokenBalance(Contracts.SurgeBnb);
+            setCurrentTokenBalance(balance);
+        })();
+    }, []);
+
+    const onTokenChange = async (token) => {
+        // Update the token balance after changing the selected token
+        const balance = getTokenBalance(token);
+        setCurrentTokenBalance(balance);
+    };
+
+    return (
+        <Draggable>
+            <Card small round
+                  background={"spaceBlue"}
+                  elevation={"large"}
+                  style={{border: "solid 1px #21BBB1"}}>
+                <CardHeader
+                    flex={"shrink"}
+                    direction={(size === "xsmall" ? "column" : "row")}
+                    justify={(size === "xsmall" ? "evenly" : "between")}
+                    gap={"none"}
+                    pad={{top: "small", bottom: "small", right: "medium", left: "medium"}}
+                >
+                    <Box margin={(size === "xsmall" ? "medium" : "small")}>
+                        <Text
+                            size={((size === "xsmall" || size === "small") ? "large" : "large")}
+                        >Trade</Text>
+                    </Box>
+                    <Box
+                        align={"center"}
+                        justify={"end"}
+                        direction={"row"}
+                        gap={"medium"}
+                        pad={{left: "medium"}}
+                        margin={(size === "xsmall" ? "medium" : "small")}
+                    >
+                        <Anchor onClick={() => setAction(true)} color="white">
+                            <Button label="Buy" plain={!action}/>
+                        </Anchor>
+                        <Anchor onClick={() => setAction(false)} color="white">
+                            <Button label="Sell" plain={!!action}/>
+                        </Anchor>
+                    </Box>
+                </CardHeader>
+                <CardBody>
+                    {action ? <BuyForm
+                        onTokenChange={onTokenChange}
+                        tokenBalance={currentTokenBalance}
+                        defaultToken={Contracts.SurgeBnb}
+                    /> : <SellForm
+                        onTokenChange={onTokenChange}
+                        tokenBalance={currentTokenBalance}
+                        defaultToken={Contracts.SurgeBnb}
+                    />}
+                </CardBody>
+            </Card>
+        </Draggable>
 
     );
 }
 
-export default XTokenTrader;
+export default Trader;
