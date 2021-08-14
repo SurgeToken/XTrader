@@ -9,7 +9,6 @@ export default function XPriceChart() {
     useEffect(() => {
         (async () => {
             const data = await getHistoricPriceData(Contracts.SurgeBnb);
-            console.log('price data', data);
             setPriceData(data);
         })();
     }, []);
