@@ -1,13 +1,11 @@
 // Libs
-import React, {useState} from "react";
-import Masonry from 'react-masonry-css';
+import React, { useEffect } from "react";
 
 // Components
 import Trader from "./components/Trader"
-import Chart from "./components/Chart";
+import WalletButton from "./components/Wallet";
 import Assets from "./components/Assets";
-import Wallet from "./common/wallet";
-import WalletButton from './components/WalletButton';
+
 // Grommet Stuff
 import grommetTheme from "./themes/theme.json";
 
@@ -21,6 +19,8 @@ import './App.css';
 import logo from './assets/xsurge-logo.png';
 
 // Common Functions
+import {connectWallet} from "./common/walletConnect"
+import XPriceChart from "./components/XPriceChart";
 
 const AppBar = (props) => (
     <Box
@@ -39,26 +39,19 @@ function addTradingComponent() {
     alert('Add another trading component to the body');
 }
 
-
 function App() {
-    const breakpointColumnsObj = {
-        default: 2,
-        768: 1
-    };
-    const [account, setAccount] = useState(0);
-    const [connected, setConnected] = useState(0);
-    const wallet = new Wallet();
-    const connect = async () => {
-        if (connected) {
-            await wallet.disconnect();
-            setConnected(false);
-        } else {
-            await wallet.connect();
-            setConnected(true);
-            const currentAccount = await wallet.account();
-            setAccount(currentAccount.slice(0, 4) + '...' + currentAccount.slice(38));
-        }
-    }
+    useEffect(() => {
+        //Moved into component Wallet.js
+        // (async () => {
+        //     try {
+        //         await connectWallet();
+        //     } catch (err) {
+        //         console.log("Failed to connect wallet", err);
+        //         return;
+        //     }
+        // })();
+    }, []);
+
     return (
         <Grommet theme={grommetTheme} full>
             <ResponsiveContext.Consumer>
@@ -69,28 +62,15 @@ function App() {
                                 <a href="/"><img src={logo} alt="Logo" height={size === 'medium' ? "25px" : "20px"}/></a>
                             </Box>
                             <Box>
-                                <Button
-                                    size="medium"
-                                    onClick={connect}
-                                    label={connected ? account : (size === "xsmall" ? "Wallet" : "Connect Wallet")}
-                                />
+                                <WalletButton/>
                             </Box>
                         </AppBar>
-                        <Box
-                            fill
-                            className="appBody"
-                            overflow={{horizontal: 'hidden'}}
-                            pad={"medium"}
-                        >
-                            <Masonry
-                                breakpointCols={breakpointColumnsObj}
-                                className="my-masonry-grid"
-                                columnClassName="my-masonry-grid_column"
-                            >
-                                <Box align={"center"}><Trader wallet={wallet}/></Box>
-                                <Box align={"center"}><Assets wallet={wallet}/></Box>
-                                <Box align={"center"}><Chart wallet={wallet}/></Box>
-                            </Masonry>
+                        <Box direction="row" flex overflow={{horizontal: 'scroll'}} fill className="appBody" pad={"medium"}>
+                            <Box flex align="center" justify="center" direction={"row"}>
+                                <Trader/>
+                                <XPriceChart/>
+                                <Assets/>
+                            </Box>
                         </Box>
                         <Box pad={"medium"}>
                             <Button
@@ -103,8 +83,6 @@ function App() {
                                 onClick={addTradingComponent}
                             />
                         </Box>
-
-                        {!connected && <Box style={{position: "absolute"}} onClick={(e) => e.stopPropagation()} background={{color: "black", opacity: "strong"}} fill/>}
                     </Box>
                 )}
             </ResponsiveContext.Consumer>
