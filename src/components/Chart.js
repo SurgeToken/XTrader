@@ -1,18 +1,8 @@
-import {DataChart, Card, Box, Text, Anchor, Button, CardBody, Menu,
-    CardHeader, FormField, Header, Tab, Tabs} from "grommet";
+import {DataChart, Card, Box, Text, CardBody, CardHeader} from "grommet";
 import Draggable from "react-draggable";
-import {Contracts} from "../common/contracts";
 import React from "react";
 
-export default () => {
-    const data = [];
-    for (let i = 1; i < 8; i += 1) {
-        const v = Math.sin(i / 2.0);
-        data.push({
-            date: `2020-${((i % 12) + 1).toString().padStart(2, 0)}-01`,
-            percent: Math.round(Math.abs(v * 100)),
-        });
-    }
+export default ({ data }) => {
     return ( <Draggable>
         <Card width={"large"}
               height={"medium"}
@@ -51,15 +41,10 @@ export default () => {
                 <Box pad={"small"}>
                     <DataChart
                         data={data}
-                        series={['date', 'percent']}
+                        series={['price', 'date']}
                         chart={[
-                            { property: 'percent', thickness: 'xsmall', type: 'line' },
-                            {
-                                property: 'percent',
-                                thickness: 'medium',
-                                type: 'point',
-                                point: 'diamond',
-                            },
+                            { property: 'price', type: 'line', opacity: 'medium', thickness: 'xsmall' },
+                            { property: 'price', type: 'point', point: 'circle', thickness: 'medium' }
                         ]}
                         guide={{ x: { granularity: 'fine' }, y: { granularity: 'medium' } }}
                         size={{ width: 'fill' }}

@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 // Components
 import Trader from "./components/Trader"
 import WalletButton from "./components/Wallet";
-import Chart from "./components/Chart";
 import Assets from "./components/Assets";
 
 // Grommet Stuff
@@ -21,6 +20,7 @@ import logo from './assets/xsurge-logo.png';
 
 // Common Functions
 import {connectWallet} from "./common/walletConnect"
+import XPriceChart from "./components/XPriceChart";
 
 const AppBar = (props) => (
     <Box
@@ -68,7 +68,7 @@ function App() {
                         <Box direction="row" flex overflow={{horizontal: 'scroll'}} fill className="appBody" pad={"medium"}>
                             <Box flex align="center" justify="center" direction={"row"}>
                                 <Trader/>
-                                <Chart/>
+                                <XPriceChart/>
                                 <Assets/>
                             </Box>
                         </Box>
