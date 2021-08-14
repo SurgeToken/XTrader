@@ -18,7 +18,7 @@ export default () => {
             percent: Math.round(Math.abs(v * 100)),
         });
     }
-    return ( <Draggable disabled={(size === "small" || size === "xsmall")}>
+    return ( <Draggable disabled={true}>
         <Card width={"large"}
               height={"medium"}
               small
