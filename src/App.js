@@ -21,6 +21,7 @@ import './App.css';
 import logo from './assets/xsurge-logo.png';
 
 // Common Functions
+import XPriceChart from "./components/XPriceChart";
 
 const AppBar = (props) => (
     <Box
@@ -89,7 +90,7 @@ function App() {
                             >
                                 <Box align={"center"}><Trader wallet={wallet}/></Box>
                                 <Box align={"center"}><Assets wallet={wallet}/></Box>
-                                <Box align={"center"}><Chart wallet={wallet}/></Box>
+                                <Box align={"center"}><XPriceChart wallet={wallet}/></Box>
                             </Masonry>
                         </Box>
                         <Box pad={"medium"}>
