@@ -20,7 +20,6 @@ import './App.css';
 import logo from './assets/xsurge-logo.png';
 
 // Common Functions
-import {connectWallet} from "./common/walletConnect"
 import XPriceChart from "./components/XPriceChart";
 
 const AppBar = (props) => (
