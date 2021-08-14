@@ -1,5 +1,6 @@
 // Libs
-import React, {useEffect} from "react";
+import React from "react";
+import Masonry from 'react-masonry-css';
 
 // Components
 import Trader from "./components/Trader"
@@ -39,8 +40,10 @@ function addTradingComponent() {
 }
 
 function App() {
-    useEffect(() => {
-    }, []);
+    const breakpointColumnsObj = {
+        default: 2,
+        768: 1
+    };
 
     return (
         <Grommet theme={grommetTheme} full>
@@ -55,12 +58,21 @@ function App() {
                                 <WalletButton/>
                             </Box>
                         </AppBar>
-                        <Box direction="row" flex overflow={{horizontal: 'scroll'}} fill className="appBody" pad={"medium"}>
-                            <Box flex align="center" justify="center" direction={"row"}>
-                                <Trader/>
-                                <Chart/>
-                                <Assets/>
-                            </Box>
+                        <Box
+                            fill
+                            className="appBody"
+                            overflow={{horizontal: 'hidden'}}
+                            pad={"medium"}
+                        >
+                            <Masonry
+                                breakpointCols={breakpointColumnsObj}
+                                className="my-masonry-grid"
+                                columnClassName="my-masonry-grid_column"
+                            >
+                                <Box align={"center"}><Trader/></Box>
+                                <Box align={"center"}><Assets/></Box>
+                                <Box align={"center"}><Chart/></Box>
+                            </Masonry>
                         </Box>
                         <Box pad={"medium"}>
                             <Button
