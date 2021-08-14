@@ -1,4 +1,4 @@
-import {web3} from "./Contract";
+import {Contract} from "./Contract";
 
 
 /*
@@ -7,11 +7,9 @@ import {web3} from "./Contract";
     server side on node.js.
  */
 export const Token = (abiJSON) => {
-    return class GenericToken extends web3.eth.Contract {
-        _totalSupply = 0;
-        constructor(addressOfContract, addressOfSender) {
-            super(abiJSON, addressOfContract);
-            this.senderAddress = addressOfSender;
+    return class GenericToken extends Contract(abiJSON) {
+        constructor(addressOfContract, provider) {
+            super(addressOfContract, provider);
         }
 
         async totalSupply() {
@@ -22,16 +20,16 @@ export const Token = (abiJSON) => {
             return this.methods.decimals().call();
         }
 
-        async balance() {
-            return this.methods.balanceOf(this.senderAddress).call();
+        async balanceOf() {
+            return this.methods.balanceOf().call();
         }
 
         /* approves */
         async approve(amount) {
-            return this.methods.approve.send(amount);
+            return this.methods.approve().send(amount);
         }
         async transfer(amount, addressOfReceiver) {
-            return this.method.transfer.send(amount);
+            return this.method.transfer().send(amount);
         }
     }
 
