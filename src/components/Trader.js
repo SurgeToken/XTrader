@@ -11,16 +11,12 @@ import {
 } from "grommet";
 import React, {useEffect, useState} from "react";
 import FormFieldError from "./FormFieldError/FormFieldError";
-import {buy, sell} from "../common/trade";
+// import {buy, sell} from "../common/trade";
 import {Contracts} from "../common/contracts";
 import TokenSelector from "./TokenSelector/TokenSelector";
 import TokenAmountSlider from "./TokenAmountSlider";
-import {getAccount, getSurgeBalance} from "../common/wallet";
+// import {getAccount, getSurgeBalance} from "../common/wallet";
 import Draggable from 'react-draggable';
-
-const contractMapping = {
-    "sBNB": null
-}
 
 function validateAmount(amount) {
     if (isNaN(parseFloat(amount))) {
@@ -35,8 +31,8 @@ function validateAmount(amount) {
 }
 
 async function getTokenBalance(contract) {
-    const address = await getAccount();
-    return getSurgeBalance(contract, address);
+    // const address = await getAccount();
+    // return getSurgeBalance(contract, address);
 }
 
 const BuyForm = (props) => {
@@ -81,9 +77,9 @@ const BuyForm = (props) => {
             return;
         }
 
-        const result = await buy(selectedToken, amount);
-
-        console.log('Transaction result', result);
+        // const result = await buy(selectedToken, amount);
+        //
+        // console.log('Transaction result', result);
     };
 
     return (
@@ -155,9 +151,9 @@ const SellForm = (props) => {
             return;
         }
 
-        const result = await sell(selectedToken, amount);
+        // const result = await sell(selectedToken, amount);
 
-        console.log('Transaction result', result);
+        // console.log('Transaction result', result);
     };
 
     return (
@@ -168,7 +164,7 @@ const SellForm = (props) => {
                     <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken}/>
                 </Box>
                 <Box gap={"small"}>
-                    <Text>Quantity</Text>
+                    <Text>BNB</Text>
                     <TextInput
                         value={amount}
                         onChange={onAmountChange}
@@ -187,7 +183,8 @@ const SellForm = (props) => {
     )
 }
 
-const Trader = () => {
+const Trader = (props) => {
+    const {wallet} = props;
     const [action, setAction] = React.useState(0);
     const [currentTokenBalance, setCurrentTokenBalance] = useState(0);
     // noinspection JSCheckFunctionSignatures

@@ -10,7 +10,8 @@ const formatTotal = (value) => {
     return `\$${value.toFixed(2)}`;
 }
 
-export default () => {
+export default (props) => {
+    const {wallet} = props;
     const columns = [
         {
             property: 'Token',

@@ -11,7 +11,7 @@ export default () => {
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
 
-    for (let i = 1; i < 8; i += 1) {
+    for (let i = 1; i < 60; i += 1) {
         const v = Math.sin(i / 2.0);
         data.push({
             date: `2020-${((i % 12) + 1).toString().padStart(2, 0)}-01`,
@@ -20,7 +20,7 @@ export default () => {
     }
     return ( <Draggable disabled={true}>
         <Card width={"large"}
-              height={"medium"}
+              height={"large"}
               small
               round
               background={"spaceBlue"}
@@ -61,9 +61,9 @@ export default () => {
                             { property: 'percent', thickness: 'xsmall', type: 'line' },
                             {
                                 property: 'percent',
-                                thickness: 'medium',
+                                thickness: 'xsmall',
                                 type: 'point',
-                                point: 'diamond',
+                                point: 'circle',
                             },
                         ]}
                         guide={{ x: { granularity: 'fine' }, y: { granularity: 'medium' } }}
