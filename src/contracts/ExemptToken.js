@@ -1,10 +1,7 @@
-import {Contract} from "./Contract";
+import {Token} from "./Token";
 import exemptTokenABI from "./abi/ExemptToken.json";
 
-class ExemptToken extends Contract(exemptTokenABI) {
-    constructor(address) {
-        super(address);
-    }
+class ExemptToken extends Token(exemptTokenABI) {
 
     async getNativeAddress() {
         return this.methods.getNativeAddress().call();

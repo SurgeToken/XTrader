@@ -8,6 +8,13 @@ import {Contract} from "./Contract";
  */
 export const Token = (abiJSON) => {
     return class GenericToken extends Contract(abiJSON) {
+
+        /*
+            - Events -
+            Transfer(from, to, value)
+            Approval(owner, spender, value)
+         */
+
         constructor(addressOfContract, provider) {
             super(addressOfContract, provider);
         }
@@ -16,21 +23,28 @@ export const Token = (abiJSON) => {
             return this.methods.totalSupply().call();
         }
 
-        async decimals(){
-            return this.methods.decimals().call();
-        }
-
         async balanceOf() {
             return this.methods.balanceOf().call();
         }
 
+        async decimals(){
+            return this.methods.decimals().call();
+        }
+
+        async transfer(amount, addressOfReceiver) {
+            return this.method.transfer().send(amount);
+        }
+
+        async allowance(addressOfSpender) {
+            return this.methods.allowance().call(addressOfSpender)
+        }
         /* approves */
         async approve(amount) {
             return this.methods.approve().send(amount);
         }
-        async transfer(amount, addressOfReceiver) {
-            return this.method.transfer().send(amount);
-        }
+
+
+
     }
 
 }
