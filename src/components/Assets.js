@@ -52,9 +52,8 @@ export default () => {
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
 
-    return ( <Draggable disabled={(size === "small" || size === "xsmall")}>
-            <Card width={"medium"}
-                  height={"medium"}
+    return ( <Draggable disabled={true}>
+            <Card  height={"medium"}
                   small
                   round
                   background={"spaceBlue"}
