@@ -1,13 +1,7 @@
 import { atom } from "recoil";
+import {Contracts} from "../common/contracts";
 
-const bnbBalanceState = atom({
-    name: 'bnbBalance',
-    default: 0
+export const selectedTokenState = atom({
+    name: "selectedToken",
+    default: Contracts.SurgeBnb,
 });
-
-const contractMapping = atom({
-    name: 'contractMapping',
-    default: {
-
-    }
-})

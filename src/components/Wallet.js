@@ -2,23 +2,23 @@ import React, {createContext, useEffect, useState} from "react";
 
 import {atom} from "recoil";
 
-export const holdings = atom({
+const holdings = atom({
         key: 'holdings',
         default: {}
     }
 )
 
-export const connected = atom({
+const connected = atom({
     key: "connected",
     default: false
 })
 
-export const account = atom({
+const account = atom({
     key: "account",
     default: ''
 })
 
-export const object = atom({
+const object = atom({
     key: "object",
     default: null
 })
