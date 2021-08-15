@@ -62,6 +62,7 @@ export default class Wallet {
     contracts = {};
     holdings = {};
     accountAddress = null;
+    updateInterval = 15 * 1000 // 15 seconds
 
     constructor(onHoldingChanged, onConnected, onDisconnected) {
         this.onHoldingsChanged = onHoldingChanged || (() => {
@@ -85,6 +86,16 @@ export default class Wallet {
         return this.provider !== null && this.provider.connected;
     }
 
+    updateBalance() {
+        this.web3.eth.getBalance(this.accountAddress).then(
+            (value) => {
+                if (value !== this.holdings['BNB']) {
+                    this.holdings['BNB'] = value;
+                    this.onHoldingsChanged('BNB', value);
+                }
+            });
+    }
+
     updateHoldings() {
         this.web3.eth.getBalance(this.accountAddress).then(
             (value) => {
@@ -104,18 +115,32 @@ export default class Wallet {
     }
 
     addAssets() {
+        this.updateHoldings();
+        setInterval(() => {
+            this.web3.eth.getBalance(this.accountAddress).then(
+                (value) => {
+                    if (value !== this.holdings['BNB']) {
+                        this.holdings['BNB'] = value;
+                        this.onHoldingsChanged('BNB', value);
+                    }
+                });
+        }, this.updateInterval);
         Object.keys(tokens).forEach(key => {
             const token = new tokens[key](this.provider);
             token.symbol().then((symbol) => {
                     this.contracts[symbol] = token;
-                    token.balanceOf().then((balance) => {
-                        this.holdings[symbol] = balance;
-                        this.onHoldingsChanged(symbol, balance);
-                    })
+                    this.holdings[symbol] = 0;
+                    setInterval(() => {
+                        token.balanceOf().then((balance) => {
+                            if (balance !== this.holdings[symbol]) {
+                                this.holdings[symbol] = balance;
+                                this.onHoldingsChanged(symbol, balance);
+                            }
+                        })
+                    }, this.updateInterval);
                 }
             )
         })
-        // setInterval(this.holdingsUpdater, 10 * 1000);
     }
 
     async connect() {
@@ -125,18 +150,19 @@ export default class Wallet {
             this.web3 = new Web3(this.provider);
             const account = this.accountAddress = await this.account();
             this.addAssets();
-            this.subscription = this.web3.eth.subscribe("logs", {address: account}, (error, result) => {
-                console.log("result", result);
-            });
+            // TODO Try something like this below at a later date
+            // this.subscription = this.web3.eth.subscribe("logs", {address: account}, (error, result) => {
+            //     console.log("result", result);
+            // });
         } catch (err) {
             if (err === undefined) {
-                // TODO pass this to a callback for a modal popup
                 alert('If you are having trouble connecting to MetaMask, please check if you still have a pending connection request') //TODO still checking web3Modal library to catch MetamskError better
             }
             console.log(err);
             if (this.provider !== null) {
                 await this.provider.close();
             }
+            // TODO pass this to a callback for a modal popup
             throw err;
         }
     }

@@ -100,7 +100,7 @@ const BuyForm = (props) => {
                 <Box gap={"small"}>
                     <Box direction={"row"} justify={"between"}>
                         <Text >{currency}</Text>
-                        <Text>Balance: {parseInt(holdings['BNB']) * 1.0e-9}</Text>
+                        <Text>Balance: {(parseInt(holdings['BNB']) / 1.0e-9).toFixed(4)}</Text>
                     </Box>
                     <TextInput
                         value={amount}
@@ -242,16 +242,16 @@ const Bridge = (props) => {
                             pad={{left: "medium"}}
                             margin={(size === "xsmall" ? "medium" : "small")}
                         >
-                            <Anchor onClick={() => setAction(true)} color="white">
-                                <Button label="Buy" plain={!action}/>
-                            </Anchor>
                             <Anchor onClick={() => setAction(false)} color="white">
-                                <Button label="Sell" plain={!!action}/>
+                                <Button label="Buy" plain={action}/>
+                            </Anchor>
+                            <Anchor onClick={() => setAction(true)} color="white">
+                                <Button label="Sell" plain={!action}/>
                             </Anchor>
                         </Box>
                     </CardHeader>
                     <CardBody>
-                        {action ? <BuyForm
+                        {!action ? <BuyForm
                             holdings={holdings}
                             onTokenChange={onTokenChange}
                             tokenBalance={currentTokenBalance}

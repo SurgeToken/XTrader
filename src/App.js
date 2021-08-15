@@ -52,6 +52,7 @@ function App() {
     const [holdings, setHoldings] = useState({});
     const wallet = new Wallet((key, value) => {
             holdings[key] = value;
+            console.log('update holdings ', key, value);
             setHoldings(holdings);
         },
         () => setConnected(true), () => setConnected(false));
