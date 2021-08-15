@@ -1,10 +1,8 @@
 import React, {createContext, useEffect, useState} from "react";
 
-import Wallet from "../common/wallet";
 import {atom} from "recoil";
 
-export const holdings = atom(
-    {
+export const holdings = atom({
         key: 'holdings',
         default: {}
     }
@@ -20,4 +18,9 @@ export const account = atom({
     default: ''
 })
 
-export default {holdings, connected, account};
+export const object = atom({
+    key: "object",
+    default: null
+})
+
+export default {holdings, connected, account, object};

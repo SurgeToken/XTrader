@@ -42,6 +42,11 @@ async function getTokenBalance(contract) {
     // return getSurgeBalance(contract, address);
 }
 
+
+function buy() {
+
+}
+
 const BuyForm = (props) => {
     const [holdings, setHoldings] = useRecoilState(wallet.holdings);
     const [amount, setAmount] = useState(0);

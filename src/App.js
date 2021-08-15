@@ -50,21 +50,23 @@ function Main() {
     const [connected, setConnected] = useRecoilState(wallet.connected);
     const [holdings, setHoldings] = useRecoilState(wallet.holdings);
     const [account, setAccount] = useRecoilState(wallet.account);
-    const usersWallet = new Wallet((key, value) => {
-        const newHoldings = {...holdings};
+    const [, setUserWallet] = useRecoilState(wallet.object);
+    const userWallet = new Wallet((key, value) => {
+        const newHoldings = {...userWallet.holdings};
         newHoldings[key] = value;
         console.log(key, value, newHoldings);
-            setHoldings({...newHoldings});
+            setHoldings(newHoldings);
         },
         () => {
             console.log("connected");
-            setAccount(usersWallet.accountAddress);
+            setUserWallet(wallet);
+            setAccount(userWallet.accountAddress);
             setConnected(true);
         },
         () => {
             console.log("disconnected");
             setConnected(false);
-        })
+        });
     return (
         <Grommet theme={grommetTheme} full>
             <ResponsiveContext.Consumer>
@@ -78,7 +80,7 @@ function Main() {
                             <Box>
                                 <Button
                                     size="medium"
-                                    onClick={() => connected? usersWallet.disconnect() : usersWallet.connect()}
+                                    onClick={() => connected? userWallet.disconnect() : userWallet.connect()}
                                     label={connected ? account.slice(0, 4) + '...' + account.slice(38) : (size === "xsmall" ? "Wallet" : "Connect Wallet")}
                                 />
                             </Box>
