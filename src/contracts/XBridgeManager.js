@@ -15,7 +15,7 @@ export default ({address}) => {
             If an xBridge exists it will revert
          */
         async createXBridge(address) {
-            return this.methods.createXBridge(address).send();
+            return this.methods.createXBridge(address).send().catch((err) => this.getXBridgeAddress(address));
         }
 
         async getXBridgeAddress(address) {

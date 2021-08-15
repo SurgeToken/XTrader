@@ -3,7 +3,6 @@ import React, {useContext, useState} from "react";
 import Masonry from 'react-masonry-css';
 
 // Components
-import Trader from "./components/Trader"
 import Chart from "./components/Chart";
 import Assets from "./components/Assets";
 import Wallet from "./common/wallet";
@@ -48,15 +47,15 @@ function Main() {
         768: 1
     };
     const [connected, setConnected] = useRecoilState(wallet.connected);
-    const [holdings, setHoldings] = useRecoilState(wallet.holdings);
+    const [, setHoldings] = useRecoilState(wallet.holdings);
     const [account, setAccount] = useRecoilState(wallet.account);
-    const [uWallet, setUserWallet] = useRecoilState(wallet.object);
+    const [, setUserWallet] = useRecoilState(wallet.object);
     const userWallet = new Wallet((key, value) => {
             const newHoldings = {...userWallet.holdings};
             setHoldings(newHoldings);
         },
         () => {
-            console.log("connected");
+            console.log("connected", userWallet.contracts);
             setUserWallet(wallet);
             setAccount(userWallet.accountAddress);
             setConnected(true);

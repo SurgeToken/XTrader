@@ -1,7 +1,7 @@
 import { atom } from "recoil";
-import {Contracts} from "../common/contracts";
+import contracts from "../contracts/contracts";
 
 export const selectedTokenState = atom({
     name: "selectedToken",
-    default: Contracts.SurgeBnb,
+    default: contracts.SurgeBnb,
 });

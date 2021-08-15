@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {getHistoricPriceData} from "../common/price";
-import {Contracts} from "../common/contracts";
+import contracts from "../contracts/contracts";
 import Chart from "./Chart";
 
 export default function XPriceChart() {
@@ -8,7 +8,7 @@ export default function XPriceChart() {
 
     useEffect(() => {
         (async () => {
-            const data = await getHistoricPriceData(Contracts.SurgeBnb);
+            const data = await getHistoricPriceData(contracts.SurgeBnb);
             setPriceData(data);
         })();
     }, []);

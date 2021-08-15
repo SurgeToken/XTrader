@@ -18,9 +18,14 @@ const account = atom({
     default: ''
 })
 
+const contracts = atom({
+    key: "contracts",
+    default: {}
+})
+
 const object = atom({
     key: "object",
     default: null
 })
 
-export default {holdings, connected, account, object};
+export default {holdings, connected, account, object, contracts};

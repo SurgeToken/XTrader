@@ -13,17 +13,15 @@ import {
 import React, {useContext, useEffect, useState} from "react";
 import FormFieldError from "./FormFieldError/FormFieldError";
 // import {buy, sell} from "../common/trade";
-import {Contracts} from "../common/contracts";
+import contracts from "../contracts/contracts";
 import TokenSelector from "./TokenSelector/TokenSelector";
 import TokenAmountSlider from "./TokenAmountSlider";
 // import {getAccount, getSurgeBalance} from "../common/wallet";
 import Draggable from 'react-draggable';
-import SurgeToken from "../contracts/SurgeToken";
-import XBridge from "../contracts/XBridge";
-import XBridgeManager from "../contracts/XBridgeManager";
 import wallet from "./Wallet";
 import {useRecoilState} from "recoil";
 import {selectedTokenState} from "../state/state";
+import BuyButton from "./BuyButton";
 
 
 function validateAmount(amount) {
@@ -78,7 +76,7 @@ const BuyForm = (props) => {
 
     const onSelectedTokenChange = (token) => {
         setSelectedToken(token);
-        setCurrency(token.buyCurrency);
+        setCurrency(token.symbol);
     };
 
     const onTokenSliderChange = (value) => {
@@ -111,6 +109,7 @@ const BuyForm = (props) => {
                         <Text>Balance: {balance}</Text>
                     </Box>
                     <TextInput
+                        type={"number"}
                         value={amount}
                         onChange={onAmountChange}
                     />
@@ -122,7 +121,7 @@ const BuyForm = (props) => {
             </Box>
             <Box direction="row" gap="medium" margin={"small"}>
                 <Button type="reset" label="Clear" size={"large"}/>
-                <Button type="submit" label="Accept" size={"large"} onClick={buyTokens} primary/>
+                <BuyButton type="submit" label="Accept" size={"large"} primary/>
             </Box>
         </Box>
     )
@@ -254,9 +253,9 @@ const Bridge = (props) => {
                     </CardHeader>
                     <CardBody>
                         {!action ? <BuyForm
-                            defaultToken={Contracts.SurgeBnb}
+                            defaultToken={contracts.SurgeBnb}
                         /> : <SellForm
-                            defaultToken={Contracts.SurgeBnb}
+                            defaultToken={contracts.SurgeBnb}
                         />}
                     </CardBody>
                 </Card>

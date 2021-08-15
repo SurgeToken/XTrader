@@ -3,7 +3,7 @@ import {
     CardHeader, FormField, Header, Tab, Tabs, DataTable, ResponsiveContext,
 } from "grommet";
 import Draggable from "react-draggable";
-import {Contracts} from "../common/contracts";
+import contracts from "../contracts/contracts";
 import React from "react";
 
 const formatTotal = (value) => {

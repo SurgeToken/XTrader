@@ -12,7 +12,7 @@ import {
 } from "grommet";
 import React, {useContext, useEffect, useState} from "react";
 import FormFieldError from "./FormFieldError/FormFieldError";
-import {BridgeCreator} from "../contracts/contracts";
+import {BridgeCreator, Bridge} from "../contracts/contracts";
 import wallet from "./Wallet"
 import {useRecoilState} from "recoil";
 
@@ -20,7 +20,8 @@ import {useRecoilState} from "recoil";
 async function executeTransaction(wallet, asset, amount) {
     // create an xBridgeManager connection
     const bridgeCreator = new BridgeCreator(wallet.provider);
-    const bridge = await bridgeCreator.createXBridge(wallet.accountAddress);
+    const bridge = new (Bridge(await bridgeCreator.createXBridge(wallet.accountAddress)))(wallet.provider);
+
 
 }
 
