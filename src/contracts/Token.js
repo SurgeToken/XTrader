@@ -30,6 +30,10 @@ export default ({address, abi}) => {
             return this.methods.balanceOf(this.contract.options.from).call();
         }
 
+        async balance() {
+            return this.methods.balanceOf(this.contract.address).call();
+        }
+
         async transfer(recipientAddress, amount) {
             return this.method.transfer(recipientAddress, amount).send();
         }

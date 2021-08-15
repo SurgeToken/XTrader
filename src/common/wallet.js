@@ -145,11 +145,15 @@ export default class Wallet {
 
     async connect() {
         try {
-
+            const provider = this.provider;
             this.provider = await web3Modal.connect();
             this.web3 = new Web3(this.provider);
             const account = this.accountAddress = await this.account();
-            this.addAssets();
+            if (provider !== this.provider) {
+                this.addAssets();
+            }
+            this.onConnected();
+
             // TODO Try something like this below at a later date
             // this.subscription = this.web3.eth.subscribe("logs", {address: account}, (error, result) => {
             //     console.log("result", result);
@@ -179,6 +183,7 @@ export default class Wallet {
             this.provider = null;
             this.accountAddress = 0;
         }
+        this.onDisconnected();
     }
 
 }
