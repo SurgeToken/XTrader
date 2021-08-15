@@ -78,7 +78,7 @@ function Main() {
                             <Box>
                                 <Button
                                     size="medium"
-                                    onClick={connected? usersWallet.disconnect() : usersWallet.connect()}
+                                    onClick={() => connected? usersWallet.disconnect() : usersWallet.connect()}
                                     label={connected ? account.slice(0, 4) + '...' + account.slice(38) : (size === "xsmall" ? "Wallet" : "Connect Wallet")}
                                 />
                             </Box>
