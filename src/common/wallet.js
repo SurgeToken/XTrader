@@ -130,6 +130,7 @@ export default class Wallet {
             token.symbol().then((symbol) => {
                     this.contracts[symbol] = token;
                     this.holdings[symbol] = 0;
+                    this.onHoldingsChanged(symbol, 0);
                     setInterval(() => {
                         token.balanceOf().then((balance) => {
                             if (balance !== this.holdings[symbol]) {
