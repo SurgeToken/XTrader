@@ -8,6 +8,7 @@ import {
     Anchor,
     CardHeader,
     Text,
+    RangeInput
 } from "grommet";
 import React, {useEffect, useState} from "react";
 import FormFieldError from "./FormFieldError/FormFieldError";
@@ -40,12 +41,16 @@ async function getTokenBalance(contract) {
 }
 
 const BuyForm = (props) => {
+    const {holdings} = props;
     const [amount, setAmount] = useState(0);
+    const [token, setToken] = useState('sBNB');
+    const [currency, setCurrenty] = useState('BNB');
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
     const [selectedToken, setSelectedToken] = useState(props.defaultToken || Contracts.SurgeBnb);
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
+
 
     const onAmountChange = (event) => {
         const errorMessage = validateAmount(event.target.value);
@@ -85,7 +90,6 @@ const BuyForm = (props) => {
         //
         // console.log('Transaction result', result);
     };
-
     return (
         <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
             <Box gap={"medium"}>
@@ -94,14 +98,17 @@ const BuyForm = (props) => {
                     <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken}/>
                 </Box>
                 <Box gap={"small"}>
-                    <Text>Quantity</Text>
+                    <Box direction={"row"} justify={"between"}>
+                        <Text >{currency}</Text>
+                        <Text>Balance: {parseInt(holdings['BNB']) * 1.0e-9}</Text>
+                    </Box>
                     <TextInput
                         value={amount}
                         onChange={onAmountChange}
                     />
                     <FormFieldError message={amountErrorMessage}/>
                 </Box>
-                <Box gap={"small"}>
+                <Box gap={"small"} align={"center"}>
                     <TokenAmountSlider onValueChange={onTokenSliderChange} defaultValue={0}/>
                 </Box>
             </Box>
@@ -187,8 +194,8 @@ const SellForm = (props) => {
     )
 }
 
-const Trader = (props) => {
-    const {wallet} = props;
+const Bridge = (props) => {
+    const {holdings} = props;
     const [action, setAction] = React.useState(0);
     const [currentTokenBalance, setCurrentTokenBalance] = useState(0);
     // noinspection JSCheckFunctionSignatures
@@ -225,7 +232,7 @@ const Trader = (props) => {
                         <Box margin={(size === "xsmall" ? "medium" : "small")}>
                             <Text
                                 size={((size === "xsmall" || size === "small") ? "large" : "large")}
-                            >Trade</Text>
+                            >XBridge</Text>
                         </Box>
                         <Box
                             align={"center"}
@@ -245,10 +252,12 @@ const Trader = (props) => {
                     </CardHeader>
                     <CardBody>
                         {action ? <BuyForm
+                            holdings={holdings}
                             onTokenChange={onTokenChange}
                             tokenBalance={currentTokenBalance}
                             defaultToken={Contracts.SurgeBnb}
                         /> : <SellForm
+                            holdings={holdings}
                             onTokenChange={onTokenChange}
                             tokenBalance={currentTokenBalance}
                             defaultToken={Contracts.SurgeBnb}
@@ -260,4 +269,4 @@ const Trader = (props) => {
     );
 }
 
-export default Trader;
+export default Bridge;

@@ -48,5 +48,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@walletconnect/client": "^2.0.0-beta.17",
+    "@walletconnect/types": "^1.6.0"
   }
 }

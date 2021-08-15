@@ -1,13 +1,13 @@
 import {Contract} from "./Contract";
-
+import erc20 from './abi/erc20.json';
 
 /*
     This is a generic token wrapper class. It's main purpose is to remove the abi argument to the
     web3.eth.Contract constructor. The choice of using an EventEmitter was to allow these to be used
     server side on node.js.
  */
-export const Token = (abiJSON) => {
-    return class GenericToken extends Contract(abiJSON) {
+export default ({address, abi}) => {
+    return class GenericToken extends Contract({address, abi: abi || erc20}) {
 
         /*
             - Events -
@@ -15,8 +15,11 @@ export const Token = (abiJSON) => {
             Approval(owner, spender, value)
          */
 
-        constructor(addressOfContract, provider) {
-            super(addressOfContract, provider);
+        /*
+            constructs a Generic IERC20 Token with the given contact address and provider
+         */
+        constructor(provider, sender) {
+            super(provider, sender);
         }
 
         async totalSupply() {
@@ -24,26 +27,24 @@ export const Token = (abiJSON) => {
         }
 
         async balanceOf() {
-            return this.methods.balanceOf().call();
+            return this.methods.balanceOf(this.contract.options.from).call();
         }
 
-        async decimals(){
+        async transfer(recipientAddress, amount) {
+            return this.method.transfer(recipientAddress, amount).send();
+        }
+
+        async name() {
+            return this.method.name().call();
+        }
+
+        async decimals() {
             return this.methods.decimals().call();
         }
 
-        async transfer(amount, addressOfReceiver) {
-            return this.method.transfer().send(amount);
+        async symbol() {
+            return this.methods.symbol().call();
         }
-
-        async allowance(addressOfSpender) {
-            return this.methods.allowance().call(addressOfSpender)
-        }
-        /* approves */
-        async approve(amount) {
-            return this.methods.approve().send(amount);
-        }
-
-
 
     }
 

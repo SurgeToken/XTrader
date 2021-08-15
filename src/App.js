@@ -22,6 +22,7 @@ import logo from './assets/xsurge-logo.png';
 
 // Common Functions
 import XPriceChart from "./components/XPriceChart";
+import Bridge from "./components/Bridge";
 
 const AppBar = (props) => (
     <Box
@@ -48,7 +49,12 @@ function App() {
     };
     const [account, setAccount] = useState(0);
     const [connected, setConnected] = useState(0);
-    const wallet = new Wallet();
+    const [holdings, setHoldings] = useState({});
+    const wallet = new Wallet((key, value) => {
+            holdings[key] = value;
+            setHoldings(holdings);
+        },
+        () => setConnected(true), () => setConnected(false));
     const connect = async () => {
         if (connected) {
             await wallet.disconnect();
@@ -67,7 +73,8 @@ function App() {
                     <Box fill>
                         <AppBar>
                             <Box>
-                                <a href="/"><img src={logo} alt="Logo" height={size === 'medium' ? "25px" : "20px"}/></a>
+                                <a href="/"><img src={logo} alt="Logo"
+                                                 height={size === 'medium' ? "25px" : "20px"}/></a>
                             </Box>
                             <Box>
                                 <Button
@@ -88,9 +95,9 @@ function App() {
                                 className="my-masonry-grid"
                                 columnClassName="my-masonry-grid_column"
                             >
-                                <Box align={"center"}><Trader wallet={wallet}/></Box>
-                                <Box align={"center"}><Assets wallet={wallet}/></Box>
-                                <Box align={"center"}><XPriceChart wallet={wallet}/></Box>
+                                <Box align={"center"}><Bridge holdings={holdings} connected={connected}/></Box>
+                                {/*<Box align={"center"}><Assets wallet={wallet}/></Box>*/}
+                                {/*<Box align={"center"}><XPriceChart wallet={wallet}/></Box>*/}
                             </Masonry>
                         </Box>
                         <Box pad={"medium"}>
@@ -100,12 +107,16 @@ function App() {
                                 alignSelf="end"
                                 icon={<Add color="white"/>}
                                 plain
-                                style={ (size === 'small') ? {marginLeft: 12, marginRight: 12} : {marginLeft: 20, marginRight: 15}}
+                                style={(size === 'small') ? {marginLeft: 12, marginRight: 12} : {
+                                    marginLeft: 20,
+                                    marginRight: 15
+                                }}
                                 onClick={addTradingComponent}
                             />
                         </Box>
 
-                        {!connected && <Box style={{position: "absolute"}} onClick={(e) => e.stopPropagation()} background={{color: "black", opacity: "strong"}} fill/>}
+                        {!connected && <Box style={{position: "absolute"}} onClick={(e) => e.stopPropagation()}
+                                            background={{color: "black", opacity: "strong"}} fill/>}
                     </Box>
                 )}
             </ResponsiveContext.Consumer>

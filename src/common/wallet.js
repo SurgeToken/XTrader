@@ -4,9 +4,8 @@ import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import {WalletLink} from "walletlink";
 import coinbaseLogo from '../images/coinbase.svg';
-// import {provider} from "./walletConnect";
-import {useEffect, useState} from "react";
-import {EventEmitter} from 'events'
+import tokens from "../contracts/tokens";
+import {EventEmitter} from "events";
 
 export const providerOptions = {
     walletConnectMainNet: {
@@ -27,16 +26,57 @@ export const providerOptions = {
     }
 };
 
+const web3Modal = new Web3Modal({
+    network: "binance",
+    cacheProvider: true,
+    providerOptions: {
+        walletconnect: {
+            package: WalletConnectProvider,
+            options: providerOptions.walletConnectMainNet
+
+        },
+        'custom-coinbase': {
+            display: {
+                logo: coinbaseLogo,
+                name: 'Coinbase',
+                description: 'Scan with WalletLink to connect',
+            },
+            options: providerOptions.walletConnectMainNet,
+            package: WalletLink,
+            connector: async () => {
+                const walletLink = new WalletLink({
+                    appName: providerOptions.walletConnectMainNet.appName
+                });
+                const provider = walletLink.makeWeb3Provider(providerOptions.walletConnectMainNet.rpc["56"], 56);
+                await provider.enable();
+                return provider;
+            },
+        }
+    },
+
+});
+
 
 export default class Wallet {
     provider = null;
+    contracts = {};
+    holdings = {};
+    accountAddress = null;
 
-    async account(truncated) {
+    constructor(onHoldingChanged, onConnected, onDisconnected) {
+        this.onHoldingsChanged = onHoldingChanged || (() => {
+        });
+        this.onConnected = onConnected || (() => {
+        });
+        this.onDisconnected = onDisconnected || (() => {
+        });
+        this.holdingsUpdater = this.updateHoldings.bind(this);
+    }
+
+    async account() {
         if (this.provider !== null) {
             const account = (await this.web3.eth.getAccounts())[0] || null;
-            if (truncated) {
-                return account.slice(0, 4) + '...' + account.slice(38)
-            }
+            this.accountAddress = account;
             return account;
         }
     }
@@ -45,43 +85,55 @@ export default class Wallet {
         return this.provider !== null && this.provider.connected;
     }
 
+    updateHoldings() {
+        this.web3.eth.getBalance(this.accountAddress).then(
+            (value) => {
+                if (value !== this.holdings['BNB']) {
+                    this.holdings['BNB'] = value;
+                    this.onHoldingsChanged('BNB', value);
+                }
+            });
+        Object.keys(this.contracts).forEach(key => {
+            this.contracts[key].balanceOf().then((balance) => {
+                if (balance !== this.holdings[key]) {
+                    this.holdings[key] = balance;
+                    this.onHoldingsChanged(key, balance);
+                }
+            })
+        })
+    }
+
+    addAssets() {
+        Object.keys(tokens).forEach(key => {
+            const token = new tokens[key](this.provider);
+            token.symbol().then((symbol) => {
+                    this.contracts[symbol] = token;
+                    token.balanceOf().then((balance) => {
+                        this.holdings[symbol] = balance;
+                        this.onHoldingsChanged(symbol, balance);
+                    })
+                }
+            )
+        })
+        // setInterval(this.holdingsUpdater, 10 * 1000);
+    }
+
     async connect() {
         try {
-            const web3Modal = new Web3Modal({
-                network: "binance",
-                cacheProvider: true,
-                providerOptions: {
-                    walletconnect: {
-                        package: WalletConnectProvider,
-                        options: providerOptions.walletConnectMainNet
 
-                    },
-                    'custom-coinbase': {
-                        display: {
-                            logo: coinbaseLogo,
-                            name: 'Coinbase',
-                            description: 'Scan with WalletLink to connect',
-                        },
-                        options: providerOptions.walletConnectMainNet,
-                        package: WalletLink,
-                        connector: async () => {
-                            const walletLink = new WalletLink({
-                                appName: providerOptions.walletConnectMainNet.appName
-                            });
-                            const provider = walletLink.makeWeb3Provider(providerOptions.walletConnectMainNet.rpc["56"], 56);
-                            await provider.enable();
-                            return provider;
-                        },
-                    }
-                },
-
-            });
             this.provider = await web3Modal.connect();
             this.web3 = new Web3(this.provider);
+            const account = this.accountAddress = await this.account();
+            this.addAssets();
+            this.subscription = this.web3.eth.subscribe("logs", {address: account}, (error, result) => {
+                console.log("result", result);
+            });
         } catch (err) {
             if (err === undefined) {
+                // TODO pass this to a callback for a modal popup
                 alert('If you are having trouble connecting to MetaMask, please check if you still have a pending connection request') //TODO still checking web3Modal library to catch MetamskError better
             }
+            console.log(err);
             if (this.provider !== null) {
                 await this.provider.close();
             }
@@ -99,6 +151,7 @@ export default class Wallet {
 
             await this.provider.close();
             this.provider = null;
+            this.accountAddress = 0;
         }
     }
 
