@@ -1,52 +1,23 @@
-import React, {useEffect, useState} from "react";
-import { Button, ResponsiveContext } from "grommet";
-import {connectWallet, disconnectWallet} from "../common/walletConnect";
-import {getAccount} from "../common/wallet";
+import React, {createContext, useEffect, useState} from "react";
 
-const WalletButton = () => {
-    const [isConnected, setConnected] = useState(false);
-    const [account, setAccount] = useState("");
-    // noinspection JSCheckFunctionSignatures
-    const size = React.useContext(ResponsiveContext);
+import Wallet from "../common/wallet";
+import {atom} from "recoil";
 
-    const onConnectWallet = async () => {
-        try {
-            await connectWallet();
-            const currentAccount = await getAccount();
-            setAccount(currentAccount.slice(0, 4) + '...' + currentAccount.slice(38));
-            setConnected(true)
-        } catch (e) {
-            console.log('Failed to connect wallet...', e)
-        }
+export const holdings = atom(
+    {
+        key: 'holdings',
+        default: {}
     }
+)
 
-    const onDisconnectWallet = async () => {
-        try {
-            await disconnectWallet();
-            setConnected(false)
-        } catch (e) {
-            console.log('Failed to diconnect wallet', e)
-        }
-    }
+export const connected = atom({
+    key: "connected",
+    default: false
+})
 
-    useEffect(() => {
-    }, []);
+export const account = atom({
+    key: "account",
+    default: ''
+})
 
-    const buttonAction = async () => {
-        if (isConnected) {
-            await onDisconnectWallet()
-        } else {
-            await onConnectWallet()
-        }
-    }
-
-    return (
-        <Button
-            size="medium"
-            onClick={buttonAction}
-            label={isConnected ? account : (size === "xsmall" ? "Wallet" : "Connect Wallet")}
-        />
-    )
-}
-
-export default WalletButton;
+export default {holdings, connected, account};

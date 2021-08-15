@@ -10,7 +10,7 @@ import {
     Text,
     RangeInput
 } from "grommet";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import FormFieldError from "./FormFieldError/FormFieldError";
 // import {buy, sell} from "../common/trade";
 import {Contracts} from "../common/contracts";
@@ -21,6 +21,8 @@ import Draggable from 'react-draggable';
 import SurgeToken from "../contracts/SurgeToken";
 import XBridge from "../contracts/XBridge";
 import XBridgeManager from "../contracts/XBridgeManager";
+import wallet from "./Wallet";
+import {useRecoilState} from "recoil";
 
 
 function validateAmount(amount) {
@@ -41,7 +43,7 @@ async function getTokenBalance(contract) {
 }
 
 const BuyForm = (props) => {
-    const {holdings} = props;
+    const [holdings, setHoldings] = useRecoilState(wallet.holdings);
     const [amount, setAmount] = useState(0);
     const [token, setToken] = useState('sBNB');
     const [currency, setCurrenty] = useState('BNB');
@@ -90,6 +92,7 @@ const BuyForm = (props) => {
         //
         // console.log('Transaction result', result);
     };
+    const BNB = (parseInt(holdings['BNB']) * 1.0e-18).toFixed(4);
     return (
         <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
             <Box gap={"medium"}>
@@ -100,7 +103,7 @@ const BuyForm = (props) => {
                 <Box gap={"small"}>
                     <Box direction={"row"} justify={"between"}>
                         <Text >{currency}</Text>
-                        <Text>Balance: {(parseInt(holdings['BNB']) / 1.0e-9).toFixed(4)}</Text>
+                        <Text>Balance: {BNB}</Text>
                     </Box>
                     <TextInput
                         value={amount}
@@ -194,8 +197,12 @@ const SellForm = (props) => {
     )
 }
 
+// TODO selling and buying forms need to be a generic form component
+const BridgeForm = (props) => {
+
+}
+
 const Bridge = (props) => {
-    const {holdings} = props;
     const [action, setAction] = React.useState(0);
     const [currentTokenBalance, setCurrentTokenBalance] = useState(0);
     // noinspection JSCheckFunctionSignatures
@@ -252,12 +259,10 @@ const Bridge = (props) => {
                     </CardHeader>
                     <CardBody>
                         {!action ? <BuyForm
-                            holdings={holdings}
                             onTokenChange={onTokenChange}
                             tokenBalance={currentTokenBalance}
                             defaultToken={Contracts.SurgeBnb}
                         /> : <SellForm
-                            holdings={holdings}
                             onTokenChange={onTokenChange}
                             tokenBalance={currentTokenBalance}
                             defaultToken={Contracts.SurgeBnb}

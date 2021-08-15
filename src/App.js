@@ -1,5 +1,5 @@
 // Libs
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import Masonry from 'react-masonry-css';
 
 // Components
@@ -7,7 +7,7 @@ import Trader from "./components/Trader"
 import Chart from "./components/Chart";
 import Assets from "./components/Assets";
 import Wallet from "./common/wallet";
-import WalletButton from './components/WalletButton';
+import wallet from './components/Wallet';
 // Grommet Stuff
 import grommetTheme from "./themes/theme.json";
 
@@ -23,6 +23,7 @@ import logo from './assets/xsurge-logo.png';
 // Common Functions
 import XPriceChart from "./components/XPriceChart";
 import Bridge from "./components/Bridge";
+import {RecoilRoot, useRecoilState} from "recoil";
 
 const AppBar = (props) => (
     <Box
@@ -41,30 +42,35 @@ function addTradingComponent() {
     alert('Add another trading component to the body');
 }
 
-
-function App() {
+function Main() {
     const breakpointColumnsObj = {
         default: 2,
         768: 1
     };
-    const [account, setAccount] = useState(0);
-    const [connected, setConnected] = useState(0);
-    const [holdings, setHoldings] = useState({});
-    const wallet = new Wallet((key, value) => {
-            holdings[key] = value;
-            console.log('update holdings ', key, value);
-            setHoldings(holdings);
+    const [connected, setConnected] = useRecoilState(wallet.connected);
+    const [holdings, setHoldings] = useRecoilState(wallet.holdings);
+    const [account, setAccount] = useRecoilState(wallet.account);
+    const usersWallet = new Wallet((key, value) => {
+        const newHoldings = {...holdings};
+        newHoldings[key] = value;
+        console.log(key, value, newHoldings);
+            setHoldings({...newHoldings});
         },
-        () => setConnected(true), () => setConnected(false));
-    const connect = async () => {
-        if (connected) {
-            await wallet.disconnect();
-            setConnected(false);
-        } else {
-            await wallet.connect();
+        () => {
+            console.log("connected");
+            setAccount(usersWallet.accountAddress);
             setConnected(true);
-            const currentAccount = await wallet.account();
-            setAccount(currentAccount.slice(0, 4) + '...' + currentAccount.slice(38));
+        },
+        () => {
+            console.log("disconnected");
+            setConnected(false);
+        })
+    const connect = () => {
+        console.log(wallet.connected);
+        if (connected) {
+            usersWallet.disconnect();
+        } else {
+            usersWallet.connect();
         }
     }
     return (
@@ -81,7 +87,7 @@ function App() {
                                 <Button
                                     size="medium"
                                     onClick={connect}
-                                    label={connected ? account : (size === "xsmall" ? "Wallet" : "Connect Wallet")}
+                                    label={connected ? account.slice(0, 4) + '...' + account.slice(38) : (size === "xsmall" ? "Wallet" : "Connect Wallet")}
                                 />
                             </Box>
                         </AppBar>
@@ -96,7 +102,7 @@ function App() {
                                 className="my-masonry-grid"
                                 columnClassName="my-masonry-grid_column"
                             >
-                                <Box align={"center"}><Bridge holdings={holdings} connected={connected}/></Box>
+                                <Box align={"center"}><Bridge/></Box>
                                 {/*<Box align={"center"}><Assets wallet={wallet}/></Box>*/}
                                 {/*<Box align={"center"}><XPriceChart wallet={wallet}/></Box>*/}
                             </Masonry>
@@ -122,6 +128,16 @@ function App() {
                 )}
             </ResponsiveContext.Consumer>
         </Grommet>
+    )
+}
+
+
+function App() {
+
+    return (
+        <RecoilRoot>
+            <Main/>
+        </RecoilRoot>
     );
 }
 
