@@ -130,6 +130,7 @@ const BuyForm = (props) => {
 
 const SellForm = (props) => {
     const [holdings, setHoldings] = useRecoilState(wallet.holdings);
+    const [currency, setCurrency] = useState('SURGE');
     const [amount, setAmount] = useState(0);
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
@@ -156,11 +157,13 @@ const SellForm = (props) => {
 
     const onSelectedTokenChange = (token) => {
         setSelectedToken(token);
+        setCurrency(token.name);
     };
 
     const onTokenSliderChange = (value) => {
-        const percentage = (value || 0) / 100;
-        const calculatedAmount = percentage * props.tokenBalance;
+        const balance = holdings[selectedToken.name] || 0;
+        const percentage = value / 100;
+        const calculatedAmount = percentage * (balance * 1.0e-18).toFixed(4);
         setAmount(calculatedAmount);
     };
 
@@ -173,21 +176,22 @@ const SellForm = (props) => {
 
         // console.log('Transaction result', result);
     };
-    const token = (parseInt(holdings['SURGE']));
+    const balance = parseInt(holdings[currency] || 0);
+    console.log('Holdings', holdings);
     return (
         <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
             <Box gap={"medium"}>
                 <Box gap={"small"}>
                     <Box direction={"row"} justify={"between"}>
                         <Text >Token</Text>
-                        <Text>Balance: {token}</Text>
+                        <Text>Balance: {balance}</Text>
                     </Box>
                     <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken}/>
                 </Box>
                 <Box gap={"small"}>
                     <Box direction={"row"} justify={"between"}>
-                        <Text >BNB</Text>
-                        <Text>Recived: 000</Text>
+                        <Text>{currency}</Text>
+                        <Text>Received: 000</Text>
                     </Box>
                     <TextInput
                         value={amount}
