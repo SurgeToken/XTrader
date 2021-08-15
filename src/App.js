@@ -65,14 +65,6 @@ function Main() {
             console.log("disconnected");
             setConnected(false);
         })
-    const connect = () => {
-        console.log(wallet.connected);
-        if (connected) {
-            usersWallet.disconnect();
-        } else {
-            usersWallet.connect();
-        }
-    }
     return (
         <Grommet theme={grommetTheme} full>
             <ResponsiveContext.Consumer>
@@ -86,7 +78,7 @@ function Main() {
                             <Box>
                                 <Button
                                     size="medium"
-                                    onClick={connect}
+                                    onClick={connected? usersWallet.disconnect() : usersWallet.connect()}
                                     label={connected ? account.slice(0, 4) + '...' + account.slice(38) : (size === "xsmall" ? "Wallet" : "Connect Wallet")}
                                 />
                             </Box>
