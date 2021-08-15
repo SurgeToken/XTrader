@@ -12,13 +12,15 @@ import {
 } from "grommet";
 import React, {useContext, useEffect, useState} from "react";
 import FormFieldError from "./FormFieldError/FormFieldError";
+// import {buy, sell} from "../common/trade";
 import contracts from "../contracts/contracts";
 import TokenSelector from "./TokenSelector/TokenSelector";
 import TokenAmountSlider from "./TokenAmountSlider";
+// import {getAccount, getSurgeBalance} from "../common/wallet";
 import Draggable from 'react-draggable';
-import state from "../state/state";
+import wallet from "./Wallet";
 import {useRecoilState} from "recoil";
-// import {selectedTokenState} from "../state/state";
+import {selectedTokenState} from "../state/state";
 import BuyButton from "./BuyButton";
 
 
@@ -50,8 +52,8 @@ const BuyForm = (props) => {
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
 
-    const [holdings, setHoldings] = useRecoilState(state.walletHoldings);
-    // const [selectedToken, setSelectedToken] = useRecoilState(selectedTokenState);
+    const [holdings, setHoldings] = useRecoilState(wallet.holdings);
+    const [selectedToken, setSelectedToken] = useRecoilState(selectedTokenState);
 
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
@@ -73,14 +75,15 @@ const BuyForm = (props) => {
     };
 
     const onSelectedTokenChange = (token) => {
-        // setSelectedToken(token);
-        setCurrency(token.symbol);
+        setSelectedToken(token);
+        setCurrency(token.name);
+        console.log('token changed', token);
     };
 
     const onTokenSliderChange = (value) => {
-        const balance = holdings[currency] || 0;
+        const balance = Number(holdings[currency]) || 0;
         const percentage = value / 100;
-        const calculatedAmount = percentage * (balance * 1.0e-18).toFixed(4);
+        const calculatedAmount = percentage * (currency === "BNB" ? (balance * 1.0e-18).toFixed(4) : balance);
         setAmount(calculatedAmount);
     };
 
@@ -93,13 +96,13 @@ const BuyForm = (props) => {
         //
         // console.log('Transaction result', result);
     };
-    const balance = (parseInt(holdings[currency] || 0) * 1.0e-18).toFixed(4);
+    const balance = currency === "BNB" ? (parseInt(holdings[currency]) * 1.0e-18).toFixed(4) : parseInt(holdings[currency]);
     return (
         <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
             <Box gap={"medium"}>
                 <Box gap={"small"}>
                     <Text>Token</Text>
-                    <TokenSelector onSelect={onSelectedTokenChange}/>
+                    <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken}/>
                 </Box>
                 <Box gap={"small"}>
                     <Box direction={"row"} justify={"between"}>
@@ -126,13 +129,13 @@ const BuyForm = (props) => {
 }
 
 const SellForm = (props) => {
-    const [holdings, setHoldings] = useRecoilState(state.walletHoldings);
+    const [holdings, setHoldings] = useRecoilState(wallet.holdings);
     const [currency, setCurrency] = useState('SURGE');
     const [amount, setAmount] = useState(0);
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
 
-    const [selectedToken, setSelectedToken] = useState();
+    const [selectedToken, setSelectedToken] = useRecoilState(selectedTokenState);
 
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
@@ -158,9 +161,9 @@ const SellForm = (props) => {
     };
 
     const onTokenSliderChange = (value) => {
-        const balance = holdings[selectedToken.name] || 0;
+        const balance = selectedToken.name === "BNB" ? (parseInt(holdings[selectedToken.name]) * 1.0e-18).toFixed(4) : parseInt(holdings[selectedToken.name]);
         const percentage = value / 100;
-        const calculatedAmount = percentage * (balance * 1.0e-18).toFixed(4);
+        const calculatedAmount = percentage * balance;
         setAmount(calculatedAmount);
     };
 
@@ -173,7 +176,7 @@ const SellForm = (props) => {
 
         // console.log('Transaction result', result);
     };
-    const balance = parseInt(holdings[currency] || 0);
+    const balance = currency === "BNB" ? (parseInt(holdings[currency]) * 1.0e-18).toFixed(4) : parseInt(holdings[currency]);
     console.log('Holdings', holdings);
     return (
         <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>

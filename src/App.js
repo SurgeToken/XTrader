@@ -53,6 +53,7 @@ function Main() {
     const userWallet = new Wallet((key, value) => {
             const newHoldings = {...userWallet.holdings};
             setHoldings(newHoldings);
+            console.log('Holdings', newHoldings);
         },
         () => {
             // setUserWallet(userWallet);
