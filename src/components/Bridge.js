@@ -129,6 +129,7 @@ const BuyForm = (props) => {
 }
 
 const SellForm = (props) => {
+    const [holdings, setHoldings] = useRecoilState(wallet.holdings);
     const [amount, setAmount] = useState(0);
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
@@ -174,23 +175,29 @@ const SellForm = (props) => {
 
         // console.log('Transaction result', result);
     };
-
+    const token = (parseInt(holdings['SURGE']));
     return (
         <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
             <Box gap={"medium"}>
                 <Box gap={"small"}>
-                    <Text>Token</Text>
+                    <Box direction={"row"} justify={"between"}>
+                        <Text >Token</Text>
+                        <Text>Balance: {token}</Text>
+                    </Box>
                     <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken}/>
                 </Box>
                 <Box gap={"small"}>
-                    <Text>BNB</Text>
+                    <Box direction={"row"} justify={"between"}>
+                        <Text >BNB</Text>
+                        <Text>Recived: 000</Text>
+                    </Box>
                     <TextInput
                         value={amount}
                         onChange={onAmountChange}
                     />
                     <FormFieldError message={amountErrorMessage}/>
                 </Box>
-                <Box gap={"small"}>
+                <Box gap={"small"} align={"center"}>
                     <TokenAmountSlider onValueChange={onTokenSliderChange} defaultValue={0}/>
                 </Box>
             </Box>
