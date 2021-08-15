@@ -22,9 +22,9 @@ const contracts = atom({
     default: {}
 })
 
-const wallet = atom({
-    key: "wallet",
-    default: null
-})
+// const wallet = atom({
+//     key: "wallet",
+//     default: null
+// })
 
-export default {walletHoldings, walletConnected, walletAccount, wallet, contracts};
+export default {walletHoldings, walletConnected, walletAccount, contracts};

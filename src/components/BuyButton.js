@@ -26,9 +26,9 @@ async function executeTransaction(wallet, asset, amount) {
 }
 
 export default ({asset, amount, ...props}) => {
-    const [userWallet, setUserWallet] = useRecoilState(state.wallet);
+    const [contracts,] = useRecoilState(state.contracts);
     const doClick = () => {
-        executeTransaction(userWallet, asset, amount).then(
+        executeTransaction(contracts, asset, amount).then(
             () => {
 
             }

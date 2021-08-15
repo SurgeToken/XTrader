@@ -49,14 +49,13 @@ function Main() {
     const [connected, setConnected] = useRecoilState(state.walletConnected);
     const [, setHoldings] = useRecoilState(state.walletHoldings);
     const [account, setAccount] = useRecoilState(state.walletAccount);
-    const [, setUserWallet] = useRecoilState(state.wallet);
+    const [contracts, setContracts] = useRecoilState(state.contracts);
     const userWallet = new Wallet((key, value) => {
             const newHoldings = {...userWallet.holdings};
             setHoldings(newHoldings);
-            console.log('Holdings', newHoldings);
         },
         () => {
-            // setUserWallet(userWallet);
+            setContracts(Object.keys(userWallet.contracts));
             setAccount(userWallet.accountAddress);
             setConnected(true);
         },

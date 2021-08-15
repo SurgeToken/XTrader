@@ -71,7 +71,6 @@ export default class Wallet {
         });
         this.onDisconnected = onDisconnected || (() => {
         });
-        this.holdingsUpdater = this.updateHoldings.bind(this);
     }
 
     async account() {
@@ -96,34 +95,6 @@ export default class Wallet {
             });
     }
 
-    updateHoldings() {
-        this.web3.eth.getBalance(this.accountAddress).then(
-            (value) => {
-                if (value !== this.holdings['BNB']) {
-                    this.holdings['BNB'] = value;
-                    this.onHoldingsChanged('BNB', value);
-                }
-            });
-        Object.keys(this.contracts).forEach(key => {
-            this.contracts[key].balanceOf().then((balance) => {
-                if (balance !== this.holdings[key]) {
-                    this.holdings[key] = balance;
-                    this.onHoldingsChanged(key, balance);
-                }
-            })
-        })
-    }
-
-    updateBNB(){
-        this.web3.eth.getBalance(this.accountAddress).then(
-            (value) => {
-                if (value !== this.holdings['BNB']) {
-                    this.holdings['BNB'] = value;
-                    this.onHoldingsChanged('BNB', value);
-                }
-            });
-    }
-
     updateHolding(symbol) {
         this.contracts[symbol].balanceOf().then((balance) => {
             if (balance !== this.holdings[symbol]) {
@@ -135,7 +106,7 @@ export default class Wallet {
 
     async addHoldings() {
         this.holdings['BNB'] = await this.web3.eth.getBalance(this.accountAddress);
-        setInterval(this.updateBNB.bind(this), this.updateInterval);
+        setInterval(this.updateBalance.bind(this), this.updateInterval);
         this.onHoldingsChanged('BNB', this.holdings['BNB']);
         const symbols = Object.keys(this.contracts);
         for (let index in  symbols) {
@@ -163,7 +134,7 @@ export default class Wallet {
             const account = this.accountAddress = await this.account();
             if (provider !== this.provider) {
                 await this.addContracts();
-                await this.addHoldings();
+                this.addHoldings();
             }
             this.onConnected();
 
