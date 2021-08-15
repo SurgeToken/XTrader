@@ -7,7 +7,7 @@ const FALLBACK_PROVIDER = 'https://bsc-dataseed1.binance.org:443';
  */
 export const Contract = ({address, abi}) => {
     return class GenericContract {
-        constructor(provider, senderAddress) {
+        constructor(provider, senderAddress=address) {
             this.web3 = new Web3(provider || FALLBACK_PROVIDER);
             this.contract = new this.web3.eth.Contract(abi, address, {from: senderAddress});
             this.web3.eth.getAccounts((error, account) => {
