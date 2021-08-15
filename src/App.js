@@ -55,10 +55,12 @@ function Main() {
     const userWallet = new Wallet((key, value) => {
             const newHoldings = {...userWallet.holdings};
             setHoldings(newHoldings);
+            if (!wallet.provider) {
+                wallet.provider = userWallet.provider;
+            }
         },
         () => {
             setContracts(Object.keys(userWallet.contracts));
-            wallet.provider = userWallet.provider;
             setAccount(userWallet.accountAddress);
             setConnected(true);
         },
