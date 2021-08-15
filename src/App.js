@@ -23,6 +23,7 @@ import logo from './assets/xsurge-logo.png';
 import XPriceChart from "./components/XPriceChart";
 import Bridge from "./components/Bridge";
 import {RecoilRoot, useRecoilState} from "recoil";
+import {WalletContext} from "./context/context";
 
 const AppBar = (props) => (
     <Box
@@ -46,6 +47,7 @@ function Main() {
         default: 2,
         768: 1
     };
+    const wallet = useContext(WalletContext);
     const [connected, setConnected] = useRecoilState(state.walletConnected);
     const [, setHoldings] = useRecoilState(state.walletHoldings);
     const [account, setAccount] = useRecoilState(state.walletAccount);
@@ -56,6 +58,7 @@ function Main() {
         },
         () => {
             setContracts(Object.keys(userWallet.contracts));
+            wallet.provider = userWallet.provider;
             setAccount(userWallet.accountAddress);
             setConnected(true);
         },
