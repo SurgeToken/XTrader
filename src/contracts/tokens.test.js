@@ -1,4 +1,4 @@
-import {SurgeBNB} from "./tokens";
+import {SurgeBNB} from "./contracts";
 
 test("testing default construction", async () => {
     const contract = new SurgeBNB();

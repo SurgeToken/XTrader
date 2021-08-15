@@ -1,4 +1,4 @@
-import {SurgeBNB} from './tokens'
+import {SurgeBNB} from './contracts'
 
 const sender  = "0x2839EF5E2E778B2c12F87964205805ddB371a48c";
 
