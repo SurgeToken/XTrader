@@ -1,14 +1,22 @@
 import {Select} from "grommet";
 import {useEffect, useState} from "react";
 import state from "../../state/state"
-import {useRecoilState} from "recoil";
+import {useRecoilState, useRecoilValue} from "recoil";
 
 export default function TokenSelector({onSelect, defaultToken}) {
     const [tokens, setTokens] = useState([]);
     const [selectedToken, setSelectedToken] = useState(defaultToken);
     const [holdings, ] = useRecoilState(state.walletHoldings);
     useEffect(() => {
-        setTokens(Object.keys(holdings).map((key) => {return {name: key}}));
+        const tokenList = [];
+        Object.keys(holdings).forEach(
+            (key) => {
+                if (key !== 'BNB') {
+                    tokenList.push({name: key});
+                }
+            }
+        )
+        setTokens(tokenList);
 
     }, [holdings]);
 

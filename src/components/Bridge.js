@@ -95,7 +95,7 @@ const BuyForm = (props) => {
         //
         // console.log('Transaction result', result);
     };
-    const balance = currency === "BNB" ? (parseInt(holdings[currency]) * 1.0e-18).toFixed(4) : parseInt(holdings[currency]);
+    const balance = currency[0] !== "x" ? (parseInt(holdings['BNB']) * 1.0e-18).toFixed(4) : parseInt(holdings[currency==='xSBNB' ? 'SURGE' : currency.slice(1)]);
     return (
         <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
             <Box gap={"medium"}>
@@ -105,7 +105,7 @@ const BuyForm = (props) => {
                 </Box>
                 <Box gap={"small"}>
                     <Box direction={"row"} justify={"between"}>
-                        <Text >{currency}</Text>
+                        <Text >{currency[0] !== 'x' ? 'BNB' : currency.slice(1)}</Text>
                         <Text>Balance: {balance}</Text>
                     </Box>
                     <TextInput
@@ -176,7 +176,6 @@ const SellForm = (props) => {
         // console.log('Transaction result', result);
     };
     const balance = currency === "BNB" ? (parseInt(holdings[currency]) * 1.0e-18).toFixed(4) : parseInt(holdings[currency]);
-    console.log('Holdings', holdings);
     return (
         <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
             <Box gap={"medium"}>
