@@ -23,6 +23,7 @@ import XBridge from "../contracts/XBridge";
 import XBridgeManager from "../contracts/XBridgeManager";
 import wallet from "./Wallet";
 import {useRecoilState} from "recoil";
+import {selectedTokenState} from "../state/state";
 
 
 function validateAmount(amount) {
@@ -48,13 +49,14 @@ function buy() {
 }
 
 const BuyForm = (props) => {
-    const [holdings, setHoldings] = useRecoilState(wallet.holdings);
     const [amount, setAmount] = useState(0);
-    const [token, setToken] = useState('sBNB');
-    const [currency, setCurrenty] = useState('BNB');
+    const [currency, setCurrency] = useState('BNB');
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
-    const [selectedToken, setSelectedToken] = useState(props.defaultToken || Contracts.SurgeBnb);
+
+    const [holdings, setHoldings] = useRecoilState(wallet.holdings);
+    const [selectedToken, setSelectedToken] = useRecoilState(selectedTokenState);
+
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
 
@@ -76,15 +78,13 @@ const BuyForm = (props) => {
 
     const onSelectedTokenChange = (token) => {
         setSelectedToken(token);
-
-        if (props.onTokenChange) {
-            props.onTokenChange(token);
-        }
+        setCurrency(token.buyCurrency);
     };
 
     const onTokenSliderChange = (value) => {
-        const percentage = (value || 0) / 100;
-        const calculatedAmount = percentage * props.tokenBalance;
+        const balance = holdings[currency] || 0;
+        const percentage = value / 100;
+        const calculatedAmount = percentage * (balance * 1.0e-18).toFixed(4);
         setAmount(calculatedAmount);
     };
 
@@ -97,7 +97,7 @@ const BuyForm = (props) => {
         //
         // console.log('Transaction result', result);
     };
-    const BNB = (parseInt(holdings['BNB']) * 1.0e-18).toFixed(4);
+    const balance = (parseInt(holdings[currency] || 0) * 1.0e-18).toFixed(4);
     return (
         <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
             <Box gap={"medium"}>
@@ -108,7 +108,7 @@ const BuyForm = (props) => {
                 <Box gap={"small"}>
                     <Box direction={"row"} justify={"between"}>
                         <Text >{currency}</Text>
-                        <Text>Balance: {BNB}</Text>
+                        <Text>Balance: {balance}</Text>
                     </Box>
                     <TextInput
                         value={amount}
@@ -133,7 +133,9 @@ const SellForm = (props) => {
     const [amount, setAmount] = useState(0);
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
-    const [selectedToken, setSelectedToken] = useState(props.defaultToken || Contracts.SurgeBnb);
+
+    const [selectedToken, setSelectedToken] = useRecoilState(selectedTokenState);
+
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
 
@@ -154,10 +156,6 @@ const SellForm = (props) => {
 
     const onSelectedTokenChange = (token) => {
         setSelectedToken(token);
-
-        if (props.onTokenChange) {
-            props.onTokenChange(token);
-        }
     };
 
     const onTokenSliderChange = (value) => {
@@ -216,23 +214,8 @@ const BridgeForm = (props) => {
 
 const Bridge = (props) => {
     const [action, setAction] = React.useState(0);
-    const [currentTokenBalance, setCurrentTokenBalance] = useState(0);
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
-
-    useEffect(() => {
-        (async () => {
-            // Update the initial token balance
-            const balance = await getTokenBalance(Contracts.SurgeBnb);
-            setCurrentTokenBalance(balance);
-        })();
-    }, []);
-
-    const onTokenChange = async (token) => {
-        // Update the token balance after changing the selected token
-        const balance = getTokenBalance(token);
-        setCurrentTokenBalance(balance);
-    };
 
     return (
             <Draggable disabled={true}>
@@ -271,12 +254,8 @@ const Bridge = (props) => {
                     </CardHeader>
                     <CardBody>
                         {!action ? <BuyForm
-                            onTokenChange={onTokenChange}
-                            tokenBalance={currentTokenBalance}
                             defaultToken={Contracts.SurgeBnb}
                         /> : <SellForm
-                            onTokenChange={onTokenChange}
-                            tokenBalance={currentTokenBalance}
                             defaultToken={Contracts.SurgeBnb}
                         />}
                     </CardBody>
