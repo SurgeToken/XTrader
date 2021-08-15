@@ -18,9 +18,8 @@ import TokenSelector from "./TokenSelector/TokenSelector";
 import TokenAmountSlider from "./TokenAmountSlider";
 // import {getAccount, getSurgeBalance} from "../common/wallet";
 import Draggable from 'react-draggable';
-import wallet from "./Wallet";
+import state from "../state/state";
 import {useRecoilState} from "recoil";
-import {selectedTokenState} from "../state/state";
 import BuyButton from "./BuyButton";
 
 
@@ -52,8 +51,8 @@ const BuyForm = (props) => {
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
 
-    const [holdings, setHoldings] = useRecoilState(wallet.holdings);
-    const [selectedToken, setSelectedToken] = useRecoilState(selectedTokenState);
+    const [holdings, setHoldings] = useRecoilState(state.walletHoldings);
+    const [selectedToken, setSelectedToken] = useState();
 
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
@@ -129,13 +128,13 @@ const BuyForm = (props) => {
 }
 
 const SellForm = (props) => {
-    const [holdings, setHoldings] = useRecoilState(wallet.holdings);
+    const [holdings, setHoldings] = useRecoilState(state.walletHoldings);
     const [currency, setCurrency] = useState('SURGE');
     const [amount, setAmount] = useState(0);
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
 
-    const [selectedToken, setSelectedToken] = useRecoilState(selectedTokenState);
+    const [selectedToken, setSelectedToken] = useState();
 
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
