@@ -4,7 +4,7 @@ import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import {WalletLink} from "walletlink";
 import coinbaseLogo from '../images/coinbase.svg';
-import tokens from "../contracts/tokens";
+import tokens from "../contracts/contracts";
 import {EventEmitter} from "events";
 
 export const providerOptions = {
@@ -186,6 +186,9 @@ export default class Wallet {
         this.onDisconnected();
     }
 
+    convert(to, from, value) {
+
+    }
 }
 //
 // export async function getAccount() {

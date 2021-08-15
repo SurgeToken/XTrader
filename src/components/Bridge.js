@@ -18,11 +18,9 @@ import TokenSelector from "./TokenSelector/TokenSelector";
 import TokenAmountSlider from "./TokenAmountSlider";
 // import {getAccount, getSurgeBalance} from "../common/wallet";
 import Draggable from 'react-draggable';
-import SurgeToken from "../contracts/SurgeToken";
-import XBridge from "../contracts/XBridge";
-import XBridgeManager from "../contracts/XBridgeManager";
 import wallet from "./Wallet";
 import {useRecoilState} from "recoil";
+import BuyButton from "./BuyButton";
 
 
 function validateAmount(amount) {
@@ -112,6 +110,7 @@ const BuyForm = (props) => {
                     </Box>
                     <TextInput
                         value={amount}
+                        type={"number"}
                         onChange={onAmountChange}
                     />
                     <FormFieldError message={amountErrorMessage}/>
@@ -122,7 +121,8 @@ const BuyForm = (props) => {
             </Box>
             <Box direction="row" gap="medium" margin={"small"}>
                 <Button type="reset" label="Clear" size={"large"}/>
-                <Button type="submit" label="Accept" size={"large"} onClick={buyTokens} primary/>
+                <BuyButton type="submit" label="Accept" size={"large"} primary/>
+
             </Box>
         </Box>
     )
@@ -188,7 +188,7 @@ const SellForm = (props) => {
                         value={amount}
                         onChange={onAmountChange}
                     />
-                    <FormFieldError message={amountErrorMessage}/>
+                    {/*<FormFieldError message={amountErrorMessage}/>*/}
                 </Box>
                 <Box gap={"small"}>
                     <TokenAmountSlider onValueChange={onTokenSliderChange} defaultValue={0}/>

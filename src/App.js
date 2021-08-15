@@ -50,9 +50,10 @@ function Main() {
     const [connected, setConnected] = useRecoilState(wallet.connected);
     const [holdings, setHoldings] = useRecoilState(wallet.holdings);
     const [account, setAccount] = useRecoilState(wallet.account);
-    const [, setUserWallet] = useRecoilState(wallet.object);
+    const [uWallet, setUserWallet] = useRecoilState(wallet.object);
     const userWallet = new Wallet((key, value) => {
-            setHoldings(userWallet.holdings);
+            const newHoldings = {...userWallet.holdings};
+            setHoldings(newHoldings);
         },
         () => {
             console.log("connected");
