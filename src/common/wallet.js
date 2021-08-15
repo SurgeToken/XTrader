@@ -4,7 +4,7 @@ import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import {WalletLink} from "walletlink";
 import coinbaseLogo from '../images/coinbase.svg';
-import tokens from "../contracts/contracts";
+import contracts from "../contracts/contracts";
 import {EventEmitter} from "events";
 
 export const providerOptions = {
@@ -114,34 +114,45 @@ export default class Wallet {
         })
     }
 
-    addAssets() {
-        this.updateHoldings();
-        setInterval(() => {
-            this.web3.eth.getBalance(this.accountAddress).then(
-                (value) => {
-                    if (value !== this.holdings['BNB']) {
-                        this.holdings['BNB'] = value;
-                        this.onHoldingsChanged('BNB', value);
-                    }
-                });
-        }, this.updateInterval);
-        Object.keys(tokens).forEach(key => {
-            const token = new tokens[key](this.provider);
-            token.symbol().then((symbol) => {
-                    this.contracts[symbol] = token;
-                    this.holdings[symbol] = 0;
-                    this.onHoldingsChanged(symbol, 0);
-                    setInterval(() => {
-                        token.balanceOf().then((balance) => {
-                            if (balance !== this.holdings[symbol]) {
-                                this.holdings[symbol] = balance;
-                                this.onHoldingsChanged(symbol, balance);
-                            }
-                        })
-                    }, this.updateInterval);
+    updateBNB(){
+        this.web3.eth.getBalance(this.accountAddress).then(
+            (value) => {
+                if (value !== this.holdings['BNB']) {
+                    this.holdings['BNB'] = value;
+                    this.onHoldingsChanged('BNB', value);
                 }
-            )
+            });
+    }
+
+    updateHolding(symbol) {
+        this.contracts[symbol].balanceOf().then((balance) => {
+            if (balance !== this.holdings[symbol]) {
+                this.holdings[symbol] = balance;
+                this.onHoldingsChanged(symbol, balance);
+            }
         })
+    }
+
+    async addHoldings() {
+        this.holdings['BNB'] = await this.web3.eth.getBalance(this.accountAddress);
+        setInterval(this.updateBNB.bind(this), this.updateInterval);
+        this.onHoldingsChanged('BNB', this.holdings['BNB']);
+        const symbols = Object.keys(this.contracts);
+        for (let index in  symbols) {
+            let symbol = symbols[index];
+            const balance = this.holdings[symbol] = await this.contracts[symbol].balanceOf();
+            this.onHoldingsChanged(symbol, balance);
+            setInterval(this.updateHolding.bind(this, symbol), this.updateInterval);
+        }
+    }
+
+    async addContracts() {
+        const contractNames = Object.keys(contracts);
+        for(let index in contractNames) {
+            const contract = new contracts[contractNames[index]](this.provider);
+            const symbol = await contract.symbol();
+            this.contracts[symbol] = contract;
+        }
     }
 
     async connect() {
@@ -151,7 +162,8 @@ export default class Wallet {
             this.web3 = new Web3(this.provider);
             const account = this.accountAddress = await this.account();
             if (provider !== this.provider) {
-                this.addAssets();
+                await this.addContracts();
+                await this.addHoldings();
             }
             this.onConnected();
 
