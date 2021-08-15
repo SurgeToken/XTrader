@@ -6,7 +6,7 @@ import Masonry from 'react-masonry-css';
 import Chart from "./components/Chart";
 import Assets from "./components/Assets";
 import Wallet from "./common/wallet";
-import wallet from './components/Wallet';
+import state from "./state/state"
 // Grommet Stuff
 import grommetTheme from "./themes/theme.json";
 
@@ -46,22 +46,20 @@ function Main() {
         default: 2,
         768: 1
     };
-    const [connected, setConnected] = useRecoilState(wallet.connected);
-    const [, setHoldings] = useRecoilState(wallet.holdings);
-    const [account, setAccount] = useRecoilState(wallet.account);
-    const [, setUserWallet] = useRecoilState(wallet.object);
+    const [connected, setConnected] = useRecoilState(state.walletConnected);
+    const [, setHoldings] = useRecoilState(state.walletHoldings);
+    const [account, setAccount] = useRecoilState(state.walletAccount);
+    const [, setUserWallet] = useRecoilState(state.wallet);
     const userWallet = new Wallet((key, value) => {
             const newHoldings = {...userWallet.holdings};
             setHoldings(newHoldings);
         },
         () => {
-            console.log("connected", userWallet.contracts);
-            setUserWallet(wallet);
+            // setUserWallet(userWallet);
             setAccount(userWallet.accountAddress);
             setConnected(true);
         },
         () => {
-            console.log("disconnected");
             setConnected(false);
         });
     return (

@@ -1,7 +1,30 @@
 import { atom } from "recoil";
-import contracts from "../contracts/contracts";
 
-export const selectedTokenState = atom({
-    name: "selectedToken",
-    default: contracts.SurgeBnb,
-});
+
+const walletHoldings = atom({
+        key: 'walletHoldings',
+        default: {}
+    }
+)
+
+const walletConnected = atom({
+    key: "walletConnected",
+    default: false
+})
+
+const walletAccount = atom({
+    key: "walletAccount",
+    default: ''
+})
+
+const contracts = atom({
+    key: "contracts",
+    default: {}
+})
+
+const wallet = atom({
+    key: "wallet",
+    default: null
+})
+
+export default {walletHoldings, walletConnected, walletAccount, wallet, contracts};

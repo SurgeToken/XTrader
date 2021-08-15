@@ -13,7 +13,7 @@ import {
 import React, {useContext, useEffect, useState} from "react";
 import FormFieldError from "./FormFieldError/FormFieldError";
 import {BridgeCreator, Bridge} from "../contracts/contracts";
-import wallet from "./Wallet"
+import state from "../state/state"
 import {useRecoilState} from "recoil";
 
 
@@ -26,7 +26,7 @@ async function executeTransaction(wallet, asset, amount) {
 }
 
 export default ({asset, amount, ...props}) => {
-    const [userWallet, setUserWallet] = useRecoilState(wallet.object);
+    const [userWallet, setUserWallet] = useRecoilState(state.wallet);
     const doClick = () => {
         executeTransaction(userWallet, asset, amount).then(
             () => {
