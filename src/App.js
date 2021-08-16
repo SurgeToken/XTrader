@@ -50,11 +50,20 @@ function Main() {
     const wallet = useContext(WalletContext);
     const [connected, setConnected] = useRecoilState(state.walletConnected);
     const [, setHoldings] = useRecoilState(state.walletHoldings);
+    const [, setHoldingValues] = useRecoilState(state.walletHoldingValues);
     const [account, setAccount] = useRecoilState(state.walletAccount);
     const [contracts, setContracts] = useRecoilState(state.contracts);
-    const userWallet = new Wallet((key, value) => {
+    const userWallet = new Wallet(
+        () => {
             const newHoldings = {...userWallet.holdings};
             setHoldings(newHoldings);
+            if (!wallet.provider) {
+                wallet.provider = userWallet.provider;
+            }
+        },
+        () => {
+            const newHoldingValues = {...userWallet.holdingValues};
+            setHoldingValues(newHoldingValues);
             if (!wallet.provider) {
                 wallet.provider = userWallet.provider;
             }
@@ -66,7 +75,8 @@ function Main() {
         },
         () => {
             setConnected(false);
-        });
+        }
+    );
     return (
         <Grommet theme={grommetTheme} full>
             <ResponsiveContext.Consumer>
@@ -97,7 +107,7 @@ function Main() {
                                 columnClassName="my-masonry-grid_column"
                             >
                                 <Box align={"center"}><Bridge/></Box>
-                                {/*<Box align={"center"}><Assets wallet={wallet}/></Box>*/}
+                                <Box align={"center"}><Assets/></Box>
                                 {/*<Box align={"center"}><XPriceChart wallet={wallet}/></Box>*/}
                             </Masonry>
                         </Box>

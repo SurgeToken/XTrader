@@ -5,13 +5,16 @@ import {
 import Draggable from "react-draggable";
 import contracts from "../contracts/contracts";
 import React from "react";
+import {useRecoilState} from "recoil";
+import state from "../state/state";
 
 const formatTotal = (value) => {
     return `\$${value.toFixed(2)}`;
 }
 
-export default (props) => {
-    const {wallet} = props;
+export default () => {
+    const [holdings, ] = useRecoilState(state.walletHoldings);
+    const [holdingValues, ] = useRecoilState(state.walletHoldingValues);
     const columns = [
         {
             property: 'Token',
@@ -26,29 +29,36 @@ export default (props) => {
             header: <Text>Quantity</Text>
 
         },
-        {
-            property: 'Change',
-            size: "xxsmall",
-            render: (col) => <Text color={col.Change > 50 ? "green" : "red"}>{col.Change.toFixed(0)}%</Text>,
-            align: "center",
-            header: <Text>24H</Text>,
-
-        },
+        // {
+        //     property: 'Change',
+        //     size: "xxsmall",
+        //     render: (col) => <Text color={col.Change > 50 ? "green" : "red"}>{col.Change.toFixed(0)}%</Text>,
+        //     align: "center",
+        //     header: <Text>24H</Text>,
+        //
+        // },
         {
             property: 'Value',
             align: "center",
             header: 'Value',
-            render: (data) => formatTotal(data.Value),
-            aggregate: 'sum',
-            footer: { aggregate: true },
-        }
+            // render: (data) => formatTotal(data.Price)
+        },
+        // {
+        //     property: 'Value',
+        //     align: "center",
+        //     header: 'Value',
+        //     render: (data) => formatTotal(data.Value),
+        //     aggregate: 'sum',
+        //     footer: { aggregate: true },
+        // }
     ]
-    const data = ['SBNB', 'XSBNB', 'SETH'].map((val) => {
+    const data = ['SURGE', 'SUSD', 'SETH'].map((val) => {
         return {
             Token: val,
-            Quantity: Math.trunc(Math.random() * 100000),
-            Change: Math.random() * 100,
-            Value: Math.random()*1000}
+            Quantity: holdings[val],
+            // Change: Math.random() * 100,
+            Value: parseInt(holdingValues[val])*1.0e-18
+        }
     });
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
