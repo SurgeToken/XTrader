@@ -16,8 +16,8 @@ export default function ({address, abi}) {
             return this.methods.getTokenQuantityInContract().call();
         }
 
-        async getValueOfHoldings(address) {
-            return this.methods.getValueOfHoldings(address).call();
+        async getValueOfHoldings(addressOfHolder) {
+            return this.methods.getValueOfHoldings(addressOfHolder || this.contract.options.from).call();
         }
 
         async liquifyTheMistakesOfOthers(address) {
