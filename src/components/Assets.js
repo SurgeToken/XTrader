@@ -52,12 +52,14 @@ export default () => {
         //     footer: { aggregate: true },
         // }
     ]
+    //TODO: this must be done better but works for now :)
+    const symbols = {'SURGE':"BNB", 'SUSD':"BUSD", 'SETH':"ETH"}
     const data = ['SURGE', 'SUSD', 'SETH'].map((val) => {
         return {
             Token: val,
             Quantity: holdings[val],
             // Change: Math.random() * 100,
-            Value: parseInt(holdingValues[val])*1.0e-18
+            Value: (parseInt(holdingValues[val])*1.0e-18).toString() + " " + symbols[val]
         }
     });
     // noinspection JSCheckFunctionSignatures
