@@ -10,7 +10,6 @@ import {useRecoilState, useRecoilValue} from "recoil";
 import state from "../state/state";
 
 export default function XPriceChart() {
-    const [addresses, setAddresses] = useState([]);
     const [priceData, setPriceData] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState();
 
@@ -30,9 +29,9 @@ export default function XPriceChart() {
 
     useEffect(() => {
         (async () => {
-            console.error("addresses: ", addresses, " selectedAddress: ", selectedAddress)
-            const data = await getHistoricPriceData(selectedAddress);
-            setPriceData(data);
+            console.error("selectedAddress: ", selectedAddress)
+            const data = await getHistoricPriceData(await selectedAddress);
+            setPriceData(await data);
         })();
     }, []);
 
@@ -43,7 +42,7 @@ export default function XPriceChart() {
             <Box gap={"medium"}>
                 <Box gap={"small"}>
                     <Text>Token</Text>
-                    <AddressSelector onSelect={onSelectedAddressChange}/>
+                    <AddressSelector onSelect={onSelectedAddressChange} defaultAddress={selectedAddress}/>
                 </Box>
                 <Chart data={priceData}/>
             </Box>
