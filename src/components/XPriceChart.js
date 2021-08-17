@@ -1,13 +1,9 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {getHistoricPriceData} from "../common/price";
-import contracts, {SurgeBNB} from "../contracts/contracts";
 import Chart from "./Chart";
-import Wallet from "../common/wallet";
 
 import AddressSelector from "./AddressSelector/AddressSelector";
 import {Box, ResponsiveContext, Select, Text} from "grommet";
-import {useRecoilState, useRecoilValue} from "recoil";
-import state from "../state/state";
 
 export default function XPriceChart() {
     const [priceData, setPriceData] = useState([]);
@@ -15,7 +11,6 @@ export default function XPriceChart() {
 
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
-    // this.contracts = Wallet.contracts;
 
 
     const onSelectedAddressChange = (address) => {
@@ -23,17 +18,14 @@ export default function XPriceChart() {
         console.log('address changed', address);
     };
 
-
-
-        // .contracts["SurgeBNB"].getAddressOfContract();
-
     useEffect(() => {
         (async () => {
-            console.error("selectedAddress: ", selectedAddress)
-            const data = await getHistoricPriceData(await selectedAddress);
-            setPriceData(await data);
+            if (selectedAddress !== undefined){
+                const data = await getHistoricPriceData(Object.values(selectedAddress));
+                setPriceData(await data)
+            }
         })();
-    }, []);
+    }, [selectedAddress]);
 
 
     return (
@@ -42,7 +34,7 @@ export default function XPriceChart() {
             <Box gap={"medium"}>
                 <Box gap={"small"}>
                     <Text>Token</Text>
-                    <AddressSelector onSelect={onSelectedAddressChange} defaultAddress={selectedAddress}/>
+                    <AddressSelector onSelect={onSelectedAddressChange}/>
                 </Box>
                 <Chart data={priceData}/>
             </Box>
