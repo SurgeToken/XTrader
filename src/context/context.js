@@ -1,5 +1,9 @@
 import React from "react";
 
-export const WalletContext = React.createContext({
-    provider: null
-})
+const context = {
+    wallet: {
+        wallet: null,
+        // holdings: {}
+    }
+}
+export const WalletContext = React.createContext(context.wallet)

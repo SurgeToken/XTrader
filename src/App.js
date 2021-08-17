@@ -47,7 +47,7 @@ function Main() {
         default: 2,
         768: 1
     };
-    const wallet = useContext(WalletContext);
+    const context = useContext(WalletContext);
     const [connected, setConnected] = useRecoilState(state.walletConnected);
     const [, setHoldings] = useRecoilState(state.walletHoldings);
     const [account, setAccount] = useRecoilState(state.walletAccount);
@@ -55,13 +55,11 @@ function Main() {
     const userWallet = new Wallet((key, value) => {
             const newHoldings = {...userWallet.holdings};
             setHoldings(newHoldings);
-            if (!wallet.provider) {
-                wallet.provider = userWallet.provider;
-            }
         },
         () => {
             setContracts(Object.keys(userWallet.contracts));
             setAccount(userWallet.accountAddress);
+            context.wallet = userWallet;
             setConnected(true);
         },
         () => {

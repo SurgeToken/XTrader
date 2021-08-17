@@ -16,6 +16,7 @@ export default function TokenSelector({onSelect, defaultToken}) {
                 }
             }
         )
+        setSelectedToken(tokenList[0]);
         setTokens(tokenList);
 
     }, [holdings]);

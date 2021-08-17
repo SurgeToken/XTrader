@@ -12,7 +12,7 @@ export const providerOptions = {
         appName: 'xSurge',
         network: "binance",
         rpc: {
-            56: "https://bsc-dataseed1.binance.org/"
+            56: 'https://bsc-dataseed1.binance.org:443'
         },
         chainId: 56
     },

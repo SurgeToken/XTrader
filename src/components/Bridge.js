@@ -121,7 +121,7 @@ const BuyForm = (props) => {
             </Box>
             <Box direction="row" gap="medium" margin={"small"}>
                 <Button type="reset" label="Clear" size={"large"}/>
-                <BuyButton type="submit" label="Accept" size={"large"} primary/>
+                <BuyButton type="submit" label="Accept" size={"large"} asset={currency} amount={amount} primary/>
             </Box>
         </Box>
     )
@@ -215,7 +215,7 @@ const BridgeForm = (props) => {
 }
 
 const Bridge = (props) => {
-    const [action, setAction] = React.useState(0);
+    const [action, setAction] = React.useState(false);
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
 

@@ -1,6 +1,7 @@
 import {Contract} from "./Contract.js";
 import xBridgeManagerABI from './abi/XBridgeManager.json'
 import XBridge from './XBridge';
+import Web3 from "web3";
 
 
 export default ({address}) => {
@@ -15,7 +16,11 @@ export default ({address}) => {
             If an xBridge exists it will revert
          */
         async createXBridge(address) {
-            return this.methods.createXBridge(address).send().catch((err) => this.getXBridgeAddress(address));
+            const bridgeAddress = await this.getXBridgeAddress(address);
+            if (bridgeAddress) {
+                return bridgeAddress;
+            }
+            return this.methods.createXBridge(address).send();
         }
 
         async getXBridgeAddress(address) {

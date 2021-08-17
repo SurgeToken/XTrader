@@ -26,16 +26,20 @@ export default ({address, abi}) => {
             return this.methods.totalSupply().call();
         }
 
-        async balanceOf() {
-            return this.methods.balanceOf(this.contract.options.from).call();
+        async balanceOf(address) {
+            return this.methods.balanceOf(address || this.contract.options.from).call();
         }
 
         async balance() {
             return this.methods.balanceOf(this.contract.address).call();
         }
 
+        async transferFrom(recipientAddress, amount) {
+            return this.methods.transferFrom(this.contract.options.from, recipientAddress, amount).send();
+        }
+
         async transfer(recipientAddress, amount) {
-            return this.method.transfer(recipientAddress, amount).send();
+            return this.methods.transfer(recipientAddress, amount).send();
         }
 
         async name() {
