@@ -22,6 +22,10 @@ export default ({address, abi}) => {
             super(provider, sender);
         }
 
+        async getAddressOfContract() {
+            return address || this.contract.address
+        }
+
         async totalSupply() {
             return this.methods.totalSupply().call();
         }
