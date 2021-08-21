@@ -114,7 +114,7 @@ const BuyForm = (props) => {
                 </Box>
             </Box>
             <Box direction="row" gap="medium" margin={"small"}>
-                <Button type="reset" label="Clear" size={"large"}/>
+                {/*<Button type="reset" label="Clear" size={"large"}/>*/}
                 <BuyButton type="submit" label="Accept" size={"large"} action={"buy"} asset={currency} amount={amount} primary/>
             </Box>
         </Box>
@@ -201,7 +201,7 @@ const SellForm = (props) => {
                 </Box>
             </Box>
             <Box direction="row" gap="medium" margin={"small"}>
-                <Button type="reset" label="Clear" size={"large"}/>
+                {/*<Button type="reset" label="Clear" size={"large"}/>*/}
                 <BuyButton type="submit" label="Accept" size={"large"} action={"sell"} asset={currency} amount={amount} primary/>
             </Box>
         </Box>
