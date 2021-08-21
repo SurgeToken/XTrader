@@ -53,7 +53,7 @@ const BuyForm = (props) => {
 
     const [holdings, setHoldings] = useRecoilState(state.walletHoldings);
     const [currency, setCurrency] = useState(Object.keys(holdings)[1] || 'BNB');
-    const [selectedToken, setSelectedToken] = useState();
+    const [selectedToken, setSelectedToken] = useState({name: currency});
 
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
@@ -81,9 +81,10 @@ const BuyForm = (props) => {
     };
 
     const onTokenSliderChange = (value) => {
-        const balance = Number(holdings[currency]) || 0;
+        const buyCurrency = currency[0] === 'x' ? `S${currency.slice(1)}` : 'BNB';
+        const balance = Number(holdings[buyCurrency]) || 0;
         const percentage = value / 100;
-        const calculatedAmount = percentage * (currency === "BNB" ? (balance * 1.0e-18).toFixed(4) : balance);
+        const calculatedAmount = percentage * (buyCurrency === "BNB" ? (balance * 1.0e-18).toFixed(4) : balance);
         setAmount(calculatedAmount);
     };
 
@@ -129,7 +130,8 @@ const SellForm = (props) => {
     const [currency, setCurrency] = useState(Object.keys(holdings)[1]);
     const context = useContext(WalletContext);
 
-    const [selectedToken, setSelectedToken] = useState();
+    const [selectedToken, setSelectedToken] = useState({name: currency});
+
 
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
@@ -253,9 +255,9 @@ const Bridge = (props) => {
                     </CardHeader>
                     <CardBody>
                         {!action ? <BuyForm
-                            defaultToken={contracts.SurgeBnb}
+                            defaultToken={contracts.SurgeETH}
                         /> : <SellForm
-                            defaultToken={contracts.SurgeBnb}
+                            defaultToken={contracts.SurgeETH}
                         />}
                     </CardBody>
                 </Card>
