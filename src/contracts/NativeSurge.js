@@ -17,12 +17,15 @@ export default function ({address, abi}) {
         }
 
         async getValueOfHoldings(address) {
-            return this.methods.getValueOfHoldings(address).call();
+            return this.methods.getValueOfHoldings(address || this.contract.options.from).call();
         }
 
         async liquifyTheMistakesOfOthers(address) {
             return this.methods.liquifyTheMistakesOfOthers(address).send();
         }
 
+        async sell(amount) {
+            return this.methods.sell(amount).send();
+        }
     }
 }

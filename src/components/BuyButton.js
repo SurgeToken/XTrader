@@ -13,7 +13,6 @@ import Web3 from "web3";
 import {StatusGood, StatusCritical, FormClose} from "grommet-icons";
 
 
-
 async function executeXTransaction(wallet, asset, amount, setMessage, setStatus) {
     // create an xBridgeManager connection
     const bridgeCreator = new BridgeCreator(wallet.provider, wallet.accountAddress);
@@ -27,13 +26,12 @@ async function executeXTransaction(wallet, asset, amount, setMessage, setStatus)
         nativeSurge = wallet.contracts[asset.slice(1).toUpperCase()];
     }
     const status = await bridge.buyXTokenWithNative(nativeSurge.address, wallet.contracts[asset].address).catch(async (error) => {
-        if  (error.receipt) {
+        if (error.receipt) {
             console.log(`Failed to purchase X tokens most likely because bridge is missing them attempting to transfer ${amount} native`);
 
             // For now just assume they don't have any native surge in the bridge
             return await nativeSurge.transfer(bridgeAddress, amount).then(
                 async (receipt) => {
-                    console.log("transferred native surge to bridge");
                     return await bridge.buyXTokenWithNative(nativeSurge.address, wallet.contracts[asset].address).then(
                         (receipt) => {
                             console.log("bought x tokens");
@@ -41,14 +39,12 @@ async function executeXTransaction(wallet, asset, amount, setMessage, setStatus)
                             return true;
                         }
                     ).catch((error) => {
-                        console.log("failed to buy x tokens after transfer");
                         transactionReceipt = error.receipt;
 
                         return false
                     })
                 }
             ).catch((error) => {
-                console.log("failed transfer native", error);
                 if (error.receipt) {
                     transactionReceipt = error.receipt;
                     return false;
@@ -58,21 +54,67 @@ async function executeXTransaction(wallet, asset, amount, setMessage, setStatus)
             return false;
         }
     });
-    setMessage(<Anchor color={"white"} href={`https://bscscan.com/tx/${transactionReceipt.transactionHash}`} target={"_blank"} label={`Transaction ${status ? "succeeded" : "failed"} click here for more details`}/>);
+    setMessage(<Anchor color={"white"} href={`https://bscscan.com/tx/${transactionReceipt.transactionHash}`}
+                       target={"_blank"}
+                       label={`Transaction ${status ? "succeeded" : "failed"} click here for more details`}/>);
     setStatus(status);
 }
 
-async function executeNativeTransaction(wallet, asset, amount) {
-
+function bscErrorMessage(status, transactionReceipt) {
+    return (
+        <Anchor color={"white"} href={`https://bscscan.com/tx/${transactionReceipt.transactionHash}`} target={"_blank"}
+                label={`Transaction ${status ? "succeeded" : "failed"} click here for more details`}/>
+    )
 }
 
-export default ({asset, amount, ...props}) => {
+async function executeNativeTransaction(wallet, action, asset, amount, setMessage, setStatus) {
+    let transactionReceipt = {};
+    let status;
+    if (action === "sell") {
+        console.log(action, asset, amount, wallet.contracts[asset])
+        status = await wallet.contracts[asset].sell(amount).then((receipt) => {
+            transactionReceipt = receipt;
+            return true;
+        }).catch((error) => {
+            if (error.receipt) {
+                transactionReceipt = error.receipt;
+            } else {
+                setMessage(<Text>{error.message}</Text>);
+            }
+        })
+    } else {
+        status = await wallet.web3.eth.sendTransaction({
+            from: wallet.accountAddress,
+            to: wallet.contracts[asset].address,
+            value: amount * 1.0e+18,
+            gas: 1500000,
+        }).then((receipt) => {
+            transactionReceipt = receipt;
+            return true;
+        }).catch((error) => {
+            console.log(error);
+            if (error.receipt) {
+                transactionReceipt = error.receipt;
+            } else {
+                setMessage(<Text>{error.message}</Text>);
+            }
+            return false;
+        })
+    }
+
+    if (transactionReceipt.transactionHash) {
+        setMessage(bscErrorMessage(status, transactionReceipt));
+    }
+    setStatus(status);
+}
+
+export default ({asset, amount, action, ...props}) => {
     const context = useContext(WalletContext);
     const [message, setMessage] = useState('');
     const [status, setStatus] = useState(false);
     const execute = asset[0] === 'x' ? executeXTransaction : executeNativeTransaction;
     const doClick = () => {
-        execute(context.wallet, asset, amount, setMessage, setStatus).then(
+        execute(context.wallet, action, asset, amount, setMessage, setStatus).then(
             () => {
 
             }
@@ -85,7 +127,7 @@ export default ({asset, amount, ...props}) => {
                 <Layer
                     position="bottom"
                     modal={false}
-                    margin={{ vertical: 'medium', horizontal: 'small' }}
+                    margin={{vertical: 'medium', horizontal: 'small'}}
                     onEsc={() => setMessage('')}
                     responsive={false}
                     plain
@@ -97,16 +139,16 @@ export default ({asset, amount, ...props}) => {
                         justify="between"
                         round="medium"
                         elevation="medium"
-                        pad={{ vertical: 'xsmall', horizontal: 'small' }}
+                        pad={{vertical: 'xsmall', horizontal: 'small'}}
                         background={status ? "status-ok" : "status-critical"}
                     >
                         <Box align="center" direction="row" gap="xsmall">
-                            {status ? <StatusGood /> : <StatusCritical/>}
+                            {status ? <StatusGood/> : <StatusCritical/>}
                             <Text>
                                 {message}
                             </Text>
                         </Box>
-                        <Button icon={<FormClose />} onClick={() => setMessage('')} plain />
+                        <Button icon={<FormClose/>} onClick={() => setMessage('')} plain/>
                     </Box>
                 </Layer>
             )}

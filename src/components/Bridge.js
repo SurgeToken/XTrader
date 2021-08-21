@@ -21,6 +21,7 @@ import Draggable from 'react-draggable';
 import state from "../state/state";
 import {useRecoilState} from "recoil";
 import BuyButton from "./BuyButton";
+import {WalletContext} from "../context/context";
 
 
 function validateAmount(amount) {
@@ -47,11 +48,11 @@ function buy() {
 
 const BuyForm = (props) => {
     const [amount, setAmount] = useState(0);
-    const [currency, setCurrency] = useState('BNB');
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
 
     const [holdings, setHoldings] = useRecoilState(state.walletHoldings);
+    const [currency, setCurrency] = useState(Object.keys(holdings)[1] || 'BNB');
     const [selectedToken, setSelectedToken] = useState();
 
     // noinspection JSCheckFunctionSignatures
@@ -86,15 +87,7 @@ const BuyForm = (props) => {
         setAmount(calculatedAmount);
     };
 
-    const buyTokens = async () => {
-        if (!amountValid) {
-            return;
-        }
 
-        // const result = await buy(selectedToken, amount);
-        //
-        // console.log('Transaction result', result);
-    };
     const balance = currency[0] !== "x" ? (parseInt(holdings['BNB']) * 1.0e-18).toFixed(4) : parseInt(holdings[currency==='xSBNB' ? 'SURGE' : currency.slice(1)]);
     return (
         <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
@@ -121,7 +114,7 @@ const BuyForm = (props) => {
             </Box>
             <Box direction="row" gap="medium" margin={"small"}>
                 <Button type="reset" label="Clear" size={"large"}/>
-                <BuyButton type="submit" label="Accept" size={"large"} asset={currency} amount={amount} primary/>
+                <BuyButton type="submit" label="Accept" size={"large"} action={"buy"} asset={currency} amount={amount} primary/>
             </Box>
         </Box>
     )
@@ -129,10 +122,12 @@ const BuyForm = (props) => {
 
 const SellForm = (props) => {
     const [holdings, setHoldings] = useRecoilState(state.walletHoldings);
-    const [currency, setCurrency] = useState('SURGE');
     const [amount, setAmount] = useState(0);
     const [amountValid, setAmountValid] = useState(true);
+    const [received, setReceived] = useState(0)
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
+    const [currency, setCurrency] = useState(Object.keys(holdings)[1]);
+    const context = useContext(WalletContext);
 
     const [selectedToken, setSelectedToken] = useState();
 
@@ -166,15 +161,17 @@ const SellForm = (props) => {
         setAmount(calculatedAmount);
     };
 
-    const sellTokens = async () => {
-        if (!amountValid) {
-            return;
+
+    useEffect( () => {
+        if (amount) {
+            context.wallet.contracts[currency].getValueOfHoldings(context.wallet.accountAddress).then((value) => {
+                value = parseInt(value);
+                const scale = 1.0 / value;
+                setReceived((scale * amount * 100));
+            })
         }
 
-        // const result = await sell(selectedToken, amount);
-
-        // console.log('Transaction result', result);
-    };
+    }, [amount]);
     const balance = currency === "BNB" ? (parseInt(holdings[currency]) * 1.0e-18).toFixed(4) : parseInt(holdings[currency]);
     return (
         <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
@@ -188,8 +185,8 @@ const SellForm = (props) => {
                 </Box>
                 <Box gap={"small"}>
                     <Box direction={"row"} justify={"between"}>
-                        <Text>{currency}</Text>
-                        <Text>Received: 000</Text>
+                        <Text>W{currency.slice(1)}</Text>
+                        <Text>Received: {received.toFixed(10)}</Text>
                     </Box>
                     <TextInput
                         value={amount}
@@ -203,7 +200,7 @@ const SellForm = (props) => {
             </Box>
             <Box direction="row" gap="medium" margin={"small"}>
                 <Button type="reset" label="Clear" size={"large"}/>
-                <Button type="submit" label="Accept" size={"large"} onClick={sellTokens} primary/>
+                <BuyButton type="submit" label="Accept" size={"large"} action={"sell"} asset={currency} amount={amount} primary/>
             </Box>
         </Box>
     )
