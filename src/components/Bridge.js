@@ -146,7 +146,7 @@ const SellForm = (props) => {
             return;
         }
 
-        setAmount(parseFloat(event.target.value));
+        setAmount(parseInt(event.target.value));
         setAmountValid(true);
         setAmountErrorMessage("");
     };
@@ -160,7 +160,7 @@ const SellForm = (props) => {
         const balance = selectedToken.name === "BNB" ? (parseInt(holdings[selectedToken.name]) * 1.0e-18).toFixed(4) : parseInt(holdings[selectedToken.name]);
         const percentage = value / 100;
         const calculatedAmount = percentage * balance;
-        setAmount(calculatedAmount);
+        setAmount(parseInt(calculatedAmount));
     };
 
 
@@ -235,7 +235,7 @@ const Bridge = (props) => {
                         <Box margin={(size === "xsmall" ? "medium" : "small")}>
                             <Text
                                 size={((size === "xsmall" || size === "small") ? "large" : "large")}
-                            >XBridge</Text>
+                            >Trade</Text>
                         </Box>
                         <Box
                             align={"center"}
