@@ -5,7 +5,7 @@ import {
 } from "grommet";
 import React, {useContext, useEffect, useState} from "react";
 import FormFieldError from "./FormFieldError/FormFieldError";
-import {BridgeCreator, Bridge} from "../contracts/contracts";
+import contracts from "../contracts/contracts";
 import state from "../state/state"
 import {useRecoilState} from "recoil";
 import {WalletContext} from '../context/context';
@@ -15,9 +15,9 @@ import {StatusGood, StatusCritical, FormClose} from "grommet-icons";
 
 async function executeXTransaction(wallet, asset, amount, setMessage, setStatus) {
     // create an xBridgeManager connection
-    const bridgeCreator = new BridgeCreator(wallet.provider, wallet.accountAddress);
+    const bridgeCreator = new contracts.BridgeCreator(wallet.provider, wallet.accountAddress);
     const bridgeAddress = await bridgeCreator.createXBridge(wallet.accountAddress);
-    const bridge = new (Bridge({address: bridgeAddress}))(wallet.provider, wallet.accountAddress);
+    const bridge = new (contracts.Bridge({address: bridgeAddress}))(wallet.provider, wallet.accountAddress);
     let nativeSurge;
     let transactionReceipt = {};
     if (asset === 'xSBNB') {

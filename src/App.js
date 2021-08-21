@@ -88,16 +88,11 @@ function Main() {
                             className="appBody"
                             overflow={{horizontal: 'hidden'}}
                             pad={"medium"}
+                            align={"center"}
                         >
-                            <Masonry
-                                breakpointCols={breakpointColumnsObj}
-                                className="my-masonry-grid"
-                                columnClassName="my-masonry-grid_column"
-                            >
                                 <Box align={"center"}><Bridge/></Box>
                                 {/*<Box align={"center"}><Assets wallet={wallet}/></Box>*/}
                                 {/*<Box align={"center"}><XPriceChart wallet={wallet}/></Box>*/}
-                            </Masonry>
                         </Box>
                         <Box pad={"medium"}>
                             <Button
