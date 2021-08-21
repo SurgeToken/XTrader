@@ -1,7 +1,13 @@
-import SurgeToken from "./SurgeToken.js"
+import {SurgeBNB} from './contracts'
 
-test("surge token creation", () => {
-    const token = new SurgeToken("0xE1E1Aa58983F6b8eE8E4eCD206ceA6578F036c21");
-    console.log(token.decimals);
+const sender  = "0x2839EF5E2E778B2c12F87964205805ddB371a48c";
+
+
+test("surge token creation", async () => {
+    const token = new SurgeBNB(undefined, sender);
+    let decimals = await token.decimals()
+    expect(decimals === 0);
+    expect(await token.balanceOf() === 614643445);
+
 
 })

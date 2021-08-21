@@ -14,7 +14,7 @@ export default function TokenAmountSlider({ defaultValue, onValueChange }) {
         }
     };
 
-    return <Box align="center">
+    return <Box align="center" width={"75%"}>
         <Slider
             dots
             value={value}

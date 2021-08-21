@@ -1,9 +1,11 @@
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import {WalletLink} from "walletlink";
+import Web3 from "web3";
 import coinbaseLogo from '../images/coinbase.svg';
 
-const providerOptions = {
+
+export const providerOptions = {
     walletConnectMainNet: {
         appName: 'xSurge',
         network: "binance",
@@ -56,6 +58,7 @@ export async function connectWallet() {
 
         });
         provider = await web3Modal.connect()
+        return provider;
     } catch (err) {
         if (err === undefined) {
             alert('If you are having trouble connecting to MetaMask, please check if you still have a pending connection request') //TODO still checking web3Modal library to catch MetamskError better

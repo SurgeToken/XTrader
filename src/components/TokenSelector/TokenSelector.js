@@ -1,15 +1,25 @@
 import {Select} from "grommet";
 import {useEffect, useState} from "react";
-import {getAllContracts} from "../../common/contracts";
+import state from "../../state/state"
+import {useRecoilState, useRecoilValue} from "recoil";
 
 export default function TokenSelector({onSelect, defaultToken}) {
     const [tokens, setTokens] = useState([]);
     const [selectedToken, setSelectedToken] = useState(defaultToken);
-
+    const [holdings, ] = useRecoilState(state.walletHoldings);
     useEffect(() => {
-        const allContracts = getAllContracts();
-        setTokens(allContracts);
-    }, []);
+        const tokenList = [];
+        Object.keys(holdings).forEach(
+            (key) => {
+                if (key !== 'BNB') {
+                    tokenList.push({name: key});
+                }
+            }
+        )
+        setSelectedToken(tokenList[0]);
+        setTokens(tokenList);
+
+    }, [holdings]);
 
     const onTokenChange = ({ option }) => {
         setSelectedToken(option);
@@ -18,7 +28,6 @@ export default function TokenSelector({onSelect, defaultToken}) {
             onSelect(option);
         }
     };
-
     return <Select
         onChange={onTokenChange}
         options={tokens}

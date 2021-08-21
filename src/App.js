@@ -1,13 +1,12 @@
 // Libs
-import React from "react";
+import React, {useContext, useState} from "react";
 import Masonry from 'react-masonry-css';
 
 // Components
-import Trader from "./components/Trader"
-import WalletButton from "./components/Wallet";
 import Chart from "./components/Chart";
 import Assets from "./components/Assets";
-
+import Wallet from "./common/wallet";
+import state from "./state/state"
 // Grommet Stuff
 import grommetTheme from "./themes/theme.json";
 
@@ -21,6 +20,10 @@ import './App.css';
 import logo from './assets/xsurge-logo.png';
 
 // Common Functions
+import XPriceChart from "./components/XPriceChart";
+import Bridge from "./components/Bridge";
+import {RecoilRoot, useRecoilState} from "recoil";
+import {WalletContext} from "./context/context";
 
 const AppBar = (props) => (
     <Box
@@ -39,12 +42,29 @@ function addTradingComponent() {
     alert('Add another trading component to the body');
 }
 
-function App() {
+function Main() {
     const breakpointColumnsObj = {
         default: 2,
         768: 1
     };
-
+    const context = useContext(WalletContext);
+    const [connected, setConnected] = useRecoilState(state.walletConnected);
+    const [, setHoldings] = useRecoilState(state.walletHoldings);
+    const [account, setAccount] = useRecoilState(state.walletAccount);
+    const [contracts, setContracts] = useRecoilState(state.contracts);
+    const userWallet = new Wallet((key, value) => {
+            const newHoldings = {...userWallet.holdings};
+            setHoldings(newHoldings);
+        },
+        () => {
+            setContracts(Object.keys(userWallet.contracts));
+            setAccount(userWallet.accountAddress);
+            context.wallet = userWallet;
+            setConnected(true);
+        },
+        () => {
+            setConnected(false);
+        });
     return (
         <Grommet theme={grommetTheme} full>
             <ResponsiveContext.Consumer>
@@ -52,10 +72,15 @@ function App() {
                     <Box fill>
                         <AppBar>
                             <Box>
-                                <a href="/"><img src={logo} alt="Logo" height={size === 'medium' ? "25px" : "20px"}/></a>
+                                <a href="/"><img src={logo} alt="Logo"
+                                                 height={size === 'medium' ? "25px" : "20px"}/></a>
                             </Box>
                             <Box>
-                                <WalletButton/>
+                                <Button
+                                    size="medium"
+                                    onClick={() => connected? userWallet.disconnect() : userWallet.connect()}
+                                    label={connected ? account.slice(0, 4) + '...' + account.slice(38) : (size === "xsmall" ? "Wallet" : "Connect Wallet")}
+                                />
                             </Box>
                         </AppBar>
                         <Box
@@ -69,9 +94,9 @@ function App() {
                                 className="my-masonry-grid"
                                 columnClassName="my-masonry-grid_column"
                             >
-                                <Box align={"center"}><Trader/></Box>
-                                <Box align={"center"}><Assets/></Box>
-                                <Box align={"center"}><Chart/></Box>
+                                <Box align={"center"}><Bridge/></Box>
+                                {/*<Box align={"center"}><Assets wallet={wallet}/></Box>*/}
+                                {/*<Box align={"center"}><XPriceChart wallet={wallet}/></Box>*/}
                             </Masonry>
                         </Box>
                         <Box pad={"medium"}>
@@ -81,14 +106,30 @@ function App() {
                                 alignSelf="end"
                                 icon={<Add color="white"/>}
                                 plain
-                                style={ (size === 'small') ? {marginLeft: 12, marginRight: 12} : {marginLeft: 20, marginRight: 15}}
+                                style={(size === 'small') ? {marginLeft: 12, marginRight: 12} : {
+                                    marginLeft: 20,
+                                    marginRight: 15
+                                }}
                                 onClick={addTradingComponent}
                             />
                         </Box>
+
+                        {!connected && <Box style={{position: "absolute"}} onClick={(e) => e.stopPropagation()}
+                                            background={{color: "black", opacity: "strong"}} fill/>}
                     </Box>
                 )}
             </ResponsiveContext.Consumer>
         </Grommet>
+    )
+}
+
+
+function App() {
+
+    return (
+        <RecoilRoot>
+            <Main/>
+        </RecoilRoot>
     );
 }
 
