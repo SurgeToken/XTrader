@@ -2,6 +2,7 @@ import {Card, Box, Text, CardBody, CardHeader} from "grommet";
 import Draggable from "react-draggable";
 import React, {useEffect, useState} from "react";
 import Chart from "@lenicdev/react-lightweight-charts";
+import {TickMarkType} from "lightweight-charts";
 
 const CHART_OPTIONS = {
     alignLabels: true,
@@ -12,14 +13,24 @@ const CHART_OPTIONS = {
     timeScale: {
         rightOffset: 12,
         barSpacing: 3,
-        fixLeftEdge: true,
         lockVisibleTimeRangeOnResize: true,
         rightBarStaysOnScroll: true,
         borderVisible: false,
         borderColor: "#fff000",
         visible: true,
         timeVisible: true,
-        secondsVisible: false
+        secondsVisible: false,
+        tickMarkFormatter: (time, tickMarkType, locale) => {
+            console.log('format', time, tickMarkType, locale);
+            const date = new Date(time * 1000);
+            switch (tickMarkType) {
+                case TickMarkType.Year: return date.toLocaleDateString();
+                case TickMarkType.Month: return date.toLocaleDateString();
+                case TickMarkType.DayOfMonth: return date.toLocaleDateString();
+                case TickMarkType.Time: return date.toLocaleTimeString();
+                case TickMarkType.TimeWithSeconds: return date.toLocaleTimeString();
+            }
+        },
     }
 };
 
