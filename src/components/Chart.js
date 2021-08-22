@@ -1,4 +1,4 @@
-import {Card, Box, Text, CardBody, CardHeader} from "grommet";
+import {Card, Box, Text, CardBody, CardHeader, ResponsiveContext} from "grommet";
 import Draggable from "react-draggable";
 import React, {useEffect, useState} from "react";
 import Chart from "@lenicdev/react-lightweight-charts";
@@ -55,47 +55,14 @@ export default ({ data }) => {
         setSeries(series);
     }, [data]);
 
-    return ( <Draggable>
-        <Card width={"large"}
-              height={"large"}
-              small
-              round
-              background={"spaceBlue"}
-              elevation={"large"}
-              style={{border: "solid 1px #21BBB1"}}>
-            <CardHeader
-                flex={"shrink"}
-                // direction={(size === "xsmall" ? "column" : "row")}
-                // justify={(size === "xsmall" ? "evenly" : "between")}
-                gap={"none"}
-                pad={{top: "small", bottom: "small", right: "medium", left: "medium"}}
-            >
-                <Box
-                    fill={true}
-                    // margin={(size === "xsmall" ? "medium" : "small")}
-                >
-                    <Text textAlign={"center"}
-                        // size={((size === "xsmall" || size === "small") ? "large" : "large")}
-                    >sBNB</Text>
-                </Box>
-                <Box
-                    align={"center"}
-                    justify={"end"}
-                    direction={"row"}
-                    gap={"medium"}
-                    pad={{left: "medium"}}
-                    // margin={(size === "xsmall" ? "medium" : "small")}
-                >
+    // noinspection JSCheckFunctionSignatures
+    const size = React.useContext(ResponsiveContext);
 
-                </Box>
-            </CardHeader>
-            <CardBody>
-                <Box pad={"small"}>
+    return (
+
+        <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
                     <Chart options={CHART_OPTIONS} areaSeries={series} autoWidth height={420}/>
-                </Box>
-            </CardBody>
-        </Card>
-    </Draggable>
+        </Box>
 
     );
 }
