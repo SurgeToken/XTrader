@@ -20,7 +20,7 @@ export default function XPriceChart() {
     useEffect(() => {
         (async () => {
             if (selectedAddress !== undefined){
-                const data = await getHistoricPriceData(selectedAddress);
+                const data = await getHistoricPriceData(selectedAddress, "1m");
                 setPriceData(data);
             }
         })();
@@ -34,8 +34,9 @@ export default function XPriceChart() {
                 <Box gap={"small"}>
                     <Text>Token</Text>
                     <AddressSelector onSelect={onSelectedAddressChange}/>
-                </Box>
+
                 {priceData == null ? <Text>Loading...</Text> : <Chart data={priceData}/>}
+                </Box>
             </Box>
         </Box>
     );

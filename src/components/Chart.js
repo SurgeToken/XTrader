@@ -19,7 +19,7 @@ const CHART_OPTIONS = {
         },
     },
     timeScale: {
-        rightOffset: 12,
+        rightOffset: 0,
         barSpacing: 3,
         lockVisibleTimeRangeOnResize: true,
         rightBarStaysOnScroll: true,
