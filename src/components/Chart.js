@@ -10,18 +10,24 @@ const CHART_OPTIONS = {
         backgroundColor: "#060818",
         textColor: "#fff"
     },
+    grid: {
+        vertLines: {
+            color: "rgba(33,187,177,0.34)"
+        },
+        horzLines: {
+            color: "rgba(33,187,177,0.34)"
+        },
+    },
     timeScale: {
         rightOffset: 12,
         barSpacing: 3,
         lockVisibleTimeRangeOnResize: true,
         rightBarStaysOnScroll: true,
-        borderVisible: false,
-        borderColor: "#fff000",
+        borderVisible: true,
         visible: true,
         timeVisible: true,
         secondsVisible: false,
         tickMarkFormatter: (time, tickMarkType, locale) => {
-            console.log('format', time, tickMarkType, locale);
             const date = new Date(time * 1000);
             switch (tickMarkType) {
                 case TickMarkType.Year: return date.toLocaleDateString();
