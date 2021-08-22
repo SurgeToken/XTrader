@@ -10,7 +10,7 @@ import IntervalSlider from "./IntervalSlider";
 export default function XPriceChart() {
     const [priceData, setPriceData] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState();
-    const [selectedInterval, setSelectedInterval] = useState(6);
+    const [selectedInterval, setSelectedInterval] = useState();
 
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
@@ -20,9 +20,9 @@ export default function XPriceChart() {
         setSelectedAddress(address);
     };
 
-    const onTokenSliderChange = (value) => {
-        console.log("onTokenSliderChange", value)
-        setSelectedInterval(value);
+    const onIntervalSliderChange = (interval) => {
+        console.log("onTokenSliderChange", interval)
+        setSelectedInterval(interval);
     };
 
     useEffect(() => {
@@ -36,13 +36,14 @@ export default function XPriceChart() {
 
 
     return (
-        <Card width={"large"}
-              height={"large"}
-              small
-              round
-              background={"spaceBlue"}
-              elevation={"large"}
-              style={{border: "solid 1px #21BBB1"}}>
+        <Card
+            // width={"large"}
+            height={"large"}
+            small
+            round
+            background={"spaceBlue"}
+            elevation={"large"}
+            style={{border: "solid 1px #21BBB1"}}>
             <CardHeader
                 flex={"shrink"}
                 // direction={"column"}
@@ -57,14 +58,14 @@ export default function XPriceChart() {
                 <AddressSelector  pad={{top: "small"}} onSelect={onSelectedAddressChange}/>
             </CardHeader>
             <CardBody>
-                {/*<Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>*/}
+                <Box align={"center"} pad={{vertical: "small", horizontal: size === "small" ? "xxlarge" : "xlarge"}} small round>
 
 
                             {priceData == null ? <Text>Loading...</Text> : <Chart data={priceData}/>}
 
-                {/*</Box>*/}
+                </Box>
                 <Box gap={"small"} align={"center"}>
-                    <IntervalSlider onValueChange={onTokenSliderChange} defaultValue={6}/>
+                    <IntervalSlider onIntervalChange={onIntervalSliderChange} defaultInterval={2}/>
                 </Box>
             </CardBody>
         </Card>

@@ -18,6 +18,9 @@ const CHART_OPTIONS = {
             color: "rgba(33,187,177,0.34)"
         },
     },
+    localization: {
+        priceFormatter: function(price) { return (price*Math.pow(10,0)).toFixed(12)+""},
+    },
     timeScale: {
         rightOffset: 0,
         barSpacing: 3,
@@ -60,9 +63,9 @@ export default ({ data }) => {
 
     return (
 
-        <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
-                    <Chart options={CHART_OPTIONS} areaSeries={series} autoWidth height={420}/>
-        </Box>
+        // <Box align={"center"} small round>
+                    <Chart align="center" width={"75%"} options={CHART_OPTIONS} areaSeries={series} autoWidth height={420}/>
+        // </Box>
 
     );
 }
