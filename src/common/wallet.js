@@ -62,6 +62,7 @@ export default class Wallet {
     contracts = {};
     holdings = {};
     holdingValues = {};
+    valueChange = {};
     tokenSymbols = {};
     accountAddress = null;
     updateInterval = 15 * 1000 // 15 seconds
@@ -102,6 +103,7 @@ export default class Wallet {
     updateHolding(symbol) {
         this.contracts[symbol].balanceOf().then((balance) => {
             if (balance !== this.holdings[symbol]) {
+                this.valueChange[symbol] = this.holdings[symbol] - balance
                 this.holdings[symbol] = balance;
                 this.onHoldingsChanged(symbol, balance);
             }
@@ -110,6 +112,7 @@ export default class Wallet {
 
     updateHoldingValues(symbol) {
         this.contracts[symbol].getValueOfHoldings().then((holdingValue) => {
+            // console.error(holdingValue)
             if (holdingValue !== this.holdingValues[symbol]) {
                 this.holdingValues[symbol] = holdingValue;
                 this.onHoldingValuesChanged(symbol, holdingValue);
@@ -139,7 +142,7 @@ export default class Wallet {
                 let symbol = symbols[index];
                 const holdingValue = this.holdingValues[symbol] = await this.contracts[symbol].getValueOfHoldings();
                 this.onHoldingValuesChanged(symbol, holdingValue);
-                setInterval(this.updateHoldingValues.bind(this, symbol), this.updateInterval);
+                setInterval(this.updateHoldingValues.bind(this, symbol), 1000);
             }catch (e) {
                 console.log("Failed to get value of holding of ", symbols[index], ": ", e);
             }
