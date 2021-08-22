@@ -37,6 +37,7 @@ export default function AddressSelector({onSelect}) {
         }
     };
     return <Select
+        align-self={"stretch"}
         onChange={onAddressChange}
         options={addresses}
         value={selectedAddress}

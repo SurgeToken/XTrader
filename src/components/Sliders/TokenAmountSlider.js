@@ -1,6 +1,6 @@
 import {useState} from "react";
 import Slider from "rc-slider";
-import '../themes/rc-slider.css';
+import '../../themes/rc-slider.css';
 import {Box, Text} from "grommet";
 
 export default function TokenAmountSlider({ defaultValue, onValueChange }) {

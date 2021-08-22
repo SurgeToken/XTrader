@@ -2,10 +2,10 @@ import React, {useEffect, useState} from "react";
 import {getHistoricPriceData} from "../common/price";
 import Chart from "./Chart";
 
-import AddressSelector from "./AddressSelector/AddressSelector";
+import AddressSelector from "./Selectors/AddressSelector";
 import {Card, CardBody, CardHeader, CardFooter, Box, ResponsiveContext, Select, Text, Anchor, Button} from "grommet";
-import TokenAmountSlider from "./TokenAmountSlider";
-import IntervalSlider from "./IntervalSlider";
+import TokenAmountSlider from "./Sliders/TokenAmountSlider";
+import IntervalSlider from "./Sliders/IntervalSlider";
 
 export default function XPriceChart() {
     const [priceData, setPriceData] = useState([]);
@@ -37,7 +37,6 @@ export default function XPriceChart() {
 
     return (
         <Card
-            // width={"large"}
             height={"large"}
             small
             round
@@ -59,13 +58,10 @@ export default function XPriceChart() {
             </CardHeader>
             <CardBody>
                 <Box align={"center"} pad={{vertical: "small", horizontal: size === "small" ? "xxlarge" : "xlarge"}} small round>
-
-
-                            {priceData == null ? <Text>Loading...</Text> : <Chart data={priceData}/>}
-
+                    {priceData == null ? <Text>Loading...</Text> : <Chart data={priceData}/>}
                 </Box>
                 <Box gap={"small"} align={"center"}>
-                    <IntervalSlider onIntervalChange={onIntervalSliderChange} defaultInterval={2}/>
+                    <IntervalSlider onIntervalChange={onIntervalSliderChange} defaultInterval={0}/>
                 </Box>
             </CardBody>
         </Card>
