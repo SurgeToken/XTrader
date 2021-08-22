@@ -13,15 +13,13 @@ export default function AddressSelector({onSelect}) {
         Object.keys(contracts).forEach(
             (key) => {
                 contracts[key].prototype.getAddressOfContract().then((address) => {
-                    let item = {};
-                    item[key] = address
-                    addressList.push(item);
+                    addressList.push({name: key, address: address});
                 })
 
             }
         )
         setAddresses(addressList);
-        setSelectedAddress(addresses.at(0))
+        setSelectedAddress(addresses.at(0));
         // for (let index in  symbols) {
         //     let symbol = symbols[index];
         //     contracts[symbol].prototype.getAddressOfContract().then((address) => {
@@ -33,10 +31,9 @@ export default function AddressSelector({onSelect}) {
     }, [setAddresses]);
 
     const onAddressChange = ({ option }) => {
-        console.error("addresses: ", addresses, "selectedAddress: ", selectedAddress, "option: ", option);
         setSelectedAddress(option);
         if (onSelect) {
-            onSelect(option);
+            onSelect(option.address);
         }
     };
     return <Select
@@ -44,5 +41,6 @@ export default function AddressSelector({onSelect}) {
         options={addresses}
         value={selectedAddress}
         labelKey="name"
+        valueKey="address"
     />
 }

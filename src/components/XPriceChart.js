@@ -15,14 +15,13 @@ export default function XPriceChart() {
 
     const onSelectedAddressChange = (address) => {
         setSelectedAddress(address);
-        console.log('address changed', address);
     };
 
     useEffect(() => {
         (async () => {
             if (selectedAddress !== undefined){
-                const data = await getHistoricPriceData(Object.values(selectedAddress));
-                setPriceData(await data)
+                const data = await getHistoricPriceData(selectedAddress);
+                setPriceData(data);
             }
         })();
     }, [selectedAddress]);
@@ -36,7 +35,7 @@ export default function XPriceChart() {
                     <Text>Token</Text>
                     <AddressSelector onSelect={onSelectedAddressChange}/>
                 </Box>
-                <Chart data={priceData}/>
+                {priceData == null ? <Text>Loading...</Text> : <Chart data={priceData}/>}
             </Box>
         </Box>
     );

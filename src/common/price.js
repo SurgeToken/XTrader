@@ -5,7 +5,7 @@ export async function getHistoricPriceData(tokenAddress) {
     try {
         console.log("data: ", data.dataset, " tokenAddress: ", tokenAddress);
         return data.dataset.map(point => {
-            return { price: point[0], date: point[1] };
+            return { value: point[0], time: point[1] };
         });
     }catch (e) {
         console.error("couldnt get the chart data: ", e)

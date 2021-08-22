@@ -1,11 +1,46 @@
-import {DataChart, Card, Box, Text, CardBody, CardHeader} from "grommet";
+import {Card, Box, Text, CardBody, CardHeader} from "grommet";
 import Draggable from "react-draggable";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import Chart from "@lenicdev/react-lightweight-charts";
+
+const CHART_OPTIONS = {
+    alignLabels: true,
+    layout: {
+        backgroundColor: "#060818",
+        textColor: "#fff"
+    },
+    timeScale: {
+        rightOffset: 12,
+        barSpacing: 3,
+        fixLeftEdge: true,
+        lockVisibleTimeRangeOnResize: true,
+        rightBarStaysOnScroll: true,
+        borderVisible: false,
+        borderColor: "#fff000",
+        visible: true,
+        timeVisible: true,
+        secondsVisible: false
+    }
+};
 
 export default ({ data }) => {
+    const [series, setSeries] = useState([{ data: [] }]);
+
+    useEffect(() => {
+        const series = [{
+            data,
+            options: {
+                topColor: "rgba(33,187,177,0.81)",
+                bottomColor: "rgba(33,187,177,0.27)",
+                lineColor: "#21BBB1"
+            }
+        }];
+        setSeries(series);
+    }, [data]);
+
     return ( <Draggable>
         <Card width={"large"}
-              height={"medium"}
+              height={"large"}
               small
               round
               background={"spaceBlue"}
@@ -39,19 +74,8 @@ export default ({ data }) => {
             </CardHeader>
             <CardBody>
                 <Box pad={"small"}>
-                    <DataChart
-                        data={data}
-                        series={['price', 'date']}
-                        chart={[
-                            { property: 'price', type: 'line', opacity: 'medium', thickness: 'xsmall' },
-                            { property: 'price', type: 'point', point: 'circle', thickness: 'medium' }
-                        ]}
-                        guide={{ x: { granularity: 'fine' }, y: { granularity: 'medium' } }}
-                        size={{ width: 'fill' }}
-                        detail
-                    />
+                    <Chart options={CHART_OPTIONS} areaSeries={series} autoWidth height={420}/>
                 </Box>
-
             </CardBody>
         </Card>
     </Draggable>
