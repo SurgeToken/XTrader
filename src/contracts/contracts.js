@@ -4,7 +4,7 @@ import ExemptToken from "./ExemptToken";
 import XBridgeManager from "./XBridgeManager";
 import XBridge from "./XBridge";
 
-export const SurgeBNB = SurgeToken({address: "0xE1E1Aa58983F6b8eE8E4eCD206ceA6578F036c21"});
+// export const SurgeBNB = SurgeToken({address: "0xE1E1Aa58983F6b8eE8E4eCD206ceA6578F036c21"});
 export const SurgeUSD = SurgeToken({address:"0x14fEe7d23233AC941ADd278c123989b86eA7e1fF" });
 export const SurgeETH = NativeSurge({address: "0x5B1d1BBDCc432213F83b15214B93Dc24D31855Ef"});
 export const xSurgeBNB = ExemptToken({address: "0x35a72F50B0663f5c1d2fFE82266eda890da5b763"});
@@ -14,7 +14,7 @@ export const BridgeCreator = XBridgeManager({address: "0x9aE62bf5bB99EfcFb4dCC7E
 export const Bridge = XBridge;
 
 export default {
-    SurgeBNB,
+    // SurgeBNB,
     SurgeETH,
     SurgeUSD,
     xSurgeBNB,

@@ -19,7 +19,7 @@ const CHART_OPTIONS = {
         },
     },
     localization: {
-        priceFormatter: function(price) { return (price*Math.pow(10,0)).toFixed(12)+""},
+        priceFormatter: function(price) { return price.toFixed(12)+""},
     },
     timeScale: {
         rightOffset: 0,
