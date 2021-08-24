@@ -168,8 +168,8 @@ const SellForm = (props) => {
         if (amount) {
             context.wallet.contracts[currency].getValueOfHoldings(context.wallet.accountAddress).then((value) => {
                 value = parseInt(value);
-                const scale = 1.0 / value;
-                setReceived((scale * amount * 100));
+                const scale = 1.0 / holdings[currency];
+                setReceived(((scale * amount) * value) * 1.0e-18);
             })
         }
 
