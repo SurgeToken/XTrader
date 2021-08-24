@@ -15,7 +15,6 @@ const formatTotal = (value) => {
 export default () => {
     const [holdings, ] = useRecoilState(state.walletHoldings);
     const [holdingValues, ] = useRecoilState(state.walletHoldingValues);
-    console.error("assets.js => holdingValues: ", holdingValues)
     const columns = [
         {
             property: 'Token',
@@ -73,22 +72,18 @@ export default () => {
                   style={{border: "solid 1px #21BBB1"}}>
                 <CardHeader
                     flex={"shrink"}
-                    // direction={(size === "xsmall" ? "column" : "row")}
-                    // justify={(size === "xsmall" ? "evenly" : "between")}
                     gap={"none"}
                     pad={{top: "small", bottom: "small", right: "medium", left: "medium"}}
                 >
                     <Box
                         align={"center"}
                         fill={true}
-                        // margin={(size === "xsmall" ? "medium" : "small")}
                     >
                         <Text textAlign={"center"}
-                            // size={((size === "xsmall" || size === "small") ? "large" : "large")}
                         >Assets</Text>
                     </Box>
                 </CardHeader>
-                <CardBody pad={"small"}            align={"center"}
+                <CardBody pad={"small"} align={"center"}
                 >
                     <DataTable pin fill={"true"} columns={columns} data={data}/>
                 </CardBody>
