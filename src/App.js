@@ -90,8 +90,8 @@ function Main() {
                             pad={"medium"}
                             align={"center"}
                         >
-                                <Box align={"center"}><Bridge/></Box>
-                                {/*<Box align={"center"}><Assets/></Box>*/}
+                                {/*<Box align={"center"}><Bridge/></Box>*/}
+                                <Box align={"center"}><Assets/></Box>
                                 {/*<Box align={"center"}><XPriceChart wallet={wallet}/></Box>*/}
                         </Box>
                         <Box pad={"medium"}>

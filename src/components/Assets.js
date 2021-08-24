@@ -52,9 +52,7 @@ export default () => {
         //     footer: { aggregate: true },
         // }
     ]
-    //TODO: this must be done better but works for now :)
-    const symbols = {'SURGE':"BNB", 'SUSD':"BUSD", 'SETH':"ETH"}
-    const data = ['SURGE', 'SUSD', 'SETH'].map((val) => {
+    const data = Object.keys(holdingValues).map((val) => {
         return {
             Token: val,
             Quantity: holdings[val],
