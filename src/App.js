@@ -72,7 +72,7 @@ function Main() {
                     <Box fill>
                         <AppBar>
                             <Box>
-                                <a href="/"><img src={logo} alt="Logo"
+                                <a href="https://www.xsurge.net"><img src={logo} alt="Logo"
                                                  height={size === 'medium' ? "25px" : "20px"}/></a>
                             </Box>
                             <Box>
@@ -91,7 +91,7 @@ function Main() {
                             align={"center"}
                         >
                                 <Box align={"center"}><Bridge/></Box>
-                                {/*<Box align={"center"}><Assets wallet={wallet}/></Box>*/}
+                                {/*<Box align={"center"}><Assets/></Box>*/}
                                 {/*<Box align={"center"}><XPriceChart wallet={wallet}/></Box>*/}
                         </Box>
                         <Box pad={"medium"}>
