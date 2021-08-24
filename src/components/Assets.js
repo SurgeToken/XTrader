@@ -15,6 +15,7 @@ const formatTotal = (value) => {
 export default () => {
     const [holdings, ] = useRecoilState(state.walletHoldings);
     const [holdingValues, ] = useRecoilState(state.walletHoldingValues);
+    console.error("assets.js => holdingValues: ", holdingValues)
     const columns = [
         {
             property: 'Token',
