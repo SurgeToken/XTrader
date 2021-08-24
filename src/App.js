@@ -72,7 +72,7 @@ function Main() {
                     <Box fill>
                         <AppBar>
                             <Box>
-                                <a href="/"><img src={logo} alt="Logo"
+                                <a href="https://www.xsurge.net"><img src={logo} alt="Logo"
                                                  height={size === 'medium' ? "25px" : "20px"}/></a>
                             </Box>
                             <Box>
