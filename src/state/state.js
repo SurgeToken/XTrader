@@ -6,11 +6,6 @@ const walletHoldings = atom({
         default: {}
     }
 )
-const walletHoldingValues = atom({
-        key: 'walletHoldingValues',
-        default: {}
-    }
-)
 
 const walletConnected = atom({
     key: "walletConnected",
@@ -27,7 +22,7 @@ const nativeSurge = selector({
         get: ({get}) => {
             const nativeSurge = [];
             Object.keys(get('walletHoldings')).forEach((key) => {
-                if (key[0] !== 'x' && key !== 'BNB') {
+                if (key[0] !== 'x' && key != 'BNB') {
                     nativeSurge.push(key);
                 }
             });
@@ -66,4 +61,4 @@ const contracts = atom({
 //     default: null
 // })
 
-export default {walletHoldings, walletHoldingValues, walletConnected, walletAccount, contracts, nativeSurge, xTokens, allTokens};
+export default {walletHoldings, walletConnected, walletAccount, contracts, nativeSurge, xTokens, allTokens};

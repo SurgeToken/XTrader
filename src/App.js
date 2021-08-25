@@ -47,36 +47,24 @@ function Main() {
         default: 2,
         768: 1
     };
-    const wallet = useContext(WalletContext);
+    const context = useContext(WalletContext);
     const [connected, setConnected] = useRecoilState(state.walletConnected);
     const [, setHoldings] = useRecoilState(state.walletHoldings);
-    const [, setHoldingValues] = useRecoilState(state.walletHoldingValues);
     const [account, setAccount] = useRecoilState(state.walletAccount);
     const [contracts, setContracts] = useRecoilState(state.contracts);
-    const userWallet = new Wallet(
-        () => {
+    const userWallet = new Wallet((key, value) => {
             const newHoldings = {...userWallet.holdings};
             setHoldings(newHoldings);
-            if (!wallet.provider) {
-                wallet.provider = userWallet.provider;
-            }
-        },
-        () => {
-            const newHoldingValues = {...userWallet.holdingValues};
-            setHoldingValues(newHoldingValues);
-            if (!wallet.provider) {
-                wallet.provider = userWallet.provider;
-            }
         },
         () => {
             setContracts(Object.keys(userWallet.contracts));
             setAccount(userWallet.accountAddress);
+            context.wallet = userWallet;
             setConnected(true);
         },
         () => {
             setConnected(false);
-        }
-    );
+        });
     return (
         <Grommet theme={grommetTheme} full>
             <ResponsiveContext.Consumer>
@@ -100,16 +88,11 @@ function Main() {
                             className="appBody"
                             overflow={{horizontal: 'hidden'}}
                             pad={"medium"}
+                            align={"center"}
                         >
-                            <Masonry
-                                breakpointCols={breakpointColumnsObj}
-                                className="my-masonry-grid"
-                                columnClassName="my-masonry-grid_column"
-                            >
                                 <Box align={"center"}><Bridge/></Box>
-                                <Box align={"center"}><Assets/></Box>
-                                {/*<Box align={"center"}><XPriceChart/></Box>*/}
-                            </Masonry>
+                                {/*<Box align={"center"}><Assets/></Box>*/}
+                                {/*<Box align={"center"}><XPriceChart wallet={wallet}/></Box>*/}
                         </Box>
                         <Box pad={"medium"}>
                             <Button

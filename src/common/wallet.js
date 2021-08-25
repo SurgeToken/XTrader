@@ -12,7 +12,7 @@ export const providerOptions = {
         appName: 'xSurge',
         network: "binance",
         rpc: {
-            56: "https://bsc-dataseed1.binance.org/"
+            56: 'https://bsc-dataseed1.binance.org:443'
         },
         chainId: 56
     },
@@ -61,15 +61,11 @@ export default class Wallet {
     provider = null;
     contracts = {};
     holdings = {};
-    holdingValues = {};
-    tokenSymbols = {};
     accountAddress = null;
     updateInterval = 15 * 1000 // 15 seconds
 
-    constructor(onHoldingChanged, onHoldingValuesChanged, onConnected, onDisconnected) {
+    constructor(onHoldingChanged, onConnected, onDisconnected) {
         this.onHoldingsChanged = onHoldingChanged || (() => {
-        });
-        this.onHoldingValuesChanged = onHoldingValuesChanged || (() => {
         });
         this.onConnected = onConnected || (() => {
         });
@@ -108,17 +104,6 @@ export default class Wallet {
         })
     }
 
-    updateHoldingValues(symbol) {
-        this.contracts[symbol].getValueOfHoldings().then((holdingValue) => {
-            if (holdingValue !== this.holdingValues[symbol]) {
-                this.holdingValues[symbol] = holdingValue;
-                this.onHoldingValuesChanged(symbol, holdingValue);
-            }
-        })
-
-
-    }
-
     async addHoldings() {
         this.holdings['BNB'] = await this.web3.eth.getBalance(this.accountAddress);
         setInterval(this.updateBalance.bind(this), this.updateInterval);
@@ -132,20 +117,6 @@ export default class Wallet {
         }
     }
 
-    async addHoldingValues() {
-        const symbols = Object.keys(this.contracts);
-        for (let index in symbols) {
-            try {
-                let symbol = symbols[index];
-                const holdingValue = this.holdingValues[symbol] = await this.contracts[symbol].getValueOfHoldings();
-                this.onHoldingValuesChanged(symbol, holdingValue);
-                setInterval(this.updateHoldingValues.bind(this, symbol), this.updateInterval);
-            }catch (e) {
-                console.log("Failed to get value of holding of ", symbols[index], ": ", e);
-            }
-        }
-    }
-
     async addContracts() {
         const contractNames = Object.keys(contracts);
         for(let index in contractNames) {
@@ -156,7 +127,6 @@ export default class Wallet {
     }
 
     async connect() {
-        console.log("trying to connect")
         try {
             const provider = this.provider;
             this.provider = await web3Modal.connect();
@@ -164,8 +134,7 @@ export default class Wallet {
             const account = this.accountAddress = await this.account();
             if (provider !== this.provider) {
                 await this.addContracts();
-                await this.addHoldings();
-                await this.addHoldingValues();
+                this.addHoldings();
             }
             this.onConnected();
 
@@ -174,13 +143,12 @@ export default class Wallet {
             //     console.log("result", result);
             // });
         } catch (err) {
-            console.log("trying to connect failed")
             if (err === undefined) {
                 alert('If you are having trouble connecting to MetaMask, please check if you still have a pending connection request') //TODO still checking web3Modal library to catch MetamskError better
             }
             console.log(err);
             if (this.provider !== null) {
-                await this.disconnect();
+                await this.provider.close();
             }
             // TODO pass this to a callback for a modal popup
             throw err;
