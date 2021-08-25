@@ -47,24 +47,36 @@ function Main() {
         default: 2,
         768: 1
     };
-    const context = useContext(WalletContext);
+    const wallet = useContext(WalletContext);
     const [connected, setConnected] = useRecoilState(state.walletConnected);
     const [, setHoldings] = useRecoilState(state.walletHoldings);
+    const [, setHoldingValues] = useRecoilState(state.walletHoldingValues);
     const [account, setAccount] = useRecoilState(state.walletAccount);
     const [contracts, setContracts] = useRecoilState(state.contracts);
-    const userWallet = new Wallet((key, value) => {
+    const userWallet = new Wallet(
+        () => {
             const newHoldings = {...userWallet.holdings};
             setHoldings(newHoldings);
+            if (!wallet.provider) {
+                wallet.provider = userWallet.provider;
+            }
+        },
+        () => {
+            const newHoldingValues = {...userWallet.holdingValues};
+            setHoldingValues(newHoldingValues);
+            if (!wallet.provider) {
+                wallet.provider = userWallet.provider;
+            }
         },
         () => {
             setContracts(Object.keys(userWallet.contracts));
             setAccount(userWallet.accountAddress);
-            context.wallet = userWallet;
             setConnected(true);
         },
         () => {
             setConnected(false);
-        });
+        }
+    );
     return (
         <Grommet theme={grommetTheme} full>
             <ResponsiveContext.Consumer>
@@ -72,7 +84,7 @@ function Main() {
                     <Box fill>
                         <AppBar>
                             <Box>
-                                <a href="https://www.xsurge.net"><img src={logo} alt="Logo"
+                                <a href="/"><img src={logo} alt="Logo"
                                                  height={size === 'medium' ? "25px" : "20px"}/></a>
                             </Box>
                             <Box>
@@ -88,11 +100,16 @@ function Main() {
                             className="appBody"
                             overflow={{horizontal: 'hidden'}}
                             pad={"medium"}
-                            align={"center"}
                         >
+                            <Masonry
+                                breakpointCols={breakpointColumnsObj}
+                                className="my-masonry-grid"
+                                columnClassName="my-masonry-grid_column"
+                            >
                                 <Box align={"center"}><Bridge/></Box>
-                                {/*<Box align={"center"}><Assets/></Box>*/}
-                                {/*<Box align={"center"}><XPriceChart wallet={wallet}/></Box>*/}
+                                <Box align={"center"}><Assets/></Box>
+                                {/*<Box align={"center"}><XPriceChart/></Box>*/}
+                            </Masonry>
                         </Box>
                         <Box pad={"medium"}>
                             <Button
