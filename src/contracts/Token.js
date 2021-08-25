@@ -22,16 +22,12 @@ export default ({address, abi}) => {
             super(provider, sender);
         }
 
-        async getAddressOfContract() {
-            return address || this.contract.address
-        }
-
         async totalSupply() {
             return this.methods.totalSupply().call();
         }
 
-        async balanceOf() {
-            return this.methods.balanceOf(this.contract.options.from).call();
+        async balanceOf(address) {
+            return this.methods.balanceOf(address || this.contract.options.from).call();
         }
 
         async balance() {
