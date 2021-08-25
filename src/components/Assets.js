@@ -21,11 +21,13 @@ export default () => {
             primary: true,
             header: <Text>Token</Text>,
             align: "center",
+            size: "small",
             // footer: "Total"
         },
         {
             property: 'Quantity',
             align: "center",
+            size: "small",
             header: <Text>Quantity</Text>
 
         },
@@ -41,6 +43,8 @@ export default () => {
             property: 'Value',
             align: "center",
             header: 'Value',
+            size: "medium",
+            // size: "...",
             // render: (data) => formatTotal(data.Price)
         },
         // {
@@ -57,14 +61,14 @@ export default () => {
             Token: val,
             Quantity: holdings[val],
             // Change: Math.random() * 100,
-            Value: `${(parseInt(holdingValues[val])*1.0e-18).toPrecision(10)}`
+            Value: (parseInt(holdingValues[val])*1.0e-18).toString() + " W" + val.substr(1)
         }
     });
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
 
     return ( <Draggable disabled={true}>
-            <Card  height={"medium"}
+            <Card
                   small
                   round
                   background={"spaceBlue"}
@@ -85,7 +89,11 @@ export default () => {
                 </CardHeader>
                 <CardBody pad={"small"} align={"center"}
                 >
-                    <DataTable pin fill={"true"} columns={columns} data={data}/>
+                    <DataTable pin pad={{
+                        header: "xsmall",
+                        body: "small",
+                        footer: "medium"
+                    }} fill={"vertical"} columns={columns} data={data}/>
                 </CardBody>
             </Card>
         </Draggable>
