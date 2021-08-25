@@ -21,11 +21,13 @@ export default () => {
             primary: true,
             header: <Text>Token</Text>,
             align: "center",
+            size: "small",
             // footer: "Total"
         },
         {
             property: 'Quantity',
             align: "center",
+            size: "small",
             header: <Text>Quantity</Text>
 
         },
@@ -41,6 +43,8 @@ export default () => {
             property: 'Value',
             align: "center",
             header: 'Value',
+            size: "medium",
+            // size: "...",
             // render: (data) => formatTotal(data.Price)
         },
         // {
@@ -52,21 +56,19 @@ export default () => {
         //     footer: { aggregate: true },
         // }
     ]
-    //TODO: this must be done better but works for now :)
-    const symbols = {'SURGE':"BNB", 'SUSD':"BUSD", 'SETH':"ETH"}
-    const data = ['SURGE', 'SUSD', 'SETH'].map((val) => {
+    const data = Object.keys(holdingValues).map((val) => {
         return {
             Token: val,
             Quantity: holdings[val],
             // Change: Math.random() * 100,
-            Value: `${(parseInt(holdingValues[val])*1.0e-18).toPrecision(10)}`
+            Value: (parseInt(holdingValues[val])*1.0e-18).toString() + " W" + val.substr(1)
         }
     });
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
 
     return ( <Draggable disabled={true}>
-            <Card  height={"medium"}
+            <Card
                   small
                   round
                   background={"spaceBlue"}
@@ -74,24 +76,24 @@ export default () => {
                   style={{border: "solid 1px #21BBB1"}}>
                 <CardHeader
                     flex={"shrink"}
-                    // direction={(size === "xsmall" ? "column" : "row")}
-                    // justify={(size === "xsmall" ? "evenly" : "between")}
                     gap={"none"}
                     pad={{top: "small", bottom: "small", right: "medium", left: "medium"}}
                 >
                     <Box
                         align={"center"}
                         fill={true}
-                        // margin={(size === "xsmall" ? "medium" : "small")}
                     >
                         <Text textAlign={"center"}
-                            // size={((size === "xsmall" || size === "small") ? "large" : "large")}
                         >Assets</Text>
                     </Box>
                 </CardHeader>
-                <CardBody pad={"small"}            align={"center"}
+                <CardBody pad={"small"} align={"center"}
                 >
-                    <DataTable pin fill={"true"} columns={columns} data={data}/>
+                    <DataTable pin pad={{
+                        header: "xsmall",
+                        body: "small",
+                        footer: "medium"
+                    }} fill={"vertical"} columns={columns} data={data}/>
                 </CardBody>
             </Card>
         </Draggable>
