@@ -1,12 +1,15 @@
 // Libs
-import React, {useContext, useState} from "react";
-import Masonry from 'react-masonry-css';
+import React, {useContext} from "react";
 
 // Components
+
 import XPriceChart from "./components/XPriceChart";
 import Bridge from "./components/Bridge";
 import Assets from "./components/Assets";
 import Chart from "./components/Chart";
+
+import CacheBuster from './CacheBuster';
+
 import Wallet from "./common/wallet";
 import state from "./state/state"
 // Grommet Stuff
@@ -43,17 +46,14 @@ function addTradingComponent() {
 }
 
 function Main() {
-    const breakpointColumnsObj = {
-        default: 2,
-        768: 1
-    };
     const context = useContext(WalletContext);
     const [connected, setConnected] = useRecoilState(state.walletConnected);
     const [, setHoldings] = useRecoilState(state.walletHoldings);
     const [, setHoldingValues] = useRecoilState(state.walletHoldingValues);
     const [account, setAccount] = useRecoilState(state.walletAccount);
+    // eslint-disable-next-line no-unused-vars
     const [contracts, setContracts] = useRecoilState(state.contracts);
-    const userWallet = new Wallet((key, value) => {
+    const userWallet = new Wallet(() => {
             const newHoldings = {...userWallet.holdings};
             setHoldings(newHoldings);
             if (!context.provider) {
@@ -133,10 +133,22 @@ function Main() {
 function App() {
 
     return (
-        <RecoilRoot>
-            <Main/>
-        </RecoilRoot>
+        <CacheBuster>
+            {({ loading, isLatestVersion, refreshCacheAndReload }) => {
+                if (loading) return null;
+                if (!loading && !isLatestVersion) {
+                    refreshCacheAndReload();
+                }
+
+                return (
+                    <RecoilRoot>
+                        <Main/>
+                    </RecoilRoot>
+                  );
+                }}
+        </CacheBuster>
     );
 }
+
 
 export default App;

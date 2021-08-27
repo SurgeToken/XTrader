@@ -1,6 +1,6 @@
 {
   "name": "surge_dapps",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@lenicdev/react-lightweight-charts": "^2.0.1",
@@ -31,6 +31,9 @@
     "web3modal": "^1.9.4"
   },
   "scripts": {
+    "clean": "rm -rf build",
+    "prebuild": "npm run generate-build-version",
+    "generate-build-version": "node generate-build-version",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -53,5 +56,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-plugin-react": "^7.24.0"
   }
 }
