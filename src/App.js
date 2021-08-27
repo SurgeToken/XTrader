@@ -3,8 +3,10 @@ import React, {useContext, useState} from "react";
 import Masonry from 'react-masonry-css';
 
 // Components
-import Chart from "./components/Chart";
+import XPriceChart from "./components/XPriceChart";
+import Bridge from "./components/Bridge";
 import Assets from "./components/Assets";
+import Chart from "./components/Chart";
 import Wallet from "./common/wallet";
 import state from "./state/state"
 // Grommet Stuff
@@ -20,8 +22,6 @@ import './App.css';
 import logo from './assets/xsurge-logo.png';
 
 // Common Functions
-import XPriceChart from "./components/XPriceChart";
-import Bridge from "./components/Bridge";
 import {RecoilRoot, useRecoilState} from "recoil";
 import {WalletContext} from "./context/context";
 
