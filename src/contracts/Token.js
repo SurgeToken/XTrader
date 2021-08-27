@@ -18,6 +18,12 @@ export default ({address, abi}) => {
         /*
             constructs a Generic IERC20 Token with the given contact address and provider
          */
+
+
+        async getAddressOfContract() {
+            return address || this.contract.address
+        }
+
         constructor(provider, sender) {
             super(provider, sender);
         }
