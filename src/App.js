@@ -43,12 +43,23 @@ function Main() {
     const context = useContext(WalletContext);
     const [connected, setConnected] = useRecoilState(state.walletConnected);
     const [, setHoldings] = useRecoilState(state.walletHoldings);
+    const [, setHoldingValues] = useRecoilState(state.walletHoldingValues);
     const [account, setAccount] = useRecoilState(state.walletAccount);
     // eslint-disable-next-line no-unused-vars
     const [contracts, setContracts] = useRecoilState(state.contracts);
     const userWallet = new Wallet(() => {
             const newHoldings = {...userWallet.holdings};
             setHoldings(newHoldings);
+            if (!context.provider) {
+                context.provider = userWallet.provider;
+            }
+        },
+        () => {
+            const newHoldingValues = {...userWallet.holdingValues};
+            setHoldingValues(newHoldingValues);
+            if (!context.provider) {
+                context.provider = userWallet.provider;
+            }
         },
         () => {
             setContracts(Object.keys(userWallet.contracts));
@@ -60,7 +71,7 @@ function Main() {
             setConnected(false);
         });
     return (
-        <Grommet theme={grommetTheme} full>
+        <Grommet  theme={grommetTheme} full>
             <ResponsiveContext.Consumer>
                 {size => (
                     <Box fill>
@@ -85,8 +96,8 @@ function Main() {
                             align={"center"}
                         >
                                 <Box align={"center"}><Bridge/></Box>
-                                {/*<Box align={"center"}><Assets/></Box>*/}
-                                {/*<Box align={"center"}><XPriceChart wallet={wallet}/></Box>*/}
+                                <Box align={"center"}><Assets/></Box>
+                                <Box align={"center"}><XPriceChart/></Box>
                         </Box>
                         <Box pad={"medium"}>
                             <Button

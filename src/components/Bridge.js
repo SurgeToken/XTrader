@@ -53,8 +53,8 @@ const BuyForm = (props) => {
 
     const [holdings, setHoldings] = useRecoilState(state.walletHoldings);
     const [currency, setCurrency] = useState(Object.keys(holdings)[1] || 'BNB');
-    const [selectedToken, setSelectedToken] = useState({name: currency});
-
+    const [selectedToken, setSelectedToken] = useState({name: 'SETH'});
+    console.log(selectedToken);
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
 
@@ -115,7 +115,7 @@ const BuyForm = (props) => {
             </Box>
             <Box direction="row" gap="medium" margin={"small"}>
                 {/*<Button type="reset" label="Clear" size={"large"}/>*/}
-                <BuyButton type="submit" label="Accept" size={"large"} action={"buy"} asset={currency} amount={amount} primary/>
+                <BuyButton type="submit" label="Accept" size={"large"} action={"buy"} asset={selectedToken.name} amount={amount} primary/>
             </Box>
         </Box>
     )

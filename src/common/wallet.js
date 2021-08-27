@@ -61,11 +61,14 @@ export default class Wallet {
     provider = null;
     contracts = {};
     holdings = {};
+    holdingValues = {};
     accountAddress = null;
     updateInterval = 15 * 1000 // 15 seconds
 
-    constructor(onHoldingChanged, onConnected, onDisconnected) {
+    constructor(onHoldingChanged, onHoldingValuesChanged, onConnected, onDisconnected) {
         this.onHoldingsChanged = onHoldingChanged || (() => {
+        });
+        this.onHoldingValuesChanged = onHoldingValuesChanged || (() => {
         });
         this.onConnected = onConnected || (() => {
         });
@@ -104,6 +107,16 @@ export default class Wallet {
         })
     }
 
+    updateHoldingValues(symbol) {
+        this.contracts[symbol].getValueOfHoldings().then((holdingValue) => {
+            // console.error(holdingValue)
+            if (holdingValue !== this.holdingValues[symbol]) {
+                this.holdingValues[symbol] = holdingValue;
+                this.onHoldingValuesChanged(symbol, holdingValue);
+            }
+        })
+    }
+
     async addHoldings() {
         this.holdings['BNB'] = await this.web3.eth.getBalance(this.accountAddress);
         setInterval(this.updateBalance.bind(this), this.updateInterval);
@@ -114,6 +127,20 @@ export default class Wallet {
             const balance = this.holdings[symbol] = await this.contracts[symbol].balanceOf();
             this.onHoldingsChanged(symbol, balance);
             setInterval(this.updateHolding.bind(this, symbol), this.updateInterval);
+        }
+    }
+
+    async addHoldingValues() {
+        const symbols = Object.keys(this.contracts);
+        for (let index in symbols) {
+            try {
+                let symbol = symbols[index];
+                const holdingValue = this.holdingValues[symbol] = await this.contracts[symbol].getValueOfHoldings();
+                this.onHoldingValuesChanged(symbol, holdingValue);
+                setInterval(this.updateHoldingValues.bind(this, symbol), 1000);
+            }catch (e) {
+                console.log("Failed to get value of holding of ", symbols[index], ": ", e);
+            }
         }
     }
 
@@ -135,6 +162,7 @@ export default class Wallet {
             if (provider !== this.provider) {
                 await this.addContracts();
                 this.addHoldings();
+                this.addHoldingValues();
             }
             this.onConnected();
 
