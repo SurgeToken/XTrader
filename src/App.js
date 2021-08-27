@@ -2,7 +2,14 @@
 import React, {useContext} from "react";
 
 // Components
+
+import XPriceChart from "./components/XPriceChart";
+import Bridge from "./components/Bridge";
+import Assets from "./components/Assets";
+import Chart from "./components/Chart";
+
 import CacheBuster from './CacheBuster';
+
 import Wallet from "./common/wallet";
 import state from "./state/state"
 // Grommet Stuff
@@ -18,7 +25,6 @@ import './App.css';
 import logo from './assets/xsurge-logo.png';
 
 // Common Functions
-import Bridge from "./components/Bridge";
 import {RecoilRoot, useRecoilState} from "recoil";
 import {WalletContext} from "./context/context";
 
