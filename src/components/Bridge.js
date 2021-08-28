@@ -146,7 +146,7 @@ const SellForm = (props) => {
             return;
         }
 
-        setAmount(parseInt(event.target.value));
+        setAmount(parseFloat(event.target.value));
         setAmountValid(true);
         setAmountErrorMessage("");
     };
