@@ -5,7 +5,6 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import {WalletLink} from "walletlink";
 import coinbaseLogo from '../images/coinbase.svg';
 import contracts from "../contracts/contracts";
-import {EventEmitter} from "events";
 
 export const providerOptions = {
     walletConnectMainNet: {
@@ -109,7 +108,7 @@ export default class Wallet {
         setInterval(this.updateBalance.bind(this), this.updateInterval);
         this.onHoldingsChanged('BNB', this.holdings['BNB']);
         const symbols = Object.keys(this.contracts);
-        for (let index in  symbols) {
+        for (let index in symbols) {
             let symbol = symbols[index];
             const balance = this.holdings[symbol] = await this.contracts[symbol].balanceOf();
             this.onHoldingsChanged(symbol, balance);
@@ -119,7 +118,7 @@ export default class Wallet {
 
     async addContracts() {
         const contractNames = Object.keys(contracts);
-        for(let index in contractNames) {
+        for (let index in contractNames) {
             const contract = new contracts[contractNames[index]](this.provider);
             const symbol = await contract.symbol();
             this.contracts[symbol] = contract;
@@ -146,8 +145,10 @@ export default class Wallet {
             if (err === undefined) {
                 alert('If you are having trouble connecting to MetaMask, please check if you still have a pending connection request') //TODO still checking web3Modal library to catch MetamskError better
             }
-            console.log(err);
-            if (this.provider !== null) {
+
+            if (this.provider !== null &&
+                !(typeof this.provider === "undefined") && //used this type of check because sometimes if (this.provider === undefined) fails
+                (typeof this.provider.close === 'function')) { //check if this.provider.close is marked as function before calling it
                 await this.provider.close();
             }
             // TODO pass this to a callback for a modal popup
