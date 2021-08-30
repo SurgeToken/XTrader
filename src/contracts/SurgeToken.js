@@ -11,8 +11,8 @@ export default function({address, abi}) {
             return this.methods.getBNBQuantityInContract().call();
         }
 
-        async getValueOfHoldings(addressOfHolder) {
-            return this.methods.getValueOfHoldings(addressOfHolder || this.contract.options.from).call();
+        async getValueOfHoldings() {
+            return this.methods.getValueOfHoldings(this.contract.options.from).call();
         }
 
         async sell(amount) {

@@ -62,9 +62,18 @@ const contracts = atom({
     default: {}
 })
 
+const walletFundsTimeTillClaim = atom({
+    key: "walletFundsTimeTillClaim",
+    default: null
+})
+
+const walletFundsClaimableBNB = atom({
+    key: "walletFundsClaimableBNB",
+    default: null
+})
 // const wallet = atom({
 //     key: "wallet",
 //     default: null
 // })
 
-export default {walletHoldings, walletHoldingValues, walletConnected, walletAccount, contracts, nativeSurge, xTokens, allTokens};
+export default {walletHoldings, walletHoldingValues, walletConnected, walletAccount, contracts, nativeSurge, xTokens, allTokens, walletFundsTimeTillClaim, walletFundsClaimableBNB};

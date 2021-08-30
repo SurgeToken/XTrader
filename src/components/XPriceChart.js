@@ -37,9 +37,10 @@ export default function XPriceChart() {
 
     return (
         <Card
-            height={"large"}
+            // height={"large"}
             small
             round
+            pad={{bottom:"large"}}
             background={"spaceBlue"}
             elevation={"large"}
             style={{border: "solid 1px #21BBB1"}}>
@@ -56,7 +57,7 @@ export default function XPriceChart() {
                 <Text pad={{bottom: "small"}}>Token</Text>
                 <AddressSelector  pad={{top: "small"}} onSelect={onSelectedAddressChange}/>
             </CardHeader>
-            <CardBody>
+            <CardBody pad={"xxlarge"}>
                 <Box align={"center"} pad={{vertical: "small", horizontal: size === "small" ? "xxlarge" : "xlarge"}} small round>
                     {priceData == null ? <Text>Loading...</Text> : <Chart data={priceData}/>}
                 </Box>
