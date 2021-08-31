@@ -23,7 +23,7 @@ export default function AddressSelector({onSelect}) {
             }
         )
         setAddresses(addressList);
-        setSelectedAddress(addresses.at(0));
+        // setSelectedAddress(addresses.at(0));
         // for (let index in  symbols) {
         //     let symbol = symbols[index];
         //     contracts[symbol].prototype.getAddressOfContract().then((address) => {

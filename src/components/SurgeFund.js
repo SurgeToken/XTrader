@@ -2,19 +2,31 @@ import {Box, Button, Text} from "grommet";
 import {useRecoilState} from "recoil";
 import state from "../state/state";
 
-import React from "react";
+import React, {useContext} from "react";
+import {WalletContext} from "../context/context";
 
-export default function SurgeFunds() {
+function claimBNB(wallet) {
+    const surgeFundContract = wallet.SurgeFundsContract;
+    surgeFundContract.claim().then(
+        (success) => {
+            console.log('success');
+        }
+    )
+}
+
+export default function SurgeFund({contracts}) {
     const [timeTillClaim, ] = useRecoilState(state.walletFundsTimeTillClaim);
     const [claimableBNB, ] = useRecoilState(state.walletFundsClaimableBNB);
-    let time = timeTillClaim + " Seconds until next claim";
+    const {wallet} = useContext(WalletContext);
+    let time = `Next Claim: ${timeTillClaim} sec`
     let currentClaim = claimableBNB + " BNB"
     return (
         <Box direction={"row"} gap={"small"} align={"center"} alignContent={"between"}>
             <Button
                 disabled={!(timeTillClaim <= 0)}
                 size="medium"
-                label={"claim: " + currentClaim}
+                label={"claim: " + parseFloat(claimableBNB).toFixed(8) + " BNB"}
+                onClick={() => claimBNB(wallet)}
             />
             <Text >{time
                 // timeTillClaim <= 0 ? "You can claim now!" :

@@ -6,7 +6,7 @@ import React, {useContext} from "react";
 import XPriceChart from "./components/XPriceChart";
 import Bridge from "./components/Bridge";
 import Assets from "./components/Assets";
-import SurgeFunds from "./components/SurgeFunds";
+import SurgeFund from "./components/SurgeFund";
 import Chart from "./components/Chart";
 
 import CacheBuster from './CacheBuster';
@@ -46,6 +46,7 @@ const AppBar = (props) => (
 function addTradingComponent() {
     alert('Add another trading component to the body');
 }
+
 
 
 function Main() {
@@ -108,7 +109,7 @@ function Main() {
                                 <a href="/"><img src={logo} alt="Logo"
                                                  height={size === 'medium' ? "25px" : "20px"}/></a>
                             </Box>
-                            <SurgeFunds />
+                            <SurgeFund wallet={userWallet} contracts={contracts}/>
                             <Box>
                                 <Button
                                     size="medium"
@@ -122,17 +123,11 @@ function Main() {
                                 className="appBody"
                                 overflow={{horizontal: 'hidden'}}
                                 pad={"medium"}
-                                // align={"center"}
+                                align={"center"}
                             >
-                                <Masonry
-                                    breakpointCols={breakpointColumnsObj}
-                                    className="my-masonry-grid"
-                                    columnClassName="my-masonry-grid_column"
-                                >
                                     <Box ><Bridge/></Box>
-                                    <Box ><Assets/></Box>
-                                    <Box ><XPriceChart/></Box>
-                                </Masonry>
+                                    {/*<Box ><Assets/></Box>*/}
+                                    {/*<Box ><XPriceChart/></Box>*/}
                             </Box>
                             <Box pad={"medium"}>
                                 <Button

@@ -1,5 +1,5 @@
 import {Contract} from "./Contract.js";
-import abi from './abi/SurgeFunds.json'
+import abi from './abi/SurgeFund.json'
 
 export default ({address}) => {
     return class SurgeFundsContract extends Contract({address, abi: abi}) {
@@ -9,7 +9,7 @@ export default ({address}) => {
         }
 
         async claim() {
-            return this.methods.claim(this.contract.options.from).send();
+            return this.methods.claim().send();
         }
 
 
