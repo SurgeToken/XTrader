@@ -12,9 +12,13 @@ export default function AddressSelector({onSelect}) {
         const addressList = [];
         Object.keys(contracts).forEach(
             (key) => {
-                contracts[key].prototype.getAddressOfContract().then((address) => {
-                    addressList.push({name: key, address: address});
-                })
+                try{
+                    contracts[key].prototype.getAddressOfContract().then((address) => {
+                        addressList.push({name: key, address: address});
+                    })
+                } catch (e) {
+                    console.error("AddressSelector =>", e)
+                }
 
             }
         )

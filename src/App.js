@@ -6,6 +6,7 @@ import React, {useContext} from "react";
 import XPriceChart from "./components/XPriceChart";
 import Bridge from "./components/Bridge";
 import Assets from "./components/Assets";
+import SurgeFunds from "./components/SurgeFunds";
 import Chart from "./components/Chart";
 
 import CacheBuster from './CacheBuster';
@@ -27,6 +28,7 @@ import logo from './assets/xsurge-logo.png';
 // Common Functions
 import {RecoilRoot, useRecoilState} from "recoil";
 import {WalletContext} from "./context/context";
+import Masonry from "react-masonry-css";
 
 const AppBar = (props) => (
     <Box
@@ -45,15 +47,34 @@ function addTradingComponent() {
     alert('Add another trading component to the body');
 }
 
+
 function Main() {
+    const breakpointColumnsObj = {
+        default: 2,
+        768: 1
+    };
     const context = useContext(WalletContext);
     const [connected, setConnected] = useRecoilState(state.walletConnected);
     const [, setHoldings] = useRecoilState(state.walletHoldings);
     const [, setHoldingValues] = useRecoilState(state.walletHoldingValues);
+    const [, setTimeTillClaim] = useRecoilState(state.walletFundsTimeTillClaim);
+    const [, setClaimableBNB] = useRecoilState(state.walletFundsClaimableBNB);
     const [account, setAccount] = useRecoilState(state.walletAccount);
     // eslint-disable-next-line no-unused-vars
     const [contracts, setContracts] = useRecoilState(state.contracts);
     const userWallet = new Wallet(() => {
+            const timeTillClaim = userWallet.timeTillClaim;
+            setTimeTillClaim(timeTillClaim);
+            if (!context.provider) {
+                context.provider = userWallet.provider;
+            }
+        },() => {
+            const claimableBNB = userWallet.claimableBNB;
+            setClaimableBNB(claimableBNB);
+            if (!context.provider) {
+                context.provider = userWallet.provider;
+            }
+        },() => {
             const newHoldings = {...userWallet.holdings};
             setHoldings(newHoldings);
             if (!context.provider) {
@@ -79,6 +100,7 @@ function Main() {
     return (
         <Grommet  theme={grommetTheme} full>
             <ResponsiveContext.Consumer>
+
                 {size => (
                     <Box fill>
                         <AppBar>
@@ -86,6 +108,7 @@ function Main() {
                                 <a href="/"><img src={logo} alt="Logo"
                                                  height={size === 'medium' ? "25px" : "20px"}/></a>
                             </Box>
+                            <SurgeFunds />
                             <Box>
                                 <Button
                                     size="medium"
@@ -94,34 +117,41 @@ function Main() {
                                 />
                             </Box>
                         </AppBar>
-                        <Box
-                            fill
-                            className="appBody"
-                            overflow={{horizontal: 'hidden'}}
-                            pad={"medium"}
-                            align={"center"}
-                        >
-                                <Box align={"center"}><Bridge/></Box>
-                                <Box align={"center"}><Assets/></Box>
-                                <Box align={"center"}><XPriceChart/></Box>
-                        </Box>
-                        <Box pad={"medium"}>
-                            <Button
-                                secondary
-                                size="small"
-                                alignSelf="end"
-                                icon={<Add color="white"/>}
-                                plain
-                                style={(size === 'small') ? {marginLeft: 12, marginRight: 12} : {
-                                    marginLeft: 20,
-                                    marginRight: 15
-                                }}
-                                onClick={addTradingComponent}
-                            />
-                        </Box>
+                            <Box
+                                fill
+                                className="appBody"
+                                overflow={{horizontal: 'hidden'}}
+                                pad={"medium"}
+                                // align={"center"}
+                            >
+                                <Masonry
+                                    breakpointCols={breakpointColumnsObj}
+                                    className="my-masonry-grid"
+                                    columnClassName="my-masonry-grid_column"
+                                >
+                                    <Box ><Bridge/></Box>
+                                    <Box ><Assets/></Box>
+                                    <Box ><XPriceChart/></Box>
+                                </Masonry>
+                            </Box>
+                            <Box pad={"medium"}>
+                                <Button
+                                    secondary
+                                    size="small"
+                                    alignSelf="end"
+                                    icon={<Add color="white"/>}
+                                    plain
+                                    style={(size === 'small') ? {marginLeft: 12, marginRight: 12} : {
+                                        marginLeft: 20,
+                                        marginRight: 15
+                                    }}
+                                    onClick={addTradingComponent}
+                                />
+                            </Box>
 
-                        {!connected && <Box style={{position: "absolute"}} onClick={(e) => e.stopPropagation()}
-                                            background={{color: "black", opacity: "strong"}} fill/>}
+                            {!connected && <Box style={{position: "absolute"}} onClick={(e) => e.stopPropagation()}
+                                                background={{color: "black", opacity: "strong"}} fill/>}
+
                     </Box>
                 )}
             </ResponsiveContext.Consumer>
