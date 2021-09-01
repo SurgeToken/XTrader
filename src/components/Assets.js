@@ -65,6 +65,7 @@ export default () => {
 
     return ( <Draggable disabled={true}>
             <Card  height={"medium"}
+
                   small
                   round
                   background={"spaceBlue"}

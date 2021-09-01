@@ -219,7 +219,6 @@ const Bridge = (props) => {
     const size = React.useContext(ResponsiveContext);
 
     return (
-            <Draggable disabled={true}>
                 <Card
                       small round
                       background={"spaceBlue"}
@@ -243,6 +242,7 @@ const Bridge = (props) => {
                             direction={"row"}
                             gap={"medium"}
                             pad={{left: "medium"}}
+
                             margin={(size === "xsmall" ? "medium" : "small")}
                         >
                             <Anchor onClick={() => setAction(false)} color="white">
@@ -261,7 +261,6 @@ const Bridge = (props) => {
                         />}
                     </CardBody>
                 </Card>
-            </Draggable>
 
     );
 }

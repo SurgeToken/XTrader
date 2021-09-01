@@ -109,7 +109,6 @@ function Main() {
                                 <a href="/"><img src={logo} alt="Logo"
                                                  height={size === 'medium' ? "25px" : "20px"}/></a>
                             </Box>
-                            <SurgeFund wallet={userWallet} contracts={contracts}/>
                             <Box>
                                 <Button
                                     size="medium"
@@ -121,33 +120,17 @@ function Main() {
                             <Box
                                 fill
                                 className="appBody"
-                                overflow={{horizontal: 'hidden'}}
+                                overflow={{horizontal: 'hidden', vertical: "auto"}}
                                 pad={"medium"}
                                 align={"center"}
                             >
-                                <Masonry
-                                    breakpointCols={breakpointColumnsObj}
-                                    className="my-masonry-grid"
-                                    columnClassName="my-masonry-grid_column"
-                                >
                                     <Box ><Bridge/></Box>
-                                    <Box ><Assets/></Box>
-                                    <Box ><XPriceChart/></Box>
-                                </Masonry>
+                                    {/*<Box ><Assets/></Box>*/}
+                                    {/*<Box ><XPriceChart/></Box>*/}
                             </Box>
-                            <Box pad={"medium"}>
-                                <Button
-                                    secondary
-                                    size="small"
-                                    alignSelf="end"
-                                    icon={<Add color="white"/>}
-                                    plain
-                                    style={(size === 'small') ? {marginLeft: 12, marginRight: 12} : {
-                                        marginLeft: 20,
-                                        marginRight: 15
-                                    }}
-                                    onClick={addTradingComponent}
-                                />
+                            <Box pad={"medium"} align={"center"}>
+                                <SurgeFund wallet={userWallet} contracts={contracts}/>
+
                             </Box>
 
                             {!connected && <Box style={{position: "absolute"}} onClick={(e) => e.stopPropagation()}
