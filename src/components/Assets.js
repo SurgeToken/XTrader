@@ -52,14 +52,12 @@ export default () => {
         //     footer: { aggregate: true },
         // }
     ]
-    //TODO: this must be done better but works for now :)
-    const symbols = {'SURGE':"BNB", 'SUSD':"BUSD", 'SETH':"ETH"}
-    const data = ['SURGE', 'SUSD', 'SETH'].map((val) => {
+    const data = Object.keys(holdingValues).map((val) => {
         return {
             Token: val,
             Quantity: holdings[val],
             // Change: Math.random() * 100,
-            Value: `${(parseInt(holdingValues[val])*1.0e-18).toPrecision(10)}`
+            Value: (parseInt(holdingValues[val])*1.0e-18).toString() + " w" + val.substr(1)
         }
     });
     // noinspection JSCheckFunctionSignatures
@@ -67,6 +65,7 @@ export default () => {
 
     return ( <Draggable disabled={true}>
             <Card  height={"medium"}
+
                   small
                   round
                   background={"spaceBlue"}

@@ -6,6 +6,11 @@ import {WalletLink} from "walletlink";
 import coinbaseLogo from '../images/coinbase.svg';
 import contracts from "../contracts/contracts";
 
+import {EventEmitter} from "events";
+import {useRecoilState} from "recoil";
+import state from "../state/state";
+
+
 export const providerOptions = {
     walletConnectMainNet: {
         appName: 'xSurge',
@@ -60,16 +65,42 @@ export default class Wallet {
     provider = null;
     contracts = {};
     holdings = {};
+    holdingValues = {};
     accountAddress = null;
+
     updateInterval = 15 * 1000 // 15 seconds
 
-    constructor(onHoldingChanged, onConnected, onDisconnected) {
-        this.onHoldingsChanged = onHoldingChanged || (() => {
+    /*
+    funds stuff
+     */
+    SurgeFundsContract = null;
+    timeTillClaim = null;
+    claimableBNB = null;
+
+
+    constructor(onTimeTillClaimChange, onClaimableBNBChange, onHoldingsChanged, onHoldingValuesChanged, onConnected, onDisconnected) {
+        this.onHoldingsChanged = onHoldingsChanged || (() => {
+        });
+        this.onHoldingValuesChanged = onHoldingValuesChanged || (() => {
         });
         this.onConnected = onConnected || (() => {
         });
         this.onDisconnected = onDisconnected || (() => {
         });
+        /*
+        funds stuff
+         */
+        this.onTimeTillClaimChange = onTimeTillClaimChange || (() => {
+        });
+        this.onClaimableBNBChange = onClaimableBNBChange || (() => {
+        });
+    }
+
+    initializeValues() {
+        this.addHoldings();
+        this.addHoldingValues();
+        this.getTimeTillClaim();
+        this.getClaimable();
     }
 
     async account() {
@@ -103,6 +134,17 @@ export default class Wallet {
         })
     }
 
+    updateHoldingValues(symbol) {
+        this.contracts[symbol].getValueOfHoldings().then((holdingValue) => {
+            // console.error(holdingValue)
+            if (holdingValue !== this.holdingValues[symbol]) {
+                this.holdingValues[symbol] = holdingValue;
+                this.onHoldingValuesChanged(symbol, holdingValue);
+            }
+        })
+    }
+
+
     async addHoldings() {
         this.holdings['BNB'] = await this.web3.eth.getBalance(this.accountAddress);
         setInterval(this.updateBalance.bind(this), this.updateInterval);
@@ -116,12 +158,31 @@ export default class Wallet {
         }
     }
 
+    async addHoldingValues() {
+        const symbols = Object.keys(this.contracts);
+        for (let index in symbols) {
+            try {
+                let symbol = symbols[index];
+                const holdingValue = this.holdingValues[symbol] = await this.contracts[symbol].getValueOfHoldings();
+                this.onHoldingValuesChanged(symbol, holdingValue);
+                setInterval(this.updateHoldingValues.bind(this, symbol), this.updateInterval);
+            }catch (e) {
+                console.log("Failed to get value of holding of ", symbols[index], ": ", e);
+            }
+        }
+    }
+
     async addContracts() {
         const contractNames = Object.keys(contracts);
-        for (let index in contractNames) {
-            const contract = new contracts[contractNames[index]](this.provider);
-            const symbol = await contract.symbol();
-            this.contracts[symbol] = contract;
+        for(let index in contractNames) {
+            try {
+                const contract = new contracts[contractNames[index]](this.provider);
+                const symbol = await contract.symbol();
+                this.contracts[symbol] = contract;
+            } catch (e) {
+                this.SurgeFundsContract = new contracts[contractNames[index]](this.provider);
+            }
+
         }
     }
 
@@ -133,7 +194,7 @@ export default class Wallet {
             const account = this.accountAddress = await this.account();
             if (provider !== this.provider) {
                 await this.addContracts();
-                this.addHoldings();
+                this.initializeValues();
             }
             this.onConnected();
 
@@ -173,6 +234,38 @@ export default class Wallet {
 
     convert(to, from, value) {
 
+    }
+
+    /*
+    funds section
+     */
+    updateTimeTillClaim() {
+        // const [, setTimeTillClaim] = useRecoilState(state.fundsTimeTillClaim);
+        this.SurgeFundsContract.secondsUntilNextClaim().then((time) => {
+            console.error("updateTimeTillClaim => ", time);
+            this.timeTillClaim = time;
+            this.onTimeTillClaimChange(time);
+            // setTimeTillClaim(this.timeTillClaim)
+        })
+    }
+
+    async getTimeTillClaim() {
+        const timeTillClaim = this.timeTillClaim = await this.SurgeFundsContract.secondsUntilNextClaim();
+        this.onTimeTillClaimChange(timeTillClaim);
+        setInterval(this.updateTimeTillClaim.bind(this), this.updateInterval);
+    }
+    updateClaimable() {
+        this.SurgeFundsContract.usersCurrentClaim().then((claimableBNB) => {
+            console.error("updateClaimable => ", claimableBNB);
+            this.claimableBNB = claimableBNB / Math.pow(10,18);
+            this.onClaimableBNBChange(claimableBNB / Math.pow(10,18));
+        })
+    }
+
+    async getClaimable() {
+        const claimableBNB = this.claimableBNB = await this.SurgeFundsContract.usersCurrentClaim();
+        this.onClaimableBNBChange(claimableBNB / Math.pow(10,18));
+        setInterval(this.updateClaimable.bind(this), this.updateInterval);
     }
 }
 //

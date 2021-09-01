@@ -1,10 +1,16 @@
 // Libs
-import React, {useContext, useState} from "react";
-import Masonry from 'react-masonry-css';
+import React, {useContext} from "react";
 
 // Components
-import Chart from "./components/Chart";
+
+import XPriceChart from "./components/XPriceChart";
+import Bridge from "./components/Bridge";
 import Assets from "./components/Assets";
+import SurgeFund from "./components/SurgeFund";
+import Chart from "./components/Chart";
+
+import CacheBuster from './CacheBuster';
+
 import Wallet from "./common/wallet";
 import state from "./state/state"
 // Grommet Stuff
@@ -20,10 +26,9 @@ import './App.css';
 import logo from './assets/xsurge-logo.png';
 
 // Common Functions
-import XPriceChart from "./components/XPriceChart";
-import Bridge from "./components/Bridge";
 import {RecoilRoot, useRecoilState} from "recoil";
 import {WalletContext} from "./context/context";
+import Masonry from "react-masonry-css";
 
 const AppBar = (props) => (
     <Box
@@ -42,6 +47,8 @@ function addTradingComponent() {
     alert('Add another trading component to the body');
 }
 
+
+
 function Main() {
     const breakpointColumnsObj = {
         default: 2,
@@ -50,11 +57,37 @@ function Main() {
     const context = useContext(WalletContext);
     const [connected, setConnected] = useRecoilState(state.walletConnected);
     const [, setHoldings] = useRecoilState(state.walletHoldings);
+    const [, setHoldingValues] = useRecoilState(state.walletHoldingValues);
+    const [, setTimeTillClaim] = useRecoilState(state.walletFundsTimeTillClaim);
+    const [, setClaimableBNB] = useRecoilState(state.walletFundsClaimableBNB);
     const [account, setAccount] = useRecoilState(state.walletAccount);
+    // eslint-disable-next-line no-unused-vars
     const [contracts, setContracts] = useRecoilState(state.contracts);
-    const userWallet = new Wallet((key, value) => {
+    const userWallet = new Wallet(() => {
+            const timeTillClaim = userWallet.timeTillClaim;
+            setTimeTillClaim(timeTillClaim);
+            if (!context.provider) {
+                context.provider = userWallet.provider;
+            }
+        },() => {
+            const claimableBNB = userWallet.claimableBNB;
+            setClaimableBNB(claimableBNB);
+            if (!context.provider) {
+                context.provider = userWallet.provider;
+            }
+        },() => {
             const newHoldings = {...userWallet.holdings};
             setHoldings(newHoldings);
+            if (!context.provider) {
+                context.provider = userWallet.provider;
+            }
+        },
+        () => {
+            const newHoldingValues = {...userWallet.holdingValues};
+            setHoldingValues(newHoldingValues);
+            if (!context.provider) {
+                context.provider = userWallet.provider;
+            }
         },
         () => {
             setContracts(Object.keys(userWallet.contracts));
@@ -66,8 +99,9 @@ function Main() {
             setConnected(false);
         });
     return (
-        <Grommet theme={grommetTheme} full>
+        <Grommet  theme={grommetTheme} full>
             <ResponsiveContext.Consumer>
+
                 {size => (
                     <Box fill>
                         <AppBar>
@@ -83,34 +117,25 @@ function Main() {
                                 />
                             </Box>
                         </AppBar>
-                        <Box
-                            fill
-                            className="appBody"
-                            overflow={{horizontal: 'hidden'}}
-                            pad={"medium"}
-                            align={"center"}
-                        >
-                                <Box align={"center"}><Bridge/></Box>
-                                {/*<Box align={"center"}><Assets/></Box>*/}
-                                {/*<Box align={"center"}><XPriceChart wallet={wallet}/></Box>*/}
-                        </Box>
-                        <Box pad={"medium"}>
-                            <Button
-                                secondary
-                                size="small"
-                                alignSelf="end"
-                                icon={<Add color="white"/>}
-                                plain
-                                style={(size === 'small') ? {marginLeft: 12, marginRight: 12} : {
-                                    marginLeft: 20,
-                                    marginRight: 15
-                                }}
-                                onClick={addTradingComponent}
-                            />
-                        </Box>
+                            <Box
+                                fill
+                                className="appBody"
+                                overflow={{horizontal: 'hidden', vertical: "auto"}}
+                                pad={"medium"}
+                                align={"center"}
+                            >
+                                    <Box ><Bridge/></Box>
+                                    {/*<Box ><Assets/></Box>*/}
+                                    {/*<Box ><XPriceChart/></Box>*/}
+                            </Box>
+                            <Box pad={"medium"} align={"center"}>
+                                <SurgeFund wallet={userWallet} contracts={contracts}/>
 
-                        {!connected && <Box style={{position: "absolute"}} onClick={(e) => e.stopPropagation()}
-                                            background={{color: "black", opacity: "strong"}} fill/>}
+                            </Box>
+
+                            {!connected && <Box style={{position: "absolute"}} onClick={(e) => e.stopPropagation()}
+                                                background={{color: "black", opacity: "strong"}} fill/>}
+
                     </Box>
                 )}
             </ResponsiveContext.Consumer>
@@ -122,10 +147,22 @@ function Main() {
 function App() {
 
     return (
-        <RecoilRoot>
-            <Main/>
-        </RecoilRoot>
+        <CacheBuster>
+            {({ loading, isLatestVersion, refreshCacheAndReload }) => {
+                if (loading) return null;
+                if (!loading && !isLatestVersion) {
+                    refreshCacheAndReload();
+                }
+
+                return (
+                    <RecoilRoot>
+                        <Main/>
+                    </RecoilRoot>
+                  );
+                }}
+        </CacheBuster>
     );
 }
+
 
 export default App;
