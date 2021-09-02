@@ -30,7 +30,7 @@ export default function SurgeFund({contracts}) {
     return (
         <Box direction={"row"} gap={"small"} align={"center"} alignContent={"between"}>
             <Button
-                disabled={!(timeTillClaim <= 0)}
+                // disabled={!(timeTillClaim <= 0)}
                 size="medium"
                 label={"Surge Fund" }
                 onClick={() => setOpen(true)}
