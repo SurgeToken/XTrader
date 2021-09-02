@@ -231,11 +231,11 @@ const Bridge = (props) => {
                         gap={"none"}
                         pad={{top: "small", bottom: "small", right: "medium", left: "medium"}}
                     >
-                        <Box margin={(size === "xsmall" ? "medium" : "small")}>
+                        {/*<Box margin={(size === "xsmall" ? "medium" : "small")}>*/}
                             <Text
-                                size={((size === "xsmall" || size === "small") ? "large" : "large")}
+                                // size={((size === "xsmall" || size === "small") ? "large" : "large")}
                             >Trade</Text>
-                        </Box>
+                        {/*</Box>*/}
                         <Box
                             align={"center"}
                             justify={"end"}

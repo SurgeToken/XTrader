@@ -102,11 +102,6 @@
         "large": "0px 0px 10px rgba(33, 187, 177, .4)",
         "xlarge": "0px 0px 15px rgba(33, 187, 177, .4)"
       }
-    },
-    "breakpoints": {
-      "xsmall": {
-        "value": 455
-      }
     }
   },
   "button": {
