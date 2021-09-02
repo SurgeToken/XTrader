@@ -120,7 +120,7 @@ function Main() {
                             <Box
                                 fill
                                 className="appBody"
-                                // overflow={{horizontal: 'hidden'}}
+                                overflow={{vertical: 'auto'}}
                                 pad={"medium"}
                                 align={"center"}
                             >
@@ -131,6 +131,11 @@ function Main() {
                                 >
                                     <Box ><Bridge/></Box>
                                     <Box ><Assets/></Box>
+                                </Masonry>
+                                <Masonry
+                                    breakpointCols={{default: 1}}
+                                    className="my-masonry-grid"
+                                    columnClassName="my-masonry-grid_column">
                                     <Box ><XPriceChart/></Box>
                                 </Masonry>
                             </Box>

@@ -58,7 +58,7 @@ export default function XPriceChart() {
                 <AddressSelector  pad={{top: "small"}} onSelect={onSelectedAddressChange}/>
             </CardHeader>
             <CardBody pad={"xxlarge"}>
-                <Box align={"center"} pad={{vertical: "small", horizontal: size === "small" ? "xxlarge" : "xlarge"}} small round>
+                <Box align={"center"} pad={{vertical: "small", horizontal: size === "small" ? "xxlarge" : "xlarge"}} large round>
                     {priceData == null ? <Text>Loading...</Text> : <Chart data={priceData}/>}
                 </Box>
                 <Box gap={"small"} align={"center"}>
