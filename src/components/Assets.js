@@ -57,7 +57,7 @@ export default () => {
             Token: val,
             Quantity: holdings[val],
             // Change: Math.random() * 100,
-            Value: (parseInt(holdingValues[val])*1.0e-18).toString() + " w" + val.substr(1)
+            Value: (parseInt(holdingValues[val])*1.0e-18).toFixed(6).toString() + " w" + val.substr(1)
         }
     });
     // noinspection JSCheckFunctionSignatures
