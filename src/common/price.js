@@ -3,7 +3,7 @@ export async function getHistoricPriceData(tokenAddress, interval) {
     const response = await fetch(`https://api.getsur.ge/${tokenAddress}?interval=${interval}`);
     const data = await response.json();
     try {
-        console.log("data: ", data.dataset, " tokenAddress: ", tokenAddress);
+        // console.log("data: ", data.dataset, " tokenAddress: ", tokenAddress);
         return data.dataset.map(point => {
             return { value: point[0], time: point[1] };
         });

@@ -21,7 +21,7 @@ export default function XPriceChart() {
     };
 
     const onIntervalSliderChange = (interval) => {
-        console.log("onTokenSliderChange", interval)
+        // console.log("onTokenSliderChange", interval)
         setSelectedInterval(interval);
     };
 

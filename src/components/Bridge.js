@@ -54,7 +54,7 @@ const BuyForm = (props) => {
     const [holdings, setHoldings] = useRecoilState(state.walletHoldings);
     const [currency, setCurrency] = useState(Object.keys(holdings)[1] || 'BNB');
     const [selectedToken, setSelectedToken] = useState({name: 'SETH'});
-    console.log(selectedToken);
+    // console.log(selectedToken);
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
 

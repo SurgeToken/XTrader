@@ -17,7 +17,7 @@ export default function AddressSelector({onSelect}) {
                         addressList.push({name: key, address: address});
                     })
                 } catch (e) {
-                    console.error("AddressSelector =>", e)
+                    // console.error("AddressSelector =>", e)
                 }
 
             }
