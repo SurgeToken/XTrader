@@ -120,7 +120,7 @@ function Main() {
                             <Box
                                 fill
                                 className="appBody"
-                                overflow={{horizontal: 'hidden'}}
+                                // overflow={{horizontal: 'hidden'}}
                                 pad={"medium"}
                                 align={"center"}
                             >
