@@ -51,8 +51,10 @@ function addTradingComponent() {
 
 function Main() {
     const breakpointColumnsObj = {
-        default: 2,
-        768: 1
+        default: 3,
+        1100: 2,
+        700: 1,
+        456: 1
     };
     const context = useContext(WalletContext);
     const [connected, setConnected] = useRecoilState(state.walletConnected);
@@ -131,11 +133,7 @@ function Main() {
                                 >
                                     <Box ><Bridge/></Box>
                                     <Box ><Assets/></Box>
-                                </Masonry>
-                                <Masonry
-                                    breakpointCols={{default: 1}}
-                                    className="my-masonry-grid"
-                                    columnClassName="my-masonry-grid_column">
+
                                     <Box ><XPriceChart/></Box>
                                 </Masonry>
                             </Box>
