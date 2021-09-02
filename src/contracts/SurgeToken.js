@@ -3,6 +3,11 @@ import surgeTokenABI from "./abi/SurgeToken.json"
 
 export default function({address, abi}) {
     return class SurgeToken extends Token({address, abi: abi || surgeTokenABI}) {
+
+        async getAddressOfContract() {
+            return address || this.contract.address
+        }
+
         async calculatePrice() {
             return this.methods.calculatePrice().call();
         }
