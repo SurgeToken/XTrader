@@ -10,7 +10,12 @@ function claimBNB(wallet) {
     const surgeFundContract = wallet.SurgeFundsContract;
     surgeFundContract.claim().then(
         (success) => {
-            console.log('success');
+            console.log('success', success);
+            alert('success: '+ success.message)
+        },
+        (error) => {
+            console.error('error', error);
+            alert('error: '+ error.message)
         }
     )
 }
