@@ -167,7 +167,7 @@ export default class Wallet {
                 this.onHoldingValuesChanged(symbol, holdingValue);
                 setInterval(this.updateHoldingValues.bind(this, symbol), this.updateInterval);
             }catch (e) {
-                console.log("Failed to get value of holding of ", symbols[index], ": ", e);
+                // console.log("Failed to get value of holding of ", symbols[index], ": ", e);
             }
         }
     }

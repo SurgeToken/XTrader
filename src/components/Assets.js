@@ -63,7 +63,7 @@ export default () => {
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
 
-    return ( <Draggable disabled={true}>
+    return (
             <Card  height={"medium"}
 
                   small
@@ -90,10 +90,9 @@ export default () => {
                 </CardHeader>
                 <CardBody pad={"small"}            align={"center"}
                 >
-                    <DataTable pin fill={"true"} columns={columns} data={data}/>
+                    <DataTable pin fill columns={columns} data={data}/>
                 </CardBody>
             </Card>
-        </Draggable>
 
     );
 }
