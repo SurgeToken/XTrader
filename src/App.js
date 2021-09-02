@@ -120,13 +120,19 @@ function Main() {
                             <Box
                                 fill
                                 className="appBody"
-                                overflow={{horizontal: 'hidden', vertical: "auto"}}
+                                // overflow={{horizontal: 'hidden'}}
                                 pad={"medium"}
                                 align={"center"}
                             >
+                                <Masonry
+                                    breakpointCols={breakpointColumnsObj}
+                                    className="my-masonry-grid"
+                                    columnClassName="my-masonry-grid_column"
+                                >
                                     <Box ><Bridge/></Box>
-                                    {/*<Box ><Assets/></Box>*/}
-                                    {/*<Box ><XPriceChart/></Box>*/}
+                                    <Box ><Assets/></Box>
+                                    <Box ><XPriceChart/></Box>
+                                </Masonry>
                             </Box>
                             <Box pad={"medium"} align={"center"}>
                                 <SurgeFund wallet={userWallet} contracts={contracts}/>

@@ -20,10 +20,6 @@ export default ({address, abi}) => {
          */
 
 
-        async getAddressOfContract() {
-            return address || this.contract.address
-        }
-
         constructor(provider, sender) {
             super(provider, sender);
         }
