@@ -11,7 +11,7 @@ function claimBNB(wallet) {
     surgeFundContract.claim().then(
         (success) => {
             console.log('success', success);
-            alert('success: '+ success.message)
+            // alert('success: '+ success.message)
         },
         (error) => {
             console.error('error', error);
