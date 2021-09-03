@@ -10,7 +10,7 @@ import IntervalSlider from "./IntervalSlider";
 export default function XPriceChart() {
     const [priceData, setPriceData] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState();
-    const [selectedInterval, setSelectedInterval] = useState();
+    const [selectedInterval, setSelectedInterval] = useState("1m");
 
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
@@ -62,7 +62,7 @@ export default function XPriceChart() {
                     {priceData == null ? <Text>Loading...</Text> : <Chart data={priceData}/>}
                 </Box>
                 <Box gap={"small"} align={"center"}>
-                    <IntervalSlider onIntervalChange={onIntervalSliderChange} defaultInterval={0}/>
+                    <IntervalSlider onIntervalChange={onIntervalSliderChange} defaultInterval={"1m"}/>
                 </Box>
             </CardBody>
         </Card>
