@@ -64,13 +64,12 @@ export default () => {
     const size = React.useContext(ResponsiveContext);
 
     return (
-            <Card  height={"medium"}
-
-                  small
-                  round
-                  background={"spaceBlue"}
-                  elevation={"large"}
-                  style={{border: "solid 1px #21BBB1"}}>
+            <Card
+                small
+                round
+                background={"spaceBlue"}
+                elevation={"large"}
+                style={{border: "solid 1px #21BBB1"}}>
                 <CardHeader
                     flex={"shrink"}
                     // direction={(size === "xsmall" ? "column" : "row")}
@@ -90,7 +89,7 @@ export default () => {
                 </CardHeader>
                 <CardBody pad={"small"}            align={"center"}
                 >
-                    <DataTable pin fill columns={columns} data={data}/>
+                    <DataTable pad={"small"} fill={"horizontal"} columns={columns} data={data}/>
                 </CardBody>
             </Card>
 
