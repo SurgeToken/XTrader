@@ -57,20 +57,19 @@ export default () => {
             Token: val,
             Quantity: holdings[val],
             // Change: Math.random() * 100,
-            Value: (parseInt(holdingValues[val])*1.0e-18).toString() + " w" + val.substr(1)
+            Value: (parseInt(holdingValues[val])*1.0e-18).toFixed(6).toString() + " w" + val.substr(1)
         }
     });
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
 
-    return ( <Draggable disabled={true}>
-            <Card  height={"medium"}
-
-                  small
-                  round
-                  background={"spaceBlue"}
-                  elevation={"large"}
-                  style={{border: "solid 1px #21BBB1"}}>
+    return (
+            <Card
+                small
+                round
+                background={"spaceBlue"}
+                elevation={"large"}
+                style={{border: "solid 1px #21BBB1"}}>
                 <CardHeader
                     flex={"shrink"}
                     // direction={(size === "xsmall" ? "column" : "row")}
@@ -90,10 +89,9 @@ export default () => {
                 </CardHeader>
                 <CardBody pad={"small"}            align={"center"}
                 >
-                    <DataTable pin fill={"true"} columns={columns} data={data}/>
+                    <DataTable pad={"small"} fill={"horizontal"} columns={columns} data={data}/>
                 </CardBody>
             </Card>
-        </Draggable>
 
     );
 }

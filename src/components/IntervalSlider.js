@@ -8,7 +8,6 @@ export default function IntervalSlider({ defaultInterval, onIntervalChange }) {
     const intervalArr = ["1m", "5m", "15m", "1h", "6h", "12h", "1d", "3d"/*, "1w", "1mo"*/]
     const onSliderValueChange = (event) => {
         setInterval(intervalArr[event]);
-        console.log("onSliderValueChange (event): ", event, interval)
 
         if (onIntervalChange) {
             onIntervalChange(intervalArr[event]);

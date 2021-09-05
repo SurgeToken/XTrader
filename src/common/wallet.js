@@ -167,7 +167,7 @@ export default class Wallet {
                 this.onHoldingValuesChanged(symbol, holdingValue);
                 setInterval(this.updateHoldingValues.bind(this, symbol), this.updateInterval);
             }catch (e) {
-                console.log("Failed to get value of holding of ", symbols[index], ": ", e);
+                // console.log("Failed to get value of holding of ", symbols[index], ": ", e);
             }
         }
     }
@@ -242,7 +242,7 @@ export default class Wallet {
     updateTimeTillClaim() {
         // const [, setTimeTillClaim] = useRecoilState(state.fundsTimeTillClaim);
         this.SurgeFundsContract.secondsUntilNextClaim().then((time) => {
-            console.error("updateTimeTillClaim => ", time);
+            // console.error("updateTimeTillClaim => ", time);
             this.timeTillClaim = time;
             this.onTimeTillClaimChange(time);
             // setTimeTillClaim(this.timeTillClaim)
@@ -256,15 +256,16 @@ export default class Wallet {
     }
     updateClaimable() {
         this.SurgeFundsContract.usersCurrentClaim().then((claimableBNB) => {
-            console.error("updateClaimable => ", claimableBNB);
+            // console.error("updateClaimable => ", claimableBNB);
             this.claimableBNB = claimableBNB / Math.pow(10,18);
             this.onClaimableBNBChange(claimableBNB / Math.pow(10,18));
         })
     }
 
     async getClaimable() {
-        const claimableBNB = this.claimableBNB = await this.SurgeFundsContract.usersCurrentClaim();
-        this.onClaimableBNBChange(claimableBNB / Math.pow(10,18));
+        const claimableBNB = await this.SurgeFundsContract.usersCurrentClaim() / Math.pow(10,18);
+        this.claimableBNB = claimableBNB;
+        this.onClaimableBNBChange(claimableBNB);
         setInterval(this.updateClaimable.bind(this), this.updateInterval);
     }
 }

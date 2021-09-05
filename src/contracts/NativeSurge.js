@@ -4,6 +4,10 @@ import nativeSurgeABI from './abi/NativeSurge_metadata.json'
 export default function ({address, abi}) {
     return class NativeSurge extends Token({address, abi: nativeSurgeABI}) {
 
+        async getAddressOfContract() {
+            return address || this.contract.address
+        }
+
         async calculatePrice() {
             return this.methods.calculatePrice().call();
         }

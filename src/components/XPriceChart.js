@@ -10,7 +10,7 @@ import IntervalSlider from "./IntervalSlider";
 export default function XPriceChart() {
     const [priceData, setPriceData] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState();
-    const [selectedInterval, setSelectedInterval] = useState();
+    const [selectedInterval, setSelectedInterval] = useState("1m");
 
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
@@ -21,7 +21,7 @@ export default function XPriceChart() {
     };
 
     const onIntervalSliderChange = (interval) => {
-        console.log("onTokenSliderChange", interval)
+        // console.log("onTokenSliderChange", interval)
         setSelectedInterval(interval);
     };
 
@@ -58,11 +58,11 @@ export default function XPriceChart() {
                 <AddressSelector  pad={{top: "small"}} onSelect={onSelectedAddressChange}/>
             </CardHeader>
             <CardBody pad={"xxlarge"}>
-                <Box align={"center"} pad={{vertical: "small", horizontal: size === "small" ? "xxlarge" : "xlarge"}} small round>
+                <Box align={"center"} pad={{vertical: "small", horizontal: size === "small" ? "xxlarge" : "xlarge"}} large round>
                     {priceData == null ? <Text>Loading...</Text> : <Chart data={priceData}/>}
                 </Box>
                 <Box gap={"small"} align={"center"}>
-                    <IntervalSlider onIntervalChange={onIntervalSliderChange} defaultInterval={0}/>
+                    <IntervalSlider onIntervalChange={onIntervalSliderChange} defaultInterval={"1m"}/>
                 </Box>
             </CardBody>
         </Card>

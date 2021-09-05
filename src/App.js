@@ -51,8 +51,10 @@ function addTradingComponent() {
 
 function Main() {
     const breakpointColumnsObj = {
-        default: 2,
-        768: 1
+        default: 3,
+        1100: 2,
+        700: 1,
+        456: 1
     };
     const context = useContext(WalletContext);
     const [connected, setConnected] = useRecoilState(state.walletConnected);
@@ -120,13 +122,20 @@ function Main() {
                             <Box
                                 fill
                                 className="appBody"
-                                overflow={{horizontal: 'hidden', vertical: "auto"}}
+                                overflow={{vertical: 'auto'}}
                                 pad={"medium"}
                                 align={"center"}
                             >
+                                <Masonry
+                                    breakpointCols={breakpointColumnsObj}
+                                    className="my-masonry-grid"
+                                    columnClassName="my-masonry-grid_column"
+                                >
                                     <Box ><Bridge/></Box>
-                                    {/*<Box ><Assets/></Box>*/}
-                                    {/*<Box ><XPriceChart/></Box>*/}
+                                    <Box ><Assets/></Box>
+
+                                    <Box ><XPriceChart/></Box>
+                                </Masonry>
                             </Box>
                             <Box pad={"medium"} align={"center"}>
                                 <SurgeFund wallet={userWallet} contracts={contracts}/>
