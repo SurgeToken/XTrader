@@ -250,7 +250,7 @@ export default class Wallet {
     }
 
     async getTimeTillClaim() {
-        const timeTillClaim = this.timeTillClaim = await this.SurgeFundsContract.secondsUntilNextClaim();
+        const timeTillClaim = this.timeTillClaim = await this.SurgeFundsContract.secondsUntilNextClaim;
         this.onTimeTillClaimChange(timeTillClaim);
         setInterval(this.updateTimeTillClaim.bind(this), this.updateInterval);
     }
@@ -263,7 +263,7 @@ export default class Wallet {
     }
 
     async getClaimable() {
-        const claimableBNB = await this.SurgeFundsContract.usersCurrentClaim() / Math.pow(10,18);
+        const claimableBNB = await this.SurgeFundsContract.usersCurrentClaim / Math.pow(10,18);
         this.claimableBNB = claimableBNB;
         this.onClaimableBNBChange(claimableBNB);
         setInterval(this.updateClaimable.bind(this), this.updateInterval);
