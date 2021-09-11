@@ -7,7 +7,7 @@ COPY . .
 RUN npm run prebuild
 RUN node --max_old_space_size=512 node_modules/.bin/react-scripts build
 
-FROM nginx:alpine
+FROM nginx:1-alpine
 WORKDIR /usr/share/nginx/html
 RUN rm -rf *
 COPY --from=builder /app/build .
