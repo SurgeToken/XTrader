@@ -247,13 +247,13 @@ export default class Wallet {
         //     this.onTimeTillClaimChange(time);
         //     // setTimeTillClaim(this.timeTillClaim)
         // })
-        let time = await this.SurgeFundsContract.secondsUntilNextClaim;
+        let time = await this.SurgeFundsContract.secondsUntilNextClaim();
         this.timeTillClaim = time;
         this.onTimeTillClaimChange(time);
     }
 
     async getTimeTillClaim() {
-        const timeTillClaim = this.timeTillClaim = await this.SurgeFundsContract.secondsUntilNextClaim;
+        const timeTillClaim = this.timeTillClaim = await this.SurgeFundsContract.secondsUntilNextClaim();
         this.onTimeTillClaimChange(timeTillClaim);
         setInterval(this.updateTimeTillClaim.bind(this), this.updateInterval);
     }
