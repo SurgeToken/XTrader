@@ -239,14 +239,17 @@ export default class Wallet {
     /*
     funds section
      */
-    updateTimeTillClaim() {
+    async updateTimeTillClaim() {
         // const [, setTimeTillClaim] = useRecoilState(state.fundsTimeTillClaim);
-        this.SurgeFundsContract.secondsUntilNextClaim().then((time) => {
-            // console.error("updateTimeTillClaim => ", time);
-            this.timeTillClaim = time;
-            this.onTimeTillClaimChange(time);
-            // setTimeTillClaim(this.timeTillClaim)
-        })
+        // this.SurgeFundsContract.secondsUntilNextClaim().then((time) => {
+        //     // console.error("updateTimeTillClaim => ", time);
+        //     this.timeTillClaim = time;
+        //     this.onTimeTillClaimChange(time);
+        //     // setTimeTillClaim(this.timeTillClaim)
+        // })
+        let time = await this.SurgeFundsContract.secondsUntilNextClaim();
+        this.timeTillClaim = time;
+        this.onTimeTillClaimChange(time);
     }
 
     async getTimeTillClaim() {
@@ -254,16 +257,20 @@ export default class Wallet {
         this.onTimeTillClaimChange(timeTillClaim);
         setInterval(this.updateTimeTillClaim.bind(this), this.updateInterval);
     }
-    updateClaimable() {
-        this.SurgeFundsContract.usersCurrentClaim().then((claimableBNB) => {
-            // console.error("updateClaimable => ", claimableBNB);
-            this.claimableBNB = claimableBNB / Math.pow(10,18);
-            this.onClaimableBNBChange(claimableBNB / Math.pow(10,18));
-        })
+    async updateClaimable() {
+        // this.SurgeFundsContract.usersCurrentClaim().then((claimableBNB) => {
+        //     // console.error("updateClaimable => ", claimableBNB);
+        //     this.claimableBNB = claimableBNB / Math.pow(10, 18);
+        //     this.onClaimableBNBChange(claimableBNB / Math.pow(10, 18));
+        // })
+
+        let claimableBNB = await this.SurgeFundsContract.usersCurrentClaim;
+        this.claimableBNB = claimableBNB / Math.pow(10, 18);
+        this.onClaimableBNBChange(claimableBNB / Math.pow(10, 18));
     }
 
     async getClaimable() {
-        const claimableBNB = await this.SurgeFundsContract.usersCurrentClaim() / Math.pow(10,18);
+        const claimableBNB = await this.SurgeFundsContract.usersCurrentClaim / Math.pow(10,18);
         this.claimableBNB = claimableBNB;
         this.onClaimableBNBChange(claimableBNB);
         setInterval(this.updateClaimable.bind(this), this.updateInterval);

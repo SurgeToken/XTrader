@@ -7,7 +7,6 @@ import XPriceChart from "./components/XPriceChart";
 import Bridge from "./components/Bridge";
 import Assets from "./components/Assets";
 import SurgeFund from "./components/SurgeFund";
-import Chart from "./components/Chart";
 
 import CacheBuster from './CacheBuster';
 
