@@ -1,6 +1,6 @@
 {
   "name": "surge_dapps",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "dependencies": {
     "@lenicdev/react-lightweight-charts": "^2.0.1",
