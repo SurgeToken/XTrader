@@ -259,18 +259,20 @@ export default class Wallet {
     }
     async updateClaimable() {
         // this.SurgeFundsContract.usersCurrentClaim().then((claimableBNB) => {
-        //     // console.error("updateClaimable => ", claimableBNB);
-        //     this.claimableBNB = claimableBNB / Math.pow(10, 18);
-        //     this.onClaimableBNBChange(claimableBNB / Math.pow(10, 18));
+        //     console.error("updateClaimable => ", claimableBNB / Math.pow(10, 18));
+        //     // this.claimableBNB = claimableBNB / Math.pow(10, 18);
+        //     // this.onClaimableBNBChange(claimableBNB / Math.pow(10, 18));
         // })
 
-        let claimableBNB = await this.SurgeFundsContract.usersCurrentClaim;
+        let claimableBNB = await this.SurgeFundsContract.usersCurrentClaim();
+        // console.error(await this.SurgeFundsContract.usersCurrentClaim())
+        // console.error(claimableBNB)
         this.claimableBNB = claimableBNB / Math.pow(10, 18);
         this.onClaimableBNBChange(claimableBNB / Math.pow(10, 18));
     }
 
     async getClaimable() {
-        const claimableBNB = await this.SurgeFundsContract.usersCurrentClaim / Math.pow(10,18);
+        const claimableBNB = await this.SurgeFundsContract.usersCurrentClaim() / Math.pow(10,18);
         this.claimableBNB = claimableBNB;
         this.onClaimableBNBChange(claimableBNB);
         setInterval(this.updateClaimable.bind(this), this.updateInterval);
