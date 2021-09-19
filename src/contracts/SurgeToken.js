@@ -12,7 +12,15 @@ export default function({address, abi}) {
             return this.methods.calculatePrice().call();
         }
 
-        async getBNBQuantityInContract() {
+        async getFees() {
+            // console.error( await this.methods.getFees().call())
+            const fees = { 0: "94", 1: "94", 2: "98" }
+
+            // return { 0: this..getspreadDivisor, 1: "sell", 2: "transfer" }
+            return fees
+        }
+
+            async getBNBQuantityInContract() {
             return this.methods.getBNBQuantityInContract().call();
         }
 
