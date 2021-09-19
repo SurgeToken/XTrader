@@ -58,12 +58,14 @@ function Main() {
     const context = useContext(WalletContext);
     const [connected, setConnected] = useRecoilState(state.walletConnected);
     const [, setHoldings] = useRecoilState(state.walletHoldings);
+    const [, setPrices] = useRecoilState(state.contractPrices);
     const [, setHoldingValues] = useRecoilState(state.walletHoldingValues);
     const [, setTimeTillClaim] = useRecoilState(state.walletFundsTimeTillClaim);
     const [, setClaimableBNB] = useRecoilState(state.walletFundsClaimableBNB);
     const [account, setAccount] = useRecoilState(state.walletAccount);
     // eslint-disable-next-line no-unused-vars
     const [contracts, setContracts] = useRecoilState(state.contracts);
+    const [, setContractFees] = useRecoilState(state.contractFees);
     const userWallet = new Wallet(() => {
             const timeTillClaim = userWallet.timeTillClaim;
             setTimeTillClaim(timeTillClaim);
@@ -91,7 +93,15 @@ function Main() {
             }
         },
         () => {
+            const newPrices = {...userWallet.prices};
+            setPrices(newPrices);
+            if (!context.provider) {
+                context.provider = userWallet.provider;
+            }
+        },
+        () => {
             setContracts(Object.keys(userWallet.contracts));
+            setContractFees(userWallet.contractFees);
             setAccount(userWallet.accountAddress);
             context.wallet = userWallet;
             setConnected(true);
