@@ -51,13 +51,14 @@ const BuyForm = (props) => {
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
 
-    const [holdings, setHoldings] = useRecoilState(state.walletHoldings);
+    const [holdings, ] = useRecoilState(state.walletHoldings);
+    const [prices, ] = useRecoilState(state.contractPrices);
+    const [contractFees, ] = useRecoilState(state.contractFees);
     const [currency, setCurrency] = useState(Object.keys(holdings)[1] || 'BNB');
     const [selectedToken, setSelectedToken] = useState({name: 'SETH'});
-    // console.log(selectedToken);
+
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
-
 
     const onAmountChange = (event) => {
         const errorMessage = validateAmount(event.target.value);
@@ -77,7 +78,7 @@ const BuyForm = (props) => {
     const onSelectedTokenChange = (token) => {
         setSelectedToken(token);
         setCurrency(token.name);
-        console.log('token changed', token);
+        // setPrice(prices[token.name])
     };
 
     const onTokenSliderChange = (value) => {
@@ -96,6 +97,9 @@ const BuyForm = (props) => {
                 <Box gap={"small"}>
                     <Text>Token</Text>
                     <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken}/>
+                    <Text>price: {parseFloat(prices[selectedToken.name]).toFixed(18)}</Text>
+
+                    <Text>fee: {(100-parseFloat(contractFees[selectedToken.name][0]))}%</Text>
                 </Box>
                 <Box gap={"small"}>
                     <Box direction={"row"} justify={"between"}>
@@ -107,6 +111,9 @@ const BuyForm = (props) => {
                         value={amount}
                         onChange={onAmountChange}
                     />
+
+                    <Text> (estimated) to be received: </Text>
+                    <Text> {((amount/prices[selectedToken.name])*(parseFloat(contractFees[selectedToken.name][0])/100)).toFixed(0)}</Text>
                     <FormFieldError message={amountErrorMessage}/>
                 </Box>
                 <Box gap={"small"} align={"center"}>
@@ -215,6 +222,7 @@ const BridgeForm = (props) => {
 
 const Bridge = (props) => {
     const [action, setAction] = React.useState(false);
+    const [connected, ] = useRecoilState(state.walletConnected);
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
 
@@ -236,6 +244,7 @@ const Bridge = (props) => {
                                 // size={((size === "xsmall" || size === "small") ? "large" : "large")}
                             >Trade</Text>
                         {/*</Box>*/}
+
                         <Box
                             align={"center"}
                             justify={"end"}
@@ -254,11 +263,12 @@ const Bridge = (props) => {
                         </Box>
                     </CardHeader>
                     <CardBody>
-                        {!action ? <BuyForm
+                        {connected ?
+                            (!action ? <BuyForm
                             defaultToken={contracts.SurgeETH}
                         /> : <SellForm
                             defaultToken={contracts.SurgeETH}
-                        />}
+                        />):""}
                     </CardBody>
                 </Card>
 
