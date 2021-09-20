@@ -12,9 +12,10 @@ const formatTotal = (value) => {
     return `\$${value.toFixed(2)}`;
 }
 
-const afterTax = (value, afterTaxState) => {
+const afterTax = (value, taxation, afterTaxState) => {
     if (afterTaxState) {
-        return parseFloat(value)*.94
+        return parseFloat(value) * taxation
+
     }
     return value
 }
@@ -22,6 +23,7 @@ const afterTax = (value, afterTaxState) => {
 export default () => {
     const [holdings, ] = useRecoilState(state.walletHoldings);
     const [holdingValues, ] = useRecoilState(state.walletHoldingValues);
+    const [contractFees, ] = useRecoilState(state.contractFees);
     const [dataState, setDataState] = useState({})
     const [afterTaxState, setAfterTaxState] = useState(false)
     // let afterTaxChecked;
@@ -61,17 +63,18 @@ export default () => {
         //     footer: { aggregate: true },
         // }
     ]
-    useEffect(() => {
+    // useEffect(() => {
         const data = Object.keys(holdingValues).map((val) => {
             return {
                 Token: val,
                 Quantity: holdings[val],
                 // Change: Math.random() * 100,
-                Value: (parseInt(afterTax(holdingValues[val], afterTaxState))*1.0e-18).toFixed(6).toString() + " w" + val.substr(1)
+                Value: (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*1.0e-18).toFixed(6).toString() + " w" + val.substr(1)
             }
         });
-        setDataState(data)
-    },[afterTaxState, holdingValues])
+
+    // setDataState(data)
+    // },[afterTaxState, holdingValues])
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext)
 
@@ -104,7 +107,7 @@ export default () => {
                 </CardHeader>
                 <CardBody pad={"small"}            align={"center"}
                 >
-                    <DataTable pad={"small"} fill={"horizontal"} columns={columns} data={dataState}/>
+                    <DataTable pad={"small"} fill={"horizontal"} columns={columns} data={ data || dataState}/>
                 </CardBody>
             </Card>
 

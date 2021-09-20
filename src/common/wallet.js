@@ -64,8 +64,10 @@ const web3Modal = new Web3Modal({
 export default class Wallet {
     provider = null;
     contracts = {};
+    contractFees = {};
     holdings = {};
     holdingValues = {};
+    prices = {};
     accountAddress = null;
 
     updateInterval = 15 * 1000 // 15 seconds
@@ -78,10 +80,12 @@ export default class Wallet {
     claimableBNB = null;
 
 
-    constructor(onTimeTillClaimChange, onClaimableBNBChange, onHoldingsChanged, onHoldingValuesChanged, onConnected, onDisconnected) {
+    constructor(onTimeTillClaimChange, onClaimableBNBChange, onHoldingsChanged, onHoldingValuesChanged, onPricesChanged, onConnected, onDisconnected) {
         this.onHoldingsChanged = onHoldingsChanged || (() => {
         });
         this.onHoldingValuesChanged = onHoldingValuesChanged || (() => {
+        });
+        this.onPricesChanged = onPricesChanged || (() => {
         });
         this.onConnected = onConnected || (() => {
         });
@@ -101,6 +105,7 @@ export default class Wallet {
         this.addHoldingValues();
         this.getTimeTillClaim();
         this.getClaimable();
+        this.getPrice()
     }
 
     async account() {
@@ -113,6 +118,29 @@ export default class Wallet {
 
     get connected() {
         return this.provider !== null && this.provider.connected;
+    }
+
+    async updatePrice(symbol) {
+        this.contracts[symbol].calculatePrice().then((price) => {
+            let parsedPrice = parseFloat(price)/ Math.pow(10, 18)
+            if (parsedPrice !== this.prices[symbol]) {
+                this.prices[symbol] = parsedPrice;
+                this.onPricesChanged(symbol, parsedPrice);
+            }
+        })
+    }
+
+    async getPrice() {
+        const symbols = Object.keys(this.contracts);
+        for (let index in symbols) {
+            try {
+                let symbol = symbols[index];
+                const price = this.prices[symbol] = parseFloat(await this.contracts[symbol].calculatePrice())/ Math.pow(10, 18);
+                this.onPricesChanged(symbol, price);
+                setInterval(this.updatePrice.bind(this, symbol), this.updateInterval);
+            }catch (e) {
+            }
+        }
     }
 
     updateBalance() {
@@ -179,6 +207,7 @@ export default class Wallet {
                 const contract = new contracts[contractNames[index]](this.provider);
                 const symbol = await contract.symbol();
                 this.contracts[symbol] = contract;
+                this.contractFees[symbol] = symbol === "SUSD" ? { 0: "94", 1: "94", 2: "98" } : await contract.getFees();
             } catch (e) {
                 this.SurgeFundsContract = new contracts[contractNames[index]](this.provider);
             }
