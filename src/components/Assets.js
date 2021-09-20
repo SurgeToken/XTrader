@@ -1,10 +1,10 @@
 import {
     DataChart, Card, Box, Text, Anchor, Button, CardBody, Menu,
-    CardHeader, FormField, Header, Tab, Tabs, DataTable, ResponsiveContext,
+    CardHeader, FormField, Header, Tab, Tabs, DataTable, ResponsiveContext, CheckBox,
 } from "grommet";
 import Draggable from "react-draggable";
 import contracts from "../contracts/contracts";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useRecoilState} from "recoil";
 import state from "../state/state";
 
@@ -12,9 +12,21 @@ const formatTotal = (value) => {
     return `\$${value.toFixed(2)}`;
 }
 
+const afterTax = (value, taxation, afterTaxState) => {
+    if (afterTaxState) {
+        return parseFloat(value) * taxation
+
+    }
+    return value
+}
+
 export default () => {
     const [holdings, ] = useRecoilState(state.walletHoldings);
     const [holdingValues, ] = useRecoilState(state.walletHoldingValues);
+    const [contractFees, ] = useRecoilState(state.contractFees);
+    const [dataState, setDataState] = useState({})
+    const [afterTaxState, setAfterTaxState] = useState(false)
+    // let afterTaxChecked;
     const columns = [
         {
             property: 'Token',
@@ -40,8 +52,7 @@ export default () => {
         {
             property: 'Value',
             align: "center",
-            header: 'Value',
-            // render: (data) => formatTotal(data.Price)
+            header: 'Value'
         },
         // {
         //     property: 'Value',
@@ -52,16 +63,20 @@ export default () => {
         //     footer: { aggregate: true },
         // }
     ]
-    const data = Object.keys(holdingValues).map((val) => {
-        return {
-            Token: val,
-            Quantity: holdings[val],
-            // Change: Math.random() * 100,
-            Value: (parseInt(holdingValues[val])*1.0e-18).toFixed(6).toString() + " w" + val.substr(1)
-        }
-    });
+    // useEffect(() => {
+        const data = Object.keys(holdingValues).map((val) => {
+            return {
+                Token: val,
+                Quantity: holdings[val],
+                // Change: Math.random() * 100,
+                Value: (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*1.0e-18).toFixed(6).toString() + " w" + val.substr(1)
+            }
+        });
+
+    // setDataState(data)
+    // },[afterTaxState, holdingValues])
     // noinspection JSCheckFunctionSignatures
-    const size = React.useContext(ResponsiveContext);
+    const size = React.useContext(ResponsiveContext)
 
     return (
             <Card
@@ -85,11 +100,14 @@ export default () => {
                         <Text textAlign={"center"}
                             // size={((size === "xsmall" || size === "small") ? "large" : "large")}
                         >Assets</Text>
+                        <CheckBox label={"after tax"} toggle={true} reverse={true} onChange={(event) =>{
+                            setAfterTaxState(event.target.checked)
+                        }}/>
                     </Box>
                 </CardHeader>
                 <CardBody pad={"small"}            align={"center"}
                 >
-                    <DataTable pad={"small"} fill={"horizontal"} columns={columns} data={data}/>
+                    <DataTable pad={"small"} fill={"horizontal"} columns={columns} data={ data || dataState}/>
                 </CardBody>
             </Card>
 

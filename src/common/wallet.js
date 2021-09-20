@@ -207,7 +207,7 @@ export default class Wallet {
                 const contract = new contracts[contractNames[index]](this.provider);
                 const symbol = await contract.symbol();
                 this.contracts[symbol] = contract;
-                this.contractFees[symbol] = await contract.getFees();
+                this.contractFees[symbol] = symbol === "SUSD" ? { 0: "94", 1: "94", 2: "98" } : await contract.getFees();
             } catch (e) {
                 this.SurgeFundsContract = new contracts[contractNames[index]](this.provider);
             }

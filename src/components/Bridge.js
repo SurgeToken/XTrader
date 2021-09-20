@@ -78,7 +78,6 @@ const BuyForm = (props) => {
     const onSelectedTokenChange = (token) => {
         setSelectedToken(token);
         setCurrency(token.name);
-        // setPrice(prices[token.name])
     };
 
     const onTokenSliderChange = (value) => {
