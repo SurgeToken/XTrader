@@ -243,6 +243,7 @@ const Bridge = (props) => {
                                 // size={((size === "xsmall" || size === "small") ? "large" : "large")}
                             >Trade</Text>
                         {/*</Box>*/}
+
                         <Box
                             align={"center"}
                             justify={"end"}
