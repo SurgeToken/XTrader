@@ -52,7 +52,7 @@ const BuyForm = (props) => {
 
     const [holdings, ] = useRecoilState(state.walletHoldings);
     const [prices, ] = useRecoilState(state.contractPrices);
-    const [relPrices, ] = useRecoilState(state.relPrices);
+    const [relPricesBNB, ] = useRecoilState(state.relPricesBNB);
     const [contractFees, ] = useRecoilState(state.contractFees);
     const [currency, setCurrency] = useState(Object.keys(holdings)[1] || 'BNB');
     const [selectedToken, setSelectedToken] = useState({name: 'SETH'});
@@ -87,7 +87,7 @@ const BuyForm = (props) => {
         const percentage = value / 100;
         const calculatedAmount = percentage * (buyCurrency === "BNB" ? (balance * 1.0e-18).toFixed(4) : balance);
         setAmount(calculatedAmount);
-
+        // console.error(relPricesBNB)
     };
 
     const balance = currency[0] !== "x" ? (parseInt(holdings['BNB']) * 1.0e-18).toFixed(4) : parseInt(holdings[currency==='xSBNB' ? 'SURGE' : currency.slice(1)]);
@@ -97,8 +97,14 @@ const BuyForm = (props) => {
                 <Box gap={"small"}>
                     <Text>Token</Text>
                     <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken}/>
-                    <Text>price: {parseFloat(prices[selectedToken.name]).toFixed(18)} {selectedToken.name.substr(1)}</Text>
-
+                    {/*<Text>price: {parseFloat(prices[selectedToken.name]).toFixed(18)} {selectedToken.name.substr(1)}</Text>*/}
+                    <Text>
+                        {
+                            relPricesBNB ?
+                                "price: "+((parseFloat(prices[selectedToken.name])*relPricesBNB[selectedToken.name]).toFixed(18))+" BNB"
+                                :""
+                        }
+                    </Text>
                     <Text>fee: {(100-parseFloat(contractFees[selectedToken.name][0]))}%</Text>
                 </Box>
                 <Box gap={"small"}>
@@ -114,8 +120,9 @@ const BuyForm = (props) => {
 
                     <Text> (estimated) to be received: </Text>
                     <Text>
-                    {relPrices ?
-                        ((((amount) / (prices[selectedToken.name]) ) * (parseFloat(contractFees[selectedToken.name][0]) / 100))/relPrices[selectedToken.name]).toFixed(0)
+                    {
+                        relPricesBNB ?
+                        ((((amount) / (prices[selectedToken.name]) ) * (parseFloat(contractFees[selectedToken.name][0]) / 100))/relPricesBNB[selectedToken.name]).toFixed(0)
                         :""
                     }
                     </Text>
