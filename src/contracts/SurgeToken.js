@@ -1,8 +1,12 @@
 import Token from "./Token.js";
-import surgeTokenABI from "./abi/SurgeToken.json"
+import surgeTokenABI from "./abi/SurgeBUSD.json"
 
 export default function({address, abi}) {
     return class SurgeToken extends Token({address, abi: abi || surgeTokenABI}) {
+
+        async getAddressOfUnderLyingAsset() {
+            return this.methods._busd().call();
+        }
 
         async getAddressOfContract() {
             return address || this.contract.address
