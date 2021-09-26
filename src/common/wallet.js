@@ -340,7 +340,6 @@ export default class Wallet {
         }catch (e) {}
     }
     async updateConversionsToUSD(key) {
-        console.error("=> updateConversionsToUSD()")
         try {
 
             const reserves = await this.tokenPools.BUSD[key].getReserves()
@@ -366,12 +365,8 @@ export default class Wallet {
     }
 
     async getConversionsToUSD() {
-        console.error("=> getConversionsToUSD()")
         for(let key in tokenPools["BUSD"]) {
             if (key !== "SUSD") {
-                console.error(key, this.tokenPools)
-                console.error(key, this.tokenPools["BUSD"])
-                console.error(key, this.tokenPools["BUSD"][key])
                 const reserves = await this.tokenPools["BUSD"][key].getReserves();
                 const relPrice = this.relPricesBUSD[key] = reserves[1]/reserves[0]
                 this.onRelPricesBUSDChanged(key, relPrice);

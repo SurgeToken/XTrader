@@ -28,9 +28,6 @@ export default () => {
     const [relPricesBNB, ] = useRecoilState(state.relPricesBNB);
     const [dataState, setDataState] = useState({})
     const [afterTaxState, setAfterTaxState] = useState(false)
-    console.error("(assets.js) => relPricesBUSD: ", relPricesBUSD)
-    console.error("(assets.js) => relPricesBNB: ", relPricesBNB)
-    // let afterTaxChecked;
     const columns = [
         {
             property: 'Token',

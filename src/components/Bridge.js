@@ -87,7 +87,6 @@ const BuyForm = (props) => {
         const percentage = value / 100;
         const calculatedAmount = percentage * (buyCurrency === "BNB" ? (balance * 1.0e-18).toFixed(4) : balance);
         setAmount(calculatedAmount);
-        // console.error(relPricesBNB)
     };
 
     const balance = currency[0] !== "x" ? (parseInt(holdings['BNB']) * 1.0e-18).toFixed(4) : parseInt(holdings[currency==='xSBNB' ? 'SURGE' : currency.slice(1)]);
