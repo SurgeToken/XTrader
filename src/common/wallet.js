@@ -5,10 +5,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import {WalletLink} from "walletlink";
 import coinbaseLogo from '../images/coinbase.svg';
 import contracts from "../contracts/contracts";
-
-import {EventEmitter} from "events";
-import {useRecoilState} from "recoil";
-import state from "../state/state";
+import {tokenPools} from "../contracts/TokenConversion"
 
 
 export const providerOptions = {
@@ -73,14 +70,19 @@ export default class Wallet {
     updateInterval = 15 * 1000 // 15 seconds
 
     /*
-    funds stuff
+    funds vars
      */
     SurgeFundsContract = null;
     timeTillClaim = null;
     claimableBNB = null;
+    /*
+    token conversion vars
+     */
+    tokenPools = {};
+    relPrices = {};
 
 
-    constructor(onTimeTillClaimChange, onClaimableBNBChange, onHoldingsChanged, onHoldingValuesChanged, onPricesChanged, onConnected, onDisconnected) {
+    constructor(onTimeTillClaimChange, onClaimableBNBChange, onHoldingsChanged, onHoldingValuesChanged, onPricesChanged, onRelPricesChanged, onConnected, onDisconnected) {
         this.onHoldingsChanged = onHoldingsChanged || (() => {
         });
         this.onHoldingValuesChanged = onHoldingValuesChanged || (() => {
@@ -92,11 +94,16 @@ export default class Wallet {
         this.onDisconnected = onDisconnected || (() => {
         });
         /*
-        funds stuff
+        funds onchanges
          */
         this.onTimeTillClaimChange = onTimeTillClaimChange || (() => {
         });
         this.onClaimableBNBChange = onClaimableBNBChange || (() => {
+        });
+        /*
+        token conversion onchanges
+         */
+        this.onRelPricesChanged = onRelPricesChanged || (() => {
         });
     }
 
@@ -106,6 +113,7 @@ export default class Wallet {
         this.getTimeTillClaim();
         this.getClaimable();
         this.getPrice()
+        this.getConversionsToBNB()
     }
 
     async account() {
@@ -164,14 +172,12 @@ export default class Wallet {
 
     updateHoldingValues(symbol) {
         this.contracts[symbol].getValueOfHoldings().then((holdingValue) => {
-            // console.error(holdingValue)
             if (holdingValue !== this.holdingValues[symbol]) {
                 this.holdingValues[symbol] = holdingValue;
                 this.onHoldingValuesChanged(symbol, holdingValue);
             }
         })
     }
-
 
     async addHoldings() {
         this.holdings['BNB'] = await this.web3.eth.getBalance(this.accountAddress);
@@ -223,6 +229,7 @@ export default class Wallet {
             const account = this.accountAddress = await this.account();
             if (provider !== this.provider) {
                 await this.addContracts();
+                await this.addTokenPoolContracts();
                 this.initializeValues();
             }
             this.onConnected();
@@ -271,7 +278,6 @@ export default class Wallet {
     async updateTimeTillClaim() {
         // const [, setTimeTillClaim] = useRecoilState(state.fundsTimeTillClaim);
         // this.SurgeFundsContract.secondsUntilNextClaim().then((time) => {
-        //     // console.error("updateTimeTillClaim => ", time);
         //     this.timeTillClaim = time;
         //     this.onTimeTillClaimChange(time);
         //     // setTimeTillClaim(this.timeTillClaim)
@@ -288,14 +294,11 @@ export default class Wallet {
     }
     async updateClaimable() {
         // this.SurgeFundsContract.usersCurrentClaim().then((claimableBNB) => {
-        //     console.error("updateClaimable => ", claimableBNB / Math.pow(10, 18));
         //     // this.claimableBNB = claimableBNB / Math.pow(10, 18);
         //     // this.onClaimableBNBChange(claimableBNB / Math.pow(10, 18));
         // })
 
         let claimableBNB = await this.SurgeFundsContract.usersCurrentClaim();
-        // console.error(await this.SurgeFundsContract.usersCurrentClaim())
-        // console.error(claimableBNB)
         this.claimableBNB = claimableBNB / Math.pow(10, 18);
         this.onClaimableBNBChange(claimableBNB / Math.pow(10, 18));
     }
@@ -305,6 +308,42 @@ export default class Wallet {
         this.claimableBNB = claimableBNB;
         this.onClaimableBNBChange(claimableBNB);
         setInterval(this.updateClaimable.bind(this), this.updateInterval);
+    }
+    /*
+    token conversion section
+     */
+    updateConversionsToBNB(key) {
+        this.tokenPools[key].getReserves().then((reserves) => {
+            const relPrice = reserves[1]/reserves[0]
+            if (relPrice !== this.relPrices[key]) {
+                this.relPrices[key] = relPrice;
+                this.onRelPricesChanged(key, relPrice);
+            }
+        })
+    }
+
+    async getConversionsToBNB() {
+        for(let key in tokenPools) {
+            const reserves = await this.tokenPools[key].getReserves();
+            const relPrice = this.relPrices[key] = reserves[1]/reserves[0]
+            this.onRelPricesChanged(key, relPrice);
+            setInterval(this.updateConversionsToBNB.bind(this, key), this.updateInterval);
+        }
+    }
+
+    async addTokenPoolContracts() {
+        for(let key in tokenPools) {
+            try {
+                this.tokenPools[key] = new tokenPools[key]();
+            } catch (e) {
+            }
+        }
+        // for(let key in tokenPools["BUSD"]) {
+        //     try {
+        //         this.tokenPools["BUSD"][key] = new tokenPools["BUSD"][key](this.provider);
+        //     } catch (e) {
+        //     }
+        // }
     }
 }
 //

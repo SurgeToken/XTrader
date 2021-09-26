@@ -81,11 +81,16 @@ const walletFundsClaimableBNB = atom({
     key: "walletFundsClaimableBNB",
     default: null
 })
+
+const relPrices = atom({
+    key: "relPrices",
+    default: null
+})
 // const wallet = atom({
 //     key: "wallet",
 //     default: null
 // })
 
 export default {
-    contractPrices, walletHoldings, walletHoldingValues, walletConnected, walletAccount, contracts, contractFees, nativeSurge, xTokens, allTokens, walletFundsTimeTillClaim, walletFundsClaimableBNB
+    contractPrices, walletHoldings, walletHoldingValues, walletConnected, walletAccount, contracts, contractFees, nativeSurge, xTokens, allTokens, walletFundsTimeTillClaim, walletFundsClaimableBNB, relPrices
 };
