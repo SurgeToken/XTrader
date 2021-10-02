@@ -6,6 +6,11 @@ import {WalletLink} from "walletlink";
 import coinbaseLogo from '../images/coinbase.svg';
 import contracts from "../contracts/contracts";
 import {tokenPools} from "../contracts/TokenConversion"
+import Token from "../contracts/Token";
+import uselessABI from "../contracts/abi/useless.json";
+import {useRecoilState} from "recoil";
+import state from "../state/state";
+
 
 
 export const providerOptions = {
@@ -83,9 +88,13 @@ export default class Wallet {
     // BUSDRelPrices = {}
     relPricesBNB = {};
     relPricesBUSD = {};
+    /*
+   useless balance
+    */
+    uselessBalance = {display: 0, math: 0};
+    uselessContract = null;
 
-
-    constructor(onTimeTillClaimChange, onClaimableBNBChange, onHoldingsChanged, onHoldingValuesChanged, onPricesChanged, onRelPricesBNBChanged, onRelPricesBUSDChanged, onConnected, onDisconnected) {
+    constructor(onTimeTillClaimChange, onClaimableBNBChange, onHoldingsChanged, onHoldingValuesChanged, onPricesChanged, onRelPricesBNBChanged, onRelPricesBUSDChanged, onUselessBalanceChanged, onConnected, onDisconnected) {
         this.onHoldingsChanged = onHoldingsChanged || (() => {
         });
         this.onHoldingValuesChanged = onHoldingValuesChanged || (() => {
@@ -110,6 +119,12 @@ export default class Wallet {
         });
         this.onRelPricesBUSDChanged = onRelPricesBUSDChanged || (() => {
         });
+        /*
+        useless balance
+        */
+        this.onUselessBalanceChanged = onUselessBalanceChanged || (() => {
+        });
+
     }
 
     initializeValues() {
@@ -120,6 +135,7 @@ export default class Wallet {
         this.getPrice()
         this.getConversionsToBNB()
         this.getConversionsToUSD()
+        this.getUselessBalance()
     }
 
     async account() {
@@ -214,14 +230,46 @@ export default class Wallet {
 
     async addContracts() {
         const contractNames = Object.keys(contracts);
+        // console.error(contracts)
         for(let index in contractNames) {
-            try {
-                const contract = new contracts[contractNames[index]](this.provider);
+            // console.log(contractNames[index])
+            const contract = new contracts[contractNames[index]](this.provider);
+            if (contractNames[index] === "SurgeFund"){
+                this.SurgeFundsContract = contract
+            }
+            else if (contractNames[index] === "Useless"){
+                this.uselessContract = contract
+            }
+            else {
                 const symbol = await contract.symbol();
-                this.contracts[symbol] = contract;
-                this.contractFees[symbol] = symbol === "SUSD" ? { 0: "94", 1: "94", 2: "98" } : await contract.getFees();
-            } catch (e) {
-                this.SurgeFundsContract = new contracts[contractNames[index]](this.provider);
+                // console.log(contractNames[index], symbol, typeof contract.getFees)
+                if (typeof contract.getFees === "function") {
+                    this.contractFees[symbol] = await contract.getFees();
+                } else {
+                    // console.log(symbol, typeof contract.getFees)
+                    try {
+                        if (symbol === "SUSD")
+                            this.contractFees[symbol] = {
+                                0: 94,
+                                1: 94,
+                                2: 98
+                            };
+                        else if (symbol === "SUSLS") {
+                            this.contractFees[symbol] = {
+                                0: 94,
+                                1: 94,
+                                2: 96
+                            };
+                            // this.uselessContract = contract
+                        }
+                    } catch (e) {
+                        // console.error(symbol, e)
+                        // console.error(symbol, this.contractFees)
+
+                        // this.SurgeFundsContract = new contracts[contractNames[index]](this.provider);
+                    }
+                }
+            this.contracts[symbol] = contract
             }
 
         }
@@ -237,7 +285,10 @@ export default class Wallet {
                 await this.addContracts();
                 await this.addTokenPoolContracts();
                 this.initializeValues();
+
+                // await this.contracts["SurgeUSLS"].getBalanceOfUnderlyingAsset();
             }
+            // console.error(this.contracts)
             this.onConnected();
 
             // TODO Try something like this below at a later date
@@ -397,6 +448,24 @@ export default class Wallet {
                     console.error(e)
             }
         }
+    }
+    /*
+    useless balance
+     */
+    async updateUselessBalance() {
+        const balance = await this.uselessContract.balanceOf(this.accountAddress)
+        const uselessBalance = {display: balance * 1.0e-9, math: balance}
+        if (uselessBalance.math !== this.uselessBalance.math) {
+            this.uselessBalance = uselessBalance;
+            this.onUselessBalanceChanged(uselessBalance);
+        }
+    }
+    async getUselessBalance() {
+        const balance = await this.uselessContract.balanceOf(this.accountAddress)
+        const uselessBalance = this.uselessBalance = {display: balance * 1.0e-9, math: balance}
+        this.onUselessBalanceChanged(uselessBalance);
+        // this.uselessContract = new contracts["Useless"]();
+        setInterval(this.updateUselessBalance.bind(this), this.updateInterval);
     }
 }
 //

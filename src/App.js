@@ -6,6 +6,7 @@ import React, {useContext} from "react";
 import XPriceChart from "./components/XPriceChart";
 import Bridge from "./components/Bridge";
 import Assets from "./components/Assets";
+import Staker from "./components/Staker";
 import SurgeFund from "./components/SurgeFund";
 
 import CacheBuster from './CacheBuster';
@@ -64,6 +65,7 @@ function Main() {
     const [, setHoldingValues] = useRecoilState(state.walletHoldingValues);
     const [, setTimeTillClaim] = useRecoilState(state.walletFundsTimeTillClaim);
     const [, setClaimableBNB] = useRecoilState(state.walletFundsClaimableBNB);
+    const [, setUselessBalance] = useRecoilState(state.uselessBalance);
     const [account, setAccount] = useRecoilState(state.walletAccount);
     // eslint-disable-next-line no-unused-vars
     const [contracts, setContracts] = useRecoilState(state.contracts);
@@ -117,6 +119,13 @@ function Main() {
             }
         },
         () => {
+            const newUselessBalance = {...userWallet.uselessBalance};
+            setUselessBalance(newUselessBalance);
+            if (!context.provider) {
+                context.provider = userWallet.provider;
+            }
+        },
+        () => {
             setContracts(Object.keys(userWallet.contracts));
             setContractFees(userWallet.contractFees);
             setAccount(userWallet.accountAddress);
@@ -126,6 +135,7 @@ function Main() {
         () => {
             setConnected(false);
         });
+
     return (
         <Grommet  theme={grommetTheme} full>
             <ResponsiveContext.Consumer>
@@ -157,9 +167,9 @@ function Main() {
                                     className="my-masonry-grid"
                                     columnClassName="my-masonry-grid_column"
                                 >
+                                    <Box ><Staker/></Box>
                                     <Box ><Bridge/></Box>
                                     <Box ><Assets/></Box>
-
                                     <Box ><XPriceChart/></Box>
                                 </Masonry>
                             </Box>
