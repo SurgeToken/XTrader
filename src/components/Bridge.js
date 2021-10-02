@@ -77,6 +77,7 @@ const BuyForm = (props) => {
     };
 
     const onSelectedTokenChange = (token) => {
+        console.error(token, token.name, contractFees)
         setSelectedToken(token);
         setCurrency(token.name);
     };

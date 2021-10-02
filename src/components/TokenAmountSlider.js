@@ -20,7 +20,7 @@ export default function TokenAmountSlider({ defaultValue, onValueChange }) {
             value={value}
             min={0}
             max={100}
-            step={25}
+            step={10}
             onChange={onSliderValueChange}
         />
         <Text size="small">{value}%</Text>

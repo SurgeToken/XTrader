@@ -71,7 +71,8 @@ export default () => {
                 Quantity: holdings[val],
                 // Change: Math.random() * 100,
                 Value: (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*1.0e-18).toFixed(6).toString() + " w" + val.substr(1),
-                Value_USD: (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*1.0e-18 * relPricesBUSD[val])
+                Value_USD: val !== "SUSLS" ?
+                    (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*1.0e-18 * relPricesBUSD[val]) : 0
                 // Value_USD: (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*relPricesBUSD[val]*1.0e-18).toFixed(2).toString()
             }
         });
@@ -113,7 +114,7 @@ export default () => {
                 </CardHeader>
                 <CardBody pad={"small"}            align={"center"}
                 >
-                    { relPricesBUSD ?
+                    { relPricesBUSD && relPricesBNB?
                     <DataTable pad={"small"} fill={"horizontal"} columns={columns} data={ data || dataState}/>
                     : ""
                     }
