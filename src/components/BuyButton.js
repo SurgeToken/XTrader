@@ -71,7 +71,6 @@ async function executeNativeTransaction(wallet, action, asset, amount, setMessag
     let transactionReceipt = {};
     let status;
     if (action === "sell") {
-        // console.log(action, asset, amount, wallet.contracts[asset])
         status = await wallet.contracts[asset].sell(amount).then((receipt) => {
             transactionReceipt = receipt;
             return true;

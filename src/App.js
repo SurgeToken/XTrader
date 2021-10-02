@@ -59,6 +59,8 @@ function Main() {
     const [connected, setConnected] = useRecoilState(state.walletConnected);
     const [, setHoldings] = useRecoilState(state.walletHoldings);
     const [, setPrices] = useRecoilState(state.contractPrices);
+    const [, setRelPricesBNB] = useRecoilState(state.relPricesBNB);
+    const [, setRelPricesBUSD] = useRecoilState(state.relPricesBUSD);
     const [, setHoldingValues] = useRecoilState(state.walletHoldingValues);
     const [, setTimeTillClaim] = useRecoilState(state.walletFundsTimeTillClaim);
     const [, setClaimableBNB] = useRecoilState(state.walletFundsClaimableBNB);
@@ -95,6 +97,21 @@ function Main() {
         () => {
             const newPrices = {...userWallet.prices};
             setPrices(newPrices);
+            if (!context.provider) {
+                context.provider = userWallet.provider;
+            }
+        },
+        () => {
+            const newVal = {...userWallet.relPricesBNB};
+            setRelPricesBNB(newVal);
+            // setRelPricesBNB({...userWallet.relPricesBNB});
+            if (!context.provider) {
+                context.provider = userWallet.provider;
+            }
+        },
+        () => {
+            const newVal = {...userWallet.relPricesBUSD};
+            setRelPricesBUSD(newVal);
             if (!context.provider) {
                 context.provider = userWallet.provider;
             }

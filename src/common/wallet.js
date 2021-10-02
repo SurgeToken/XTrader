@@ -5,10 +5,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import {WalletLink} from "walletlink";
 import coinbaseLogo from '../images/coinbase.svg';
 import contracts from "../contracts/contracts";
-
-import {EventEmitter} from "events";
-import {useRecoilState} from "recoil";
-import state from "../state/state";
+import {tokenPools} from "../contracts/TokenConversion"
 
 
 export const providerOptions = {
@@ -73,14 +70,22 @@ export default class Wallet {
     updateInterval = 15 * 1000 // 15 seconds
 
     /*
-    funds stuff
+    funds vars
      */
     SurgeFundsContract = null;
     timeTillClaim = null;
     claimableBNB = null;
+    /*
+    token conversion vars
+     */
+    tokenPools = {BNB:{}, BUSD:{}};
+    // BNBRelPrices = {}
+    // BUSDRelPrices = {}
+    relPricesBNB = {};
+    relPricesBUSD = {};
 
 
-    constructor(onTimeTillClaimChange, onClaimableBNBChange, onHoldingsChanged, onHoldingValuesChanged, onPricesChanged, onConnected, onDisconnected) {
+    constructor(onTimeTillClaimChange, onClaimableBNBChange, onHoldingsChanged, onHoldingValuesChanged, onPricesChanged, onRelPricesBNBChanged, onRelPricesBUSDChanged, onConnected, onDisconnected) {
         this.onHoldingsChanged = onHoldingsChanged || (() => {
         });
         this.onHoldingValuesChanged = onHoldingValuesChanged || (() => {
@@ -92,11 +97,18 @@ export default class Wallet {
         this.onDisconnected = onDisconnected || (() => {
         });
         /*
-        funds stuff
+        funds onchanges
          */
         this.onTimeTillClaimChange = onTimeTillClaimChange || (() => {
         });
         this.onClaimableBNBChange = onClaimableBNBChange || (() => {
+        });
+        /*
+        token conversion onchanges
+         */
+        this.onRelPricesBNBChanged = onRelPricesBNBChanged || (() => {
+        });
+        this.onRelPricesBUSDChanged = onRelPricesBUSDChanged || (() => {
         });
     }
 
@@ -106,6 +118,8 @@ export default class Wallet {
         this.getTimeTillClaim();
         this.getClaimable();
         this.getPrice()
+        this.getConversionsToBNB()
+        this.getConversionsToUSD()
     }
 
     async account() {
@@ -164,14 +178,12 @@ export default class Wallet {
 
     updateHoldingValues(symbol) {
         this.contracts[symbol].getValueOfHoldings().then((holdingValue) => {
-            // console.error(holdingValue)
             if (holdingValue !== this.holdingValues[symbol]) {
                 this.holdingValues[symbol] = holdingValue;
                 this.onHoldingValuesChanged(symbol, holdingValue);
             }
         })
     }
-
 
     async addHoldings() {
         this.holdings['BNB'] = await this.web3.eth.getBalance(this.accountAddress);
@@ -207,7 +219,7 @@ export default class Wallet {
                 const contract = new contracts[contractNames[index]](this.provider);
                 const symbol = await contract.symbol();
                 this.contracts[symbol] = contract;
-                this.contractFees[symbol] = await contract.getFees();
+                this.contractFees[symbol] = symbol === "SUSD" ? { 0: "94", 1: "94", 2: "98" } : await contract.getFees();
             } catch (e) {
                 this.SurgeFundsContract = new contracts[contractNames[index]](this.provider);
             }
@@ -223,6 +235,7 @@ export default class Wallet {
             const account = this.accountAddress = await this.account();
             if (provider !== this.provider) {
                 await this.addContracts();
+                await this.addTokenPoolContracts();
                 this.initializeValues();
             }
             this.onConnected();
@@ -271,7 +284,6 @@ export default class Wallet {
     async updateTimeTillClaim() {
         // const [, setTimeTillClaim] = useRecoilState(state.fundsTimeTillClaim);
         // this.SurgeFundsContract.secondsUntilNextClaim().then((time) => {
-        //     // console.error("updateTimeTillClaim => ", time);
         //     this.timeTillClaim = time;
         //     this.onTimeTillClaimChange(time);
         //     // setTimeTillClaim(this.timeTillClaim)
@@ -288,14 +300,11 @@ export default class Wallet {
     }
     async updateClaimable() {
         // this.SurgeFundsContract.usersCurrentClaim().then((claimableBNB) => {
-        //     console.error("updateClaimable => ", claimableBNB / Math.pow(10, 18));
         //     // this.claimableBNB = claimableBNB / Math.pow(10, 18);
         //     // this.onClaimableBNBChange(claimableBNB / Math.pow(10, 18));
         // })
 
         let claimableBNB = await this.SurgeFundsContract.usersCurrentClaim();
-        // console.error(await this.SurgeFundsContract.usersCurrentClaim())
-        // console.error(claimableBNB)
         this.claimableBNB = claimableBNB / Math.pow(10, 18);
         this.onClaimableBNBChange(claimableBNB / Math.pow(10, 18));
     }
@@ -305,6 +314,89 @@ export default class Wallet {
         this.claimableBNB = claimableBNB;
         this.onClaimableBNBChange(claimableBNB);
         setInterval(this.updateClaimable.bind(this), this.updateInterval);
+    }
+    /*
+    token conversion section
+     */
+    async updateConversionsToBNB(key) {
+        // this.tokenPools[tokenA][key].getReserves().then((reserves) => {
+        //     const relPrice = reserves[1]/reserves[0]
+        //     if (relPrice !== this.relPrices["BNB"][key]) {
+        //         this.relPrices["BNB"][key] = relPrice;
+        //         this.onRelPricesChanged(key, relPrice);
+        //     }
+        // })
+        try {
+            const reserves = await this.tokenPools.BNB[key].getReserves()
+            const relPrice = reserves[1] / reserves[0]
+            // const relPrice = this.tokenPools.BNB[key].getReserves().then((reserves) => {
+            //     console.error(key, reserves)
+            //     return (reserves[1] / reserves[0])
+            // })
+            if (relPrice !== this.relPricesBNB[key]) {
+                this.relPricesBNB[key] = relPrice;
+                this.onRelPricesBNBChanged(key, relPrice);
+            }
+        }catch (e) {}
+    }
+    async updateConversionsToUSD(key) {
+        try {
+
+            const reserves = await this.tokenPools.BUSD[key].getReserves()
+            const relPrice = reserves[1] / reserves[0]
+            // const relPrice = this.tokenPools.BUSD[key].getReserves().then((reserves) => {
+            //     return reserves[1] / reserves[0]
+            // })
+            if (relPrice !== this.relPricesBUSD[key]) {
+                this.relPricesBUSD[key] = relPrice;
+                this.onRelPricesBUSDChanged(key, relPrice);
+            }
+        }catch (e) {}
+
+    }
+
+    async getConversionsToBNB() {
+        for(let key in tokenPools["BNB"]) {
+            const reserves = await this.tokenPools["BNB"][key].getReserves();
+            const relPrice = this.relPricesBNB[key] = reserves[1]/reserves[0]
+            this.onRelPricesBNBChanged(key, relPrice);
+            setInterval(this.updateConversionsToBNB.bind(this, key), this.updateInterval);
+        }
+    }
+
+    async getConversionsToUSD() {
+        for(let key in tokenPools["BUSD"]) {
+            if (key !== "SUSD") {
+                const reserves = await this.tokenPools["BUSD"][key].getReserves();
+                const relPrice = this.relPricesBUSD[key] = reserves[1]/reserves[0]
+                this.onRelPricesBUSDChanged(key, relPrice);
+                setInterval(this.updateConversionsToUSD.bind(this, key), this.updateInterval);
+            } else {
+                const relPrice = this.relPricesBUSD[key] = 1;
+                this.onRelPricesBUSDChanged(key, relPrice);
+            }
+
+        }
+    }
+
+    async addTokenPoolContracts() {
+        for(let key in tokenPools["BNB"]) {
+            try {
+                this.tokenPools["BNB"][key] = new tokenPools["BNB"][key]();
+            } catch (e) {
+                console.error(e)
+            }
+        }
+        for(let key in tokenPools["BUSD"]) {
+            try {
+                this.tokenPools["BUSD"][key] = new tokenPools["BUSD"][key]();
+            } catch (e) {
+                if (key === "SUSD")
+                    this.tokenPools["BUSD"][key] = {};
+                else
+                    console.error(e)
+            }
+        }
     }
 }
 //

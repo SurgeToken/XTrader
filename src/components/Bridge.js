@@ -23,7 +23,6 @@ import {useRecoilState} from "recoil";
 import BuyButton from "./BuyButton";
 import {WalletContext} from "../context/context";
 
-
 function validateAmount(amount) {
     if (isNaN(parseFloat(amount))) {
         return "Amount is not a number"
@@ -53,10 +52,12 @@ const BuyForm = (props) => {
 
     const [holdings, ] = useRecoilState(state.walletHoldings);
     const [prices, ] = useRecoilState(state.contractPrices);
+    const [relPricesBNB, ] = useRecoilState(state.relPricesBNB);
     const [contractFees, ] = useRecoilState(state.contractFees);
     const [currency, setCurrency] = useState(Object.keys(holdings)[1] || 'BNB');
     const [selectedToken, setSelectedToken] = useState({name: 'SETH'});
 
+    const context = useContext(WalletContext);
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
 
@@ -78,7 +79,6 @@ const BuyForm = (props) => {
     const onSelectedTokenChange = (token) => {
         setSelectedToken(token);
         setCurrency(token.name);
-        // setPrice(prices[token.name])
     };
 
     const onTokenSliderChange = (value) => {
@@ -89,7 +89,6 @@ const BuyForm = (props) => {
         setAmount(calculatedAmount);
     };
 
-
     const balance = currency[0] !== "x" ? (parseInt(holdings['BNB']) * 1.0e-18).toFixed(4) : parseInt(holdings[currency==='xSBNB' ? 'SURGE' : currency.slice(1)]);
     return (
         <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
@@ -97,8 +96,14 @@ const BuyForm = (props) => {
                 <Box gap={"small"}>
                     <Text>Token</Text>
                     <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken}/>
-                    <Text>price: {parseFloat(prices[selectedToken.name]).toFixed(18)}</Text>
-
+                    {/*<Text>price: {parseFloat(prices[selectedToken.name]).toFixed(18)} {selectedToken.name.substr(1)}</Text>*/}
+                    <Text>
+                        {
+                            relPricesBNB ?
+                                "price: "+((parseFloat(prices[selectedToken.name])*relPricesBNB[selectedToken.name]).toFixed(18))+" BNB"
+                                :""
+                        }
+                    </Text>
                     <Text>fee: {(100-parseFloat(contractFees[selectedToken.name][0]))}%</Text>
                 </Box>
                 <Box gap={"small"}>
@@ -113,7 +118,13 @@ const BuyForm = (props) => {
                     />
 
                     <Text> (estimated) to be received: </Text>
-                    <Text> {((amount/prices[selectedToken.name])*(parseFloat(contractFees[selectedToken.name][0])/100)).toFixed(0)}</Text>
+                    <Text>
+                    {
+                        relPricesBNB ?
+                        ((((amount) / (prices[selectedToken.name]) ) * (parseFloat(contractFees[selectedToken.name][0]) / 100))/relPricesBNB[selectedToken.name]).toFixed(0)
+                        :""
+                    }
+                    </Text>
                     <FormFieldError message={amountErrorMessage}/>
                 </Box>
                 <Box gap={"small"} align={"center"}>
@@ -136,6 +147,7 @@ const SellForm = (props) => {
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
     const [currency, setCurrency] = useState(Object.keys(holdings)[1]);
     const context = useContext(WalletContext);
+
 
     const [selectedToken, setSelectedToken] = useState({name: currency});
 
