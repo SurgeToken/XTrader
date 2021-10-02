@@ -58,7 +58,7 @@ export default () => {
         {
             property: 'Value_USD',
             align: "center",
-            header: 'Value',
+            header: '',
             render: (data) => formatTotal(data.Value_USD),
             aggregate: 'sum',
             footer: { aggregate: true },
@@ -70,8 +70,10 @@ export default () => {
                 Token: val,
                 Quantity: holdings[val],
                 // Change: Math.random() * 100,
-                Value: (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*1.0e-18).toFixed(6).toString() + " w" + val.substr(1),
-                Value_USD: (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*1.0e-18 * relPricesBUSD[val])
+                Value: (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*(val === "SUSLS" ? 1.0e-9 : 1.0e-18)).toFixed(6).toString() + " w" + val.substr(1),
+                Value_USD: val !== "SUSLS" ?
+                    (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*1.0e-18 * relPricesBUSD[val]) :
+                    (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*1.0e-18 * relPricesBNB[val]) / relPricesBNB["SUSD"]
                 // Value_USD: (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*relPricesBUSD[val]*1.0e-18).toFixed(2).toString()
             }
         });
@@ -113,7 +115,7 @@ export default () => {
                 </CardHeader>
                 <CardBody pad={"small"}            align={"center"}
                 >
-                    { relPricesBUSD ?
+                    { relPricesBUSD && relPricesBNB?
                     <DataTable pad={"small"} fill={"horizontal"} columns={columns} data={ data || dataState}/>
                     : ""
                     }
