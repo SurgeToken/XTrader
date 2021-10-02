@@ -1,60 +1,74 @@
-import {DataChart, Card, Box, Text, CardBody, CardHeader} from "grommet";
+import {Card, Box, Text, CardBody, CardHeader, ResponsiveContext} from "grommet";
 import Draggable from "react-draggable";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import Chart from "@lenicdev/react-lightweight-charts";
+import {TickMarkType} from "lightweight-charts";
+
+const CHART_OPTIONS = {
+    alignLabels: true,
+    layout: {
+        backgroundColor: "#060818",
+        textColor: "#fff"
+    },
+    grid: {
+        vertLines: {
+            color: "rgba(33,187,177,0.34)"
+        },
+        horzLines: {
+            color: "rgba(33,187,177,0.34)"
+        },
+    },
+    localization: {
+        priceFormatter: function(price) { return price.toFixed(14)+""},
+    },
+    priceScale: {
+        position: 'right'
+    },
+    timeScale: {
+        rightOffset: 0,
+        barSpacing: 3,
+        lockVisibleTimeRangeOnResize: true,
+        rightBarStaysOnScroll: true,
+        borderVisible: true,
+        visible: true,
+        timeVisible: true,
+        secondsVisible: false,
+        tickMarkFormatter: (time, tickMarkType, locale) => {
+            const date = new Date(time * 1000);
+            switch (tickMarkType) {
+                case TickMarkType.Year: return date.toLocaleDateString();
+                case TickMarkType.Month: return date.toLocaleDateString();
+                case TickMarkType.DayOfMonth: return date.toLocaleDateString();
+                case TickMarkType.Time: return date.toLocaleTimeString();
+                case TickMarkType.TimeWithSeconds: return date.toLocaleTimeString();
+            }
+        },
+    }
+};
 
 export default ({ data }) => {
-    return ( <Draggable>
-        <Card width={"large"}
-              height={"medium"}
-              small
-              round
-              background={"spaceBlue"}
-              elevation={"large"}
-              style={{border: "solid 1px #21BBB1"}}>
-            <CardHeader
-                flex={"shrink"}
-                // direction={(size === "xsmall" ? "column" : "row")}
-                // justify={(size === "xsmall" ? "evenly" : "between")}
-                gap={"none"}
-                pad={{top: "small", bottom: "small", right: "medium", left: "medium"}}
-            >
-                <Box
-                    fill={true}
-                    // margin={(size === "xsmall" ? "medium" : "small")}
-                >
-                    <Text textAlign={"center"}
-                        // size={((size === "xsmall" || size === "small") ? "large" : "large")}
-                    >sBNB</Text>
-                </Box>
-                <Box
-                    align={"center"}
-                    justify={"end"}
-                    direction={"row"}
-                    gap={"medium"}
-                    pad={{left: "medium"}}
-                    // margin={(size === "xsmall" ? "medium" : "small")}
-                >
+    const [series, setSeries] = useState([{ data: [] }]);
 
-                </Box>
-            </CardHeader>
-            <CardBody>
-                <Box pad={"small"}>
-                    <DataChart
-                        data={data}
-                        series={['price', 'date']}
-                        chart={[
-                            { property: 'price', type: 'line', opacity: 'medium', thickness: 'xsmall' },
-                            { property: 'price', type: 'point', point: 'circle', thickness: 'medium' }
-                        ]}
-                        guide={{ x: { granularity: 'fine' }, y: { granularity: 'medium' } }}
-                        size={{ width: 'fill' }}
-                        detail
-                    />
-                </Box>
+    useEffect(() => {
+        const series = [{
+            data,
+            options: {
+                topColor: "rgba(33,187,177,0.81)",
+                bottomColor: "rgba(33,187,177,0.27)",
+                lineColor: "#21BBB1"
+            }
+        }];
+        setSeries(series);
+    }, [data]);
 
-            </CardBody>
-        </Card>
-    </Draggable>
+    // noinspection JSCheckFunctionSignatures
+    const size = React.useContext(ResponsiveContext);
+
+    return (
+
+        // <Box align={"center"} small round>
+        <Chart align="center" width={"75%"} options={CHART_OPTIONS} areaSeries={series} autoWidth height={420}/>
+        // </Box>
 
     );
 }

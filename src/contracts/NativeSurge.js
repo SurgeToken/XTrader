@@ -1,8 +1,17 @@
 import Token from "./Token";
 import nativeSurgeABI from './abi/NativeSurge_metadata.json'
+import SurgeToken from "./SurgeToken";
 
 export default function ({address, abi}) {
     return class NativeSurge extends Token({address, abi: nativeSurgeABI}) {
+
+        // async getAddressOfUnderLyingAsset() {
+        //     return this.methods._token().call();
+        // }
+
+        async getAddressOfContract() {
+            return address || this.contract.address
+        }
 
         async calculatePrice() {
             return this.methods.calculatePrice().call();

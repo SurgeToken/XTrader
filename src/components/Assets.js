@@ -1,10 +1,10 @@
 import {
     DataChart, Card, Box, Text, Anchor, Button, CardBody, Menu,
-    CardHeader, FormField, Header, Tab, Tabs, DataTable, ResponsiveContext,
+    CardHeader, FormField, Header, Tab, Tabs, DataTable, ResponsiveContext, CheckBox,
 } from "grommet";
 import Draggable from "react-draggable";
 import contracts from "../contracts/contracts";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useRecoilState} from "recoil";
 import state from "../state/state";
 
@@ -12,9 +12,22 @@ const formatTotal = (value) => {
     return `\$${value.toFixed(2)}`;
 }
 
+const afterTax = (value, taxation, afterTaxState) => {
+    if (afterTaxState) {
+        return parseFloat(value) * taxation
+
+    }
+    return value
+}
+
 export default () => {
     const [holdings, ] = useRecoilState(state.walletHoldings);
     const [holdingValues, ] = useRecoilState(state.walletHoldingValues);
+    const [contractFees, ] = useRecoilState(state.contractFees);
+    const [relPricesBUSD, ] = useRecoilState(state.relPricesBUSD);
+    const [relPricesBNB, ] = useRecoilState(state.relPricesBNB);
+    const [dataState, setDataState] = useState({})
+    const [afterTaxState, setAfterTaxState] = useState(false)
     const columns = [
         {
             property: 'Token',
@@ -40,38 +53,45 @@ export default () => {
         {
             property: 'Value',
             align: "center",
-            header: 'Value',
-            // render: (data) => formatTotal(data.Price)
+            header: 'Value'
         },
-        // {
-        //     property: 'Value',
-        //     align: "center",
-        //     header: 'Value',
-        //     render: (data) => formatTotal(data.Value),
-        //     aggregate: 'sum',
-        //     footer: { aggregate: true },
-        // }
-    ]
-    //TODO: this must be done better but works for now :)
-    const symbols = {'SURGE':"BNB", 'SUSD':"BUSD", 'SETH':"ETH"}
-    const data = ['SURGE', 'SUSD', 'SETH'].map((val) => {
-        return {
-            Token: val,
-            Quantity: holdings[val],
-            // Change: Math.random() * 100,
-            Value: `${(parseInt(holdingValues[val])*1.0e-18).toPrecision(10)}`
+        {
+            property: 'Value_USD',
+            align: "center",
+            header: '',
+            render: (data) => formatTotal(data.Value_USD),
+            aggregate: 'sum',
+            footer: { aggregate: true },
         }
-    });
-    // noinspection JSCheckFunctionSignatures
-    const size = React.useContext(ResponsiveContext);
+    ]
+    // useEffect(() => {
+        const data = Object.keys(holdingValues).map((val) => {
+            return {
+                Token: val,
+                Quantity: holdings[val],
+                // Change: Math.random() * 100,
+                Value: (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*(val === "SUSLS" ? 1.0e-9 : 1.0e-18)).toFixed(6).toString() + " w" + val.substr(1),
+                Value_USD: val !== "SUSLS" ?
+                    (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*1.0e-18 * relPricesBUSD[val]) :
+                    (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*1.0e-18 * relPricesBNB[val]) / relPricesBNB["SUSD"]
+                // Value_USD: (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*relPricesBUSD[val]*1.0e-18).toFixed(2).toString()
+            }
+        });
 
-    return ( <Draggable disabled={true}>
-            <Card  height={"medium"}
-                  small
-                  round
-                  background={"spaceBlue"}
-                  elevation={"large"}
-                  style={{border: "solid 1px #21BBB1"}}>
+    // setDataState(data)
+    // },[afterTaxState, holdingValues])
+    // noinspection JSCheckFunctionSignatures
+    const size = React.useContext(ResponsiveContext)
+
+    return (
+
+                <Card
+                small
+                round
+                background={"spaceBlue"}
+                elevation={"large"}
+                style={{border: "solid 1px #21BBB1"}}>
+
                 <CardHeader
                     flex={"shrink"}
                     // direction={(size === "xsmall" ? "column" : "row")}
@@ -79,22 +99,28 @@ export default () => {
                     gap={"none"}
                     pad={{top: "small", bottom: "small", right: "medium", left: "medium"}}
                 >
-                    <Box
-                        align={"center"}
-                        fill={true}
-                        // margin={(size === "xsmall" ? "medium" : "small")}
-                    >
-                        <Text textAlign={"center"}
-                            // size={((size === "xsmall" || size === "small") ? "large" : "large")}
-                        >Assets</Text>
-                    </Box>
+
+                        <Box
+                            align={"center"}
+                            fill={true}
+                            // margin={(size === "xsmall" ? "medium" : "small")}
+                        >
+                            <Text textAlign={"center"}
+                                // size={((size === "xsmall" || size === "small") ? "large" : "large")}
+                            >Assets</Text>
+                            <CheckBox label={"after tax"} toggle={true} reverse={true} onChange={(event) => {
+                                setAfterTaxState(event.target.checked)
+                            }}/>
+                        </Box>
                 </CardHeader>
                 <CardBody pad={"small"}            align={"center"}
                 >
-                    <DataTable pin fill={"true"} columns={columns} data={data}/>
+                    { relPricesBUSD && relPricesBNB?
+                    <DataTable pad={"small"} fill={"horizontal"} columns={columns} data={ data || dataState}/>
+                    : ""
+                    }
                 </CardBody>
             </Card>
-        </Draggable>
 
     );
 }

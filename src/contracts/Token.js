@@ -18,6 +18,8 @@ export default ({address, abi}) => {
         /*
             constructs a Generic IERC20 Token with the given contact address and provider
          */
+
+
         constructor(provider, sender) {
             super(provider, sender);
         }
@@ -31,7 +33,7 @@ export default ({address, abi}) => {
         }
 
         async balance() {
-            return this.methods.balanceOf(this.contract.address).call();
+            return this.methods.balanceOf(this.contract.options.from).call();
         }
 
         async transferFrom(recipientAddress, amount) {
@@ -52,6 +54,20 @@ export default ({address, abi}) => {
 
         async symbol() {
             return this.methods.symbol().call();
+        }
+
+        async getBuyFee() {
+            return this.methods.buyFee().call();
+        }
+
+        async getSellFee() {
+            // console.error("getSellFee(): ", this.methods)
+            return this.methods.sellFee().call();
+        }
+
+        async getTransferFee() {
+            // console.error("getTransferFee(): ", this.methods)
+            return this.methods.transferFee().call();
         }
 
     }

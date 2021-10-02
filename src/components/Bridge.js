@@ -23,7 +23,6 @@ import {useRecoilState} from "recoil";
 import BuyButton from "./BuyButton";
 import {WalletContext} from "../context/context";
 
-
 function validateAmount(amount) {
     if (isNaN(parseFloat(amount))) {
         return "Amount is not a number"
@@ -51,13 +50,16 @@ const BuyForm = (props) => {
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
 
-    const [holdings, setHoldings] = useRecoilState(state.walletHoldings);
+    const [holdings, ] = useRecoilState(state.walletHoldings);
+    const [prices, ] = useRecoilState(state.contractPrices);
+    const [relPricesBNB, ] = useRecoilState(state.relPricesBNB);
+    const [contractFees, ] = useRecoilState(state.contractFees);
     const [currency, setCurrency] = useState(Object.keys(holdings)[1] || 'BNB');
     const [selectedToken, setSelectedToken] = useState({name: 'SETH'});
-    console.log(selectedToken);
+
+    const context = useContext(WalletContext);
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
-
 
     const onAmountChange = (event) => {
         const errorMessage = validateAmount(event.target.value);
@@ -77,7 +79,6 @@ const BuyForm = (props) => {
     const onSelectedTokenChange = (token) => {
         setSelectedToken(token);
         setCurrency(token.name);
-        console.log('token changed', token);
     };
 
     const onTokenSliderChange = (value) => {
@@ -88,7 +89,6 @@ const BuyForm = (props) => {
         setAmount(calculatedAmount);
     };
 
-
     const balance = currency[0] !== "x" ? (parseInt(holdings['BNB']) * 1.0e-18).toFixed(4) : parseInt(holdings[currency==='xSBNB' ? 'SURGE' : currency.slice(1)]);
     return (
         <Box align={"center"} pad={(size === "small" ? "xlarge" : "medium")} small round>
@@ -96,6 +96,15 @@ const BuyForm = (props) => {
                 <Box gap={"small"}>
                     <Text>Token</Text>
                     <TokenSelector onSelect={onSelectedTokenChange} defaultToken={selectedToken}/>
+                    {/*<Text>price: {parseFloat(prices[selectedToken.name]).toFixed(18)} {selectedToken.name.substr(1)}</Text>*/}
+                    <Text>
+                        {
+                            relPricesBNB ?
+                                "price: "+((parseFloat(prices[selectedToken.name])*relPricesBNB[selectedToken.name]).toFixed(18))+" BNB"
+                                :""
+                        }
+                    </Text>
+                    <Text>fee: {(100-parseFloat(contractFees[selectedToken.name][0]))}%</Text>
                 </Box>
                 <Box gap={"small"}>
                     <Box direction={"row"} justify={"between"}>
@@ -107,6 +116,15 @@ const BuyForm = (props) => {
                         value={amount}
                         onChange={onAmountChange}
                     />
+
+                    <Text> (estimated) to be received: </Text>
+                    <Text>
+                    {
+                        relPricesBNB ?
+                        ((((amount) / (prices[selectedToken.name]) ) * (parseFloat(contractFees[selectedToken.name][0]) / 100))/relPricesBNB[selectedToken.name]).toFixed(0)
+                        :""
+                    }
+                    </Text>
                     <FormFieldError message={amountErrorMessage}/>
                 </Box>
                 <Box gap={"small"} align={"center"}>
@@ -130,6 +148,7 @@ const SellForm = (props) => {
     const [currency, setCurrency] = useState(Object.keys(holdings)[1]);
     const context = useContext(WalletContext);
 
+
     const [selectedToken, setSelectedToken] = useState({name: currency});
 
 
@@ -146,7 +165,7 @@ const SellForm = (props) => {
             return;
         }
 
-        setAmount(parseInt(event.target.value));
+        setAmount(parseFloat(event.target.value));
         setAmountValid(true);
         setAmountErrorMessage("");
     };
@@ -215,11 +234,11 @@ const BridgeForm = (props) => {
 
 const Bridge = (props) => {
     const [action, setAction] = React.useState(false);
+    const [connected, ] = useRecoilState(state.walletConnected);
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
 
     return (
-            <Draggable disabled={true}>
                 <Card
                       small round
                       background={"spaceBlue"}
@@ -232,17 +251,19 @@ const Bridge = (props) => {
                         gap={"none"}
                         pad={{top: "small", bottom: "small", right: "medium", left: "medium"}}
                     >
-                        <Box margin={(size === "xsmall" ? "medium" : "small")}>
+                        {/*<Box margin={(size === "xsmall" ? "medium" : "small")}>*/}
                             <Text
-                                size={((size === "xsmall" || size === "small") ? "large" : "large")}
+                                // size={((size === "xsmall" || size === "small") ? "large" : "large")}
                             >Trade</Text>
-                        </Box>
+                        {/*</Box>*/}
+
                         <Box
                             align={"center"}
                             justify={"end"}
                             direction={"row"}
                             gap={"medium"}
                             pad={{left: "medium"}}
+
                             margin={(size === "xsmall" ? "medium" : "small")}
                         >
                             <Anchor onClick={() => setAction(false)} color="white">
@@ -254,14 +275,14 @@ const Bridge = (props) => {
                         </Box>
                     </CardHeader>
                     <CardBody>
-                        {!action ? <BuyForm
+                        {connected ?
+                            (!action ? <BuyForm
                             defaultToken={contracts.SurgeETH}
                         /> : <SellForm
                             defaultToken={contracts.SurgeETH}
-                        />}
+                        />):""}
                     </CardBody>
                 </Card>
-            </Draggable>
 
     );
 }
