@@ -42,7 +42,6 @@ export default function Staker(){
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
 
     const onAmountChange = (event) => {
-        console.log("=>onAmountChange")
         const errorMessage = validateAmount(event.target.value);
 
         if (errorMessage) {
@@ -51,10 +50,6 @@ export default function Staker(){
             setAmountErrorMessage(errorMessage);
             return;
         }
-        console.error(amountValid)
-        console.error(errorMessage)
-        console.error((event.target))
-        console.error(parseFloat(event.target.value))
         // setAmount( mathamount > uselessBalance.math ? uselessBalance.math : mathamount);
         // setDisplayAmount(event.target.value)
         const amount = event.target.value
@@ -63,7 +58,6 @@ export default function Staker(){
         setAmountErrorMessage("");
     };
     const onTokenSliderChange = (percentage) => {
-        console.log("=>onTokenSliderChange")
 
         const calculatedAmount = (percentage * uselessBalance.math) / 100;
         const errorMessage = validateAmount(calculatedAmount);
@@ -80,10 +74,11 @@ export default function Staker(){
     };
     return (
         <Card
+            align={"center"}
             // height={"large"}
             small
             round
-            pad={{bottom:"large"}}
+            // pad={{bottom:"large"}}
             background={"spaceBlue"}
             elevation={"large"}
             style={{border: "solid 1px #21BBB1"}}>
@@ -97,12 +92,12 @@ export default function Staker(){
                 pad={{top: "small", bottom: "small", right: "medium", left: "medium"}}
                 margin={(size === "xsmall" ? "medium" : "small")}
             >
-                <Text pad={{bottom: "small"}}>Staker</Text>
+                <Text >Staker</Text>
             </CardHeader>
             {
                 uselessBalance ?
             <CardBody pad={"xxlarge"}>
-                <Text>Balance: {Web3.utils.fromWei(Web3.utils.toBN(uselessBalance.math), 'Gwei')} Useless</Text>
+                <Text margin={{bottom: "medium", top: "small"}}>Balance: {Web3.utils.fromWei(Web3.utils.toBN(uselessBalance.math), 'Gwei')} Useless</Text>
                 {/*<Text>Balance: {uselessBalance / Math.pow(10, 9)} Useless</Text>*/}
 
                 <TextInput
@@ -112,12 +107,12 @@ export default function Staker(){
                     onChange={onAmountChange}
                     // afterChange{amountChanged}
                 />
-                <Box gap={"small"} align={"center"}>
+                <Box margin={{bottom: "small", top: "medium"}} gap={"small"} align={"center"}>
                     <TokenAmountSlider onValueChange={onTokenSliderChange} defaultValue={0}/>
                 </Box>
-                <Box direction="row" gap="medium" margin={"small"}>
+                <Box gap="medium" margin={"small"}  align={"center"}>
                     {/*<Button type="reset" label="Clear" size={"large"}/>*/}
-                    <StakeButton type="submit" label="Accept" size={"large"} asset={"SUSLS"} amount={Web3.utils.toBN(amount*10**9)} validAmount={amountValid} primary/>
+                    <StakeButton type="submit" label="Accept" size={"large"} asset={"SUSLS"} amount={Web3.utils.toBN(amount*10**9)} primary/>
                 </Box>
             </CardBody>
                     : ""

@@ -7,15 +7,18 @@ import contracts from "../../contracts/contracts";
 export default function AddressSelector({onSelect}) {
     const [addresses, setAddresses] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState();
+    const excludeArray = ["Useless"]
     // const symbols = Object.keys(contracts);
     useEffect(() => {
         const addressList = [];
         Object.keys(contracts).forEach(
             (key) => {
                 try{
-                    contracts[key].prototype.getAddressOfContract().then((address) => {
-                        addressList.push({name: key, address: address});
-                    })
+                    if (!excludeArray.includes(key)) {
+                        contracts[key].prototype.getAddressOfContract().then((address) => {
+                            addressList.push({name: key, address: address});
+                        })
+                    }
                 } catch (e) {
                     // console.error("AddressSelector =>", e)
                 }

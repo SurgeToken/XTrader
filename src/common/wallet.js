@@ -230,9 +230,9 @@ export default class Wallet {
 
     async addContracts() {
         const contractNames = Object.keys(contracts);
-        console.error(contracts)
+        // console.error(contracts)
         for(let index in contractNames) {
-            console.log(contractNames[index])
+            // console.log(contractNames[index])
             const contract = new contracts[contractNames[index]](this.provider);
             if (contractNames[index] === "SurgeFund"){
                 this.SurgeFundsContract = contract
@@ -242,11 +242,11 @@ export default class Wallet {
             }
             else {
                 const symbol = await contract.symbol();
-                console.log(contractNames[index], symbol, typeof contract.getFees)
+                // console.log(contractNames[index], symbol, typeof contract.getFees)
                 if (typeof contract.getFees === "function") {
                     this.contractFees[symbol] = await contract.getFees();
                 } else {
-                    console.log(symbol, typeof contract.getFees)
+                    // console.log(symbol, typeof contract.getFees)
                     try {
                         if (symbol === "SUSD")
                             this.contractFees[symbol] = {
@@ -263,8 +263,8 @@ export default class Wallet {
                             // this.uselessContract = contract
                         }
                     } catch (e) {
-                        console.error(symbol, e)
-                        console.error(symbol, this.contractFees)
+                        // console.error(symbol, e)
+                        // console.error(symbol, this.contractFees)
 
                         // this.SurgeFundsContract = new contracts[contractNames[index]](this.provider);
                     }
@@ -288,7 +288,7 @@ export default class Wallet {
 
                 // await this.contracts["SurgeUSLS"].getBalanceOfUnderlyingAsset();
             }
-            console.error(this.contracts)
+            // console.error(this.contracts)
             this.onConnected();
 
             // TODO Try something like this below at a later date
@@ -455,7 +455,6 @@ export default class Wallet {
     async updateUselessBalance() {
         const balance = await this.uselessContract.balanceOf(this.accountAddress)
         const uselessBalance = {display: balance * 1.0e-9, math: balance}
-        console.error(uselessBalance)
         if (uselessBalance.math !== this.uselessBalance.math) {
             this.uselessBalance = uselessBalance;
             this.onUselessBalanceChanged(uselessBalance);

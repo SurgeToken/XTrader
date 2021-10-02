@@ -57,17 +57,16 @@ export default ({address, abi}) => {
         }
 
         async getBuyFee() {
-            console.error("getBuyFee(): ", this.methods, "\n", this.methods.spreadDivisor())
             return this.methods.buyFee().call();
         }
 
         async getSellFee() {
-            console.error("getSellFee(): ", this.methods)
+            // console.error("getSellFee(): ", this.methods)
             return this.methods.sellFee().call();
         }
 
         async getTransferFee() {
-            console.error("getTransferFee(): ", this.methods)
+            // console.error("getTransferFee(): ", this.methods)
             return this.methods.transferFee().call();
         }
 

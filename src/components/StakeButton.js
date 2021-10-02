@@ -25,17 +25,16 @@ async function stake(wallet, asset, amount, setMessage, status, setStatus) {
     let contractAddress = wallet.contracts["SUSLS"].contract._address;
 
     currentAllowance = await wallet.uselessContract.allowance(wallet.accountAddress, contractAddress);
-    console.error(amount)
     if (currentAllowance >= amount) {
         wallet.contracts["SUSLS"].stakeUnderlyingAsset(amount).then(
             (receipt) => {
-                console.error("receipt => ", receipt)
+                // console.error("receipt => ", receipt)
                 transactionReceipt = receipt;
                 setStatus(true);
             },
             (error) => {
-                console.error("error => ", error)
-                console.error("amount = ", amount)
+                // console.error("error => ", error)
+                // console.error("amount = ", amount)
                 if (error.receipt) {
                     transactionReceipt = error.receipt;
                 } else {
@@ -88,25 +87,22 @@ async function executeStake(wallet, asset, amount, setMessage, status, setStatus
     //     contractsAddress = address;
     // })
 
-    console.log(wallet.accountAddress, contractAddress)
     currentAllowance = await wallet.uselessContract.allowance(wallet.accountAddress, contractAddress);
     // currentAllowance = wallet.uselessContract.allowance(wallet.accountAddress, contractAddress).then(allowance => {
     //     console.log(allowance)
     //     return allowance;
     // })
-    console.log("...?", typeof currentAllowance, currentAllowance)
-    console.log("...?", typeof amount, amount)
     if (currentAllowance < amount)
         wallet.uselessContract.approve(contractAddress, amount).then(
             (receipt) => {
-                console.error("receipt => ", receipt)
+                // console.error("receipt => ", receipt)
                 transactionReceipt = receipt;
                 setStatus(true);
                 stake(wallet, asset, amount, setMessage, status, setStatus).then()
             },
             (error) => {
-                console.error("error => ", error)
-                console.error("amount = ", amount)
+                // console.error("error => ", error)
+                // console.error("amount = ", amount)
                 if (error.receipt) {
                     transactionReceipt = error.receipt;
                 } else {
@@ -122,7 +118,7 @@ async function executeStake(wallet, asset, amount, setMessage, status, setStatus
 
 }
 
-export default ({asset, amount, validAmount, ...props}) => {
+export default ({asset, amount, ...props}) => {
     const context = useContext(WalletContext);
     const [message, setMessage] = useState('');
     const [status, setStatus] = useState(false);
@@ -134,10 +130,11 @@ export default ({asset, amount, validAmount, ...props}) => {
 
     return (
         <Box>
-            <Button disabled={!validAmount} onClick={doClick} {...props}/>
+            <Button onClick={doClick} {...props}/>
             {message && (
                 <Layer
                     position="bottom"
+
                     modal={false}
                     margin={{vertical: 'medium', horizontal: 'small'}}
                     onEsc={() => setMessage('')}

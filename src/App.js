@@ -167,10 +167,10 @@ function Main() {
                                     className="my-masonry-grid"
                                     columnClassName="my-masonry-grid_column"
                                 >
+                                    <Box ><Staker/></Box>
                                     <Box ><Bridge/></Box>
                                     <Box ><Assets/></Box>
                                     <Box ><XPriceChart/></Box>
-                                    <Box ><Staker/></Box>
                                 </Masonry>
                             </Box>
                             <Box pad={"medium"} align={"center"}>

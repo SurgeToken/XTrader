@@ -58,7 +58,7 @@ export default () => {
         {
             property: 'Value_USD',
             align: "center",
-            header: 'Value',
+            header: '',
             render: (data) => formatTotal(data.Value_USD),
             aggregate: 'sum',
             footer: { aggregate: true },
