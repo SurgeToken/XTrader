@@ -1,5 +1,5 @@
 // Libs
-import React, {useContext} from "react";
+import React, {useContext, useEffect, useState} from "react";
 
 // Components
 
@@ -47,7 +47,40 @@ function addTradingComponent() {
     alert('Add another trading component to the body');
 }
 
+// function convertMs(ms) {
+//     console.log({days: days, hours:hours, minutes:minutes, seconds:seconds})
+//     return {days: days, hours:hours, minutes:minutes, seconds:seconds}
+// }
+function launch(setTimeLeft, launchTime) {
+    let timerFinished = false
+    // let timeNow = new Date(new Date().toUTCString())
+    // console.log(launchTime, timeNow)
+    if (!timerFinished) {
+        let timeDiff = launchTime.getTime() - Date.now()
+        // if (timeDiff > 0) {
+            let ms = timeDiff
+            const days = Math.floor(ms / (24 * 60 * 60 * 1000));
 
+            ms %= (24 * 60 * 60 * 1000);
+            const hours = Math.floor(ms / (60 * 60 * 1000));
+
+            ms %= (60 * 60 * 1000);
+            const minutes = Math.floor(ms / (60 * 1000));
+
+            ms %= (60 * 1000);
+            const seconds = Math.floor(ms / (1000));
+            console.log({days: days, hours: hours, minutes: minutes, seconds: seconds})
+            setTimeLeft({ms: timeDiff, formatted: {days: days, hours: hours, minutes: minutes, seconds: seconds}})
+        // }
+    timerFinished = timeDiff <= 0
+    }
+}
+// function startTimer(setTimeLeft) {
+//     launch(setTimeLeft)
+// //     setInterval(() => {
+// //         launch(setTimeLeft)
+// //     }, 5*1000)
+// }
 
 function Main() {
     const breakpointColumnsObj = {
@@ -56,6 +89,15 @@ function Main() {
         700: 1,
         456: 1
     };
+    const [timeLeft, setTimeLeft] = useState(1);
+    const launchTime = new Date(new Date(2021, 9, 3, 21,0,0,0).toUTCString())
+    useEffect(() => {
+        setTimeout(() => {
+            launch(setTimeLeft, launchTime)
+        }, 1000)
+
+    }, [timeLeft])
+
     const context = useContext(WalletContext);
     const [connected, setConnected] = useRecoilState(state.walletConnected);
     const [, setHoldings] = useRecoilState(state.walletHoldings);
@@ -167,7 +209,7 @@ function Main() {
                                     className="my-masonry-grid"
                                     columnClassName="my-masonry-grid_column"
                                 >
-                                    <Box ><Staker/></Box>
+                                    <Box ><Staker timeLeft={timeLeft}/></Box>
                                     <Box ><Bridge/></Box>
                                     <Box ><Assets/></Box>
                                     <Box ><XPriceChart/></Box>
@@ -190,7 +232,6 @@ function Main() {
 
 
 function App() {
-
     return (
         <CacheBuster>
             {({ loading, isLatestVersion, refreshCacheAndReload }) => {
