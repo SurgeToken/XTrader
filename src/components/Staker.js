@@ -33,38 +33,29 @@ function validateAmount(amount) {
 
     return ""
 }
-function convertMs(ms) {
-    const days = Math.floor(ms / (24 * 60 * 60 * 1000));
-
-    ms = ms % (24 * 60 * 60 * 1000);
-    const hours = Math.floor(ms / (60 * 60 * 1000));
-
-    ms = ms % (60 * 60 * 1000);
-    const minutes = Math.floor(ms / (60 * 1000));
-
-    ms = ms % (60 * 1000);
-    const seconds = Math.floor(ms / (1000));
-
-    // let seconds = (ms % 1000).toFixed(0);
-    // let minutes = ((ms / 1000) % 60).toFixed(0);
-    // let hours = ((ms / (1000 * 60)) % 60).toFixed(0);
-    // let days = ((ms / (1000 * 60 * 60)) % 24).toFixed(0);
-    console.log({days: days, hours:hours, minutes:minutes, seconds:seconds})
-    // if (seconds < 60) return seconds + " Seconds";
-    // else if (minutes < 60) return minutes + " Minutes";
-    // else if (hours < 24) return hours + " Hours";
-    // else return days + " Days"
-    return {days: days, hours:hours, minutes:minutes, seconds:seconds}
-}
-async function launch(setTimeLeft) {
-    const stakeLaunch = new Date(2021, 9, 3, 21,0,0,0)
-    let timeNow = new Date()
-    console.log(stakeLaunch, timeNow)
-
-    let timeDiff = stakeLaunch.getTime() - timeNow.getTime()
-    setTimeLeft({ms: timeDiff, formatted: convertMs(timeDiff)})
-}
-export default function Staker(){
+// function convertMs(ms) {
+//     const days = Math.floor(ms / (24 * 60 * 60 * 1000));
+//
+//     ms %= (24 * 60 * 60 * 1000);
+//     const hours = Math.floor(ms / (60 * 60 * 1000));
+//
+//     ms %= (60 * 60 * 1000);
+//     const minutes = Math.floor(ms / (60 * 1000));
+//
+//     ms %= (60 * 1000);
+//     const seconds = Math.floor(ms / (1000));
+//     console.log({days: days, hours:hours, minutes:minutes, seconds:seconds})
+//     return {days: days, hours:hours, minutes:minutes, seconds:seconds}
+// }
+// async function launch(setTimeLeft) {
+//     const stakeLaunch = new Date(new Date(2021, 9, 3, 21,0,0,0).toUTCString())
+//     let timeNow = new Date(new Date().toUTCString())
+//     console.log(stakeLaunch, timeNow)
+//
+//     let timeDiff = stakeLaunch.getTime() - timeNow.getTime()
+//     setTimeLeft({ms: timeDiff, formatted: convertMs(timeDiff)})
+// }
+export default function Staker({timeLeft}){
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
     const [uselessBalance, ] = useRecoilState(state.uselessBalance)
@@ -73,12 +64,12 @@ export default function Staker(){
     // const [underlyingAssetBalance, setUnderlyingAssetBalance] = useState(0);
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
-    const [timeLeft, setTimeLeft] = useState(1);
+    // const [timeLeft, setTimeLeft] = useState(1);
     // useEffect(()=>{
     //     launch(setTimeLeft)
     // }, [timeLeft])
     // launch(setTimeLeft).then()
-    setInterval(launch.bind(this, setTimeLeft), 5*1000);
+    // setInterval(launch.bind(this, setTimeLeft), 5*1000);
     const onAmountChange = (event) => {
         const errorMessage = validateAmount(event.target.value);
 
