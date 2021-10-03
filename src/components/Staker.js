@@ -15,6 +15,8 @@ import Token from "../contracts/Token";
 import uselessABI from "../contracts/abi/useless.json";
 import StakeButton from "./StakeButton";
 import Web3 from "web3";
+import {Time} from "grommet-icons";
+import {getHistoricPriceData} from "../common/price";
 
 function validateAmount(amount) {
     if (isNaN(parseFloat(amount))) {
@@ -31,6 +33,37 @@ function validateAmount(amount) {
 
     return ""
 }
+function convertMs(ms) {
+    const days = Math.floor(ms / (24 * 60 * 60 * 1000));
+
+    ms = ms % (24 * 60 * 60 * 1000);
+    const hours = Math.floor(ms / (60 * 60 * 1000));
+
+    ms = ms % (60 * 60 * 1000);
+    const minutes = Math.floor(ms / (60 * 1000));
+
+    ms = ms % (60 * 1000);
+    const seconds = Math.floor(ms / (1000));
+
+    // let seconds = (ms % 1000).toFixed(0);
+    // let minutes = ((ms / 1000) % 60).toFixed(0);
+    // let hours = ((ms / (1000 * 60)) % 60).toFixed(0);
+    // let days = ((ms / (1000 * 60 * 60)) % 24).toFixed(0);
+    console.log({days: days, hours:hours, minutes:minutes, seconds:seconds})
+    // if (seconds < 60) return seconds + " Seconds";
+    // else if (minutes < 60) return minutes + " Minutes";
+    // else if (hours < 24) return hours + " Hours";
+    // else return days + " Days"
+    return {days: days, hours:hours, minutes:minutes, seconds:seconds}
+}
+async function launch(setTimeLeft) {
+    const stakeLaunch = new Date(2021, 9, 3, 21,0,0,0)
+    let timeNow = new Date()
+    console.log(stakeLaunch, timeNow)
+
+    let timeDiff = stakeLaunch.getTime() - timeNow.getTime()
+    setTimeLeft({ms: timeDiff, formatted: convertMs(timeDiff)})
+}
 export default function Staker(){
     // noinspection JSCheckFunctionSignatures
     const size = React.useContext(ResponsiveContext);
@@ -40,7 +73,12 @@ export default function Staker(){
     // const [underlyingAssetBalance, setUnderlyingAssetBalance] = useState(0);
     const [amountValid, setAmountValid] = useState(true);
     const [amountErrorMessage, setAmountErrorMessage] = useState("");
-
+    const [timeLeft, setTimeLeft] = useState(1);
+    // useEffect(()=>{
+    //     launch(setTimeLeft)
+    // }, [timeLeft])
+    // launch(setTimeLeft).then()
+    setInterval(launch.bind(this, setTimeLeft), 5*1000);
     const onAmountChange = (event) => {
         const errorMessage = validateAmount(event.target.value);
 
@@ -72,51 +110,96 @@ export default function Staker(){
         // setAmount(calculatedAmount > uselessBalance.math ? uselessBalance.math : calculatedAmount);
         setDisplayAmount(Web3.utils.fromWei(Web3.utils.toBN(calculatedAmount), 'Gwei'));
     };
-    return (
-        <Card
-            align={"center"}
-            // height={"large"}
-            small
-            round
-            // pad={{bottom:"large"}}
-            background={"spaceBlue"}
-            elevation={"large"}
-            style={{border: "solid 1px #21BBB1"}}>
-            <CardHeader
-                flex={"shrink"}
-                // direction={"column"}
-                align={"center"}
-                direction={(size === "xsmall" ? "column" : "row")}
-                justify={(size === "xsmall" ? "evenly" : "between")}
-                gap={"none"}
-                pad={{top: "small", bottom: "small", right: "medium", left: "medium"}}
-                margin={(size === "xsmall" ? "medium" : "small")}
-            >
-                <Text >Staker</Text>
-            </CardHeader>
-            {
-                uselessBalance ?
-            <CardBody pad={"xxlarge"}>
-                <Text margin={{bottom: "medium", top: "small"}}>Balance: {Web3.utils.fromWei(Web3.utils.toBN(uselessBalance.math), 'Gwei')} Useless</Text>
-                {/*<Text>Balance: {uselessBalance / Math.pow(10, 9)} Useless</Text>*/}
+    if (timeLeft.ms > 0) {
+        return (
+            <Card
 
-                <TextInput
-                    type={"number"}
-                    value={amount}
-                    // value={amount / Math.pow(10, 9)}
-                    onChange={onAmountChange}
-                    // afterChange{amountChanged}
-                />
-                <Box margin={{bottom: "small", top: "medium"}} gap={"small"} align={"center"}>
-                    <TokenAmountSlider onValueChange={onTokenSliderChange} defaultValue={0}/>
-                </Box>
-                <Box gap="medium" margin={"small"}  align={"center"}>
-                    {/*<Button type="reset" label="Clear" size={"large"}/>*/}
-                    <StakeButton type="submit" label="Accept" size={"large"} asset={"SUSLS"} amount={Web3.utils.toBN(amount*10**9)} primary/>
-                </Box>
-            </CardBody>
-                    : ""
-            }
-        </Card>
-    );
+                align={"center"}
+                // height={"large"}
+                small
+                round
+                // pad={{bottom:"large"}}
+                background={"spaceBlue"}
+                elevation={"large"}
+                style={{border: "solid 1px #21BBB1"}}>
+                <CardHeader
+
+                    flex={"shrink"}
+                    // direction={"column"}
+                    align={"center"}
+                    direction={(size === "xsmall" ? "column" : "row")}
+                    justify={(size === "xsmall" ? "evenly" : "between")}
+                    gap={"none"}
+                    pad={{top: "small", bottom: "small", right: "medium", left: "medium"}}
+                    margin={(size === "xsmall" ? "medium" : "small")}
+                ><Text>Staker</Text>
+
+                </CardHeader>
+                <CardBody pad={"xxlarge"}>
+                    <Text pad={{top: "small", bottom: "large", right: "medium", left: "medium"}}>
+                        Time until Launch {timeLeft.formatted.days > 0 ? timeLeft.formatted.days+" Days" : ""} {timeLeft.formatted.hours > 0 ? timeLeft.formatted.hours+" Hours" : ""} {timeLeft.formatted.minutes > 0 ? timeLeft.formatted.minutes+" Minutes" : ""} {timeLeft.formatted.seconds > 0 ? timeLeft.formatted.seconds+" Seconds" : ""}
+                    </Text>
+                </CardBody>
+            </Card>
+        )
+    } else {
+        return (
+
+
+            <Card
+
+                align={"center"}
+                // height={"large"}
+                small
+                round
+                // pad={{bottom:"large"}}
+                background={"spaceBlue"}
+                elevation={"large"}
+                style={{border: "solid 1px #21BBB1"}}>
+                <CardHeader
+
+                    flex={"shrink"}
+                    // direction={"column"}
+                    align={"center"}
+                    direction={(size === "xsmall" ? "column" : "row")}
+                    justify={(size === "xsmall" ? "evenly" : "between")}
+                    gap={"none"}
+                    pad={{top: "small", bottom: "small", right: "medium", left: "medium"}}
+                    margin={(size === "xsmall" ? "medium" : "small")}
+                >
+
+                    <Text>Staker</Text>
+
+
+                </CardHeader>
+                {
+                    uselessBalance ?
+                        <CardBody pad={"xxlarge"}>
+                            <Text margin={{
+                                bottom: "medium",
+                                top: "small"
+                            }}>Balance: {Web3.utils.fromWei(Web3.utils.toBN(uselessBalance.math), 'Gwei')} Useless</Text>
+                            {/*<Text>Balance: {uselessBalance / Math.pow(10, 9)} Useless</Text>*/}
+
+                            <TextInput
+                                type={"number"}
+                                value={amount}
+                                // value={amount / Math.pow(10, 9)}
+                                onChange={onAmountChange}
+                                // afterChange{amountChanged}
+                            />
+                            <Box margin={{bottom: "small", top: "medium"}} gap={"small"} align={"center"}>
+                                <TokenAmountSlider onValueChange={onTokenSliderChange} defaultValue={0}/>
+                            </Box>
+                            <Box gap="medium" margin={"small"} align={"center"}>
+                                {/*<Button type="reset" label="Clear" size={"large"}/>*/}
+                                <StakeButton type="submit" label="Accept" size={"large"} asset={"SUSLS"}
+                                             amount={Web3.utils.toBN(amount * 10 ** 9)} primary/>
+                            </Box>
+                        </CardBody>
+                        : ""
+                }
+            </Card>
+        );
+    }
 }
