@@ -71,9 +71,9 @@ export default () => {
                 Quantity: holdings[val],
                 // Change: Math.random() * 100,
                 Value: (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*(val === "SUSLS" ? 1.0e-9 : 1.0e-18)).toFixed(6).toString() + " w" + val.substr(1),
-                Value_USD: val !== "SUSLS" ?
+                Value_USD: relPricesBNB ? (val !== "SUSLS" ?
                     (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*1.0e-18 * relPricesBUSD[val]) :
-                    (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*1.0e-18 * relPricesBNB[val]) / relPricesBNB["SUSD"]
+                    (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*1.0e-18 * relPricesBNB[val]) / relPricesBNB["SUSD"]): 0
                 // Value_USD: (parseInt(afterTax(holdingValues[val], (parseFloat(contractFees[val][1])/100), afterTaxState))*relPricesBUSD[val]*1.0e-18).toFixed(2).toString()
             }
         });
