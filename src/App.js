@@ -56,7 +56,7 @@ function launch(setTimeLeft, launchTime) {
     // let timeNow = new Date(new Date().toUTCString())
     // console.log(launchTime, timeNow)
     if (!timerFinished) {
-        let timeDiff = launchTime.getTime() - Date.now()
+        let timeDiff = launchTime - Date.now();
         // if (timeDiff > 0) {
             let ms = timeDiff
             const days = Math.floor(ms / (24 * 60 * 60 * 1000));
@@ -90,12 +90,12 @@ function Main() {
         456: 1
     };
     const [timeLeft, setTimeLeft] = useState(1);
-    const launchTime = new Date(new Date(2021, 9, 3, 21,0,0,0).toUTCString())
+    const launchTime = Date.UTC(2021, 9, 3, 19, 0, 0, 0);
+    
     useEffect(() => {
         setTimeout(() => {
             launch(setTimeLeft, launchTime)
         }, 1000)
-
     }, [timeLeft])
 
     const context = useContext(WalletContext);
