@@ -90,13 +90,14 @@ function Main() {
         456: 1
     };
     const [timeLeft, setTimeLeft] = useState(1);
-    const launchTime = Date.UTC(2021, 9, 3, 19, 0, 0, 0);
-    
-    useEffect(() => {
-        setTimeout(() => {
-            launch(setTimeLeft, launchTime)
-        }, 1000)
-    }, [timeLeft])
+  
+    // const launchTime = Date.UTC(2021, 9, 3, 19, 0, 0, 0);
+    //
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         launch(setTimeLeft, launchTime)
+    //     }, 1000)
+    // }, [timeLeft])
 
     const context = useContext(WalletContext);
     const [connected, setConnected] = useRecoilState(state.walletConnected);
@@ -209,7 +210,7 @@ function Main() {
                                     className="my-masonry-grid"
                                     columnClassName="my-masonry-grid_column"
                                 >
-                                    <Box ><Staker timeLeft={timeLeft}/></Box>
+                                    <Box ><Staker/></Box>
                                     <Box ><Bridge/></Box>
                                     <Box ><Assets/></Box>
                                     <Box ><XPriceChart/></Box>

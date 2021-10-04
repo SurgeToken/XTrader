@@ -18,6 +18,10 @@ import Web3 from "web3";
 import {Time} from "grommet-icons";
 import {getHistoricPriceData} from "../common/price";
 
+const toHex = (amount) => {
+    return '0x' + amount.toString(16)
+};
+
 function validateAmount(amount) {
     if (isNaN(parseFloat(amount))) {
         return "Amount is not a number"
@@ -101,39 +105,39 @@ export default function Staker({timeLeft}){
         // setAmount(calculatedAmount > uselessBalance.math ? uselessBalance.math : calculatedAmount);
         setDisplayAmount(Web3.utils.fromWei(Web3.utils.toBN(calculatedAmount), 'Gwei'));
     };
-    if (timeLeft.ms > 0) {
-        return (
-            <Card
-
-                align={"center"}
-                // height={"large"}
-                small
-                round
-                // pad={{bottom:"large"}}
-                background={"spaceBlue"}
-                elevation={"large"}
-                style={{border: "solid 1px #21BBB1"}}>
-                <CardHeader
-
-                    flex={"shrink"}
-                    // direction={"column"}
-                    align={"center"}
-                    direction={(size === "xsmall" ? "column" : "row")}
-                    justify={(size === "xsmall" ? "evenly" : "between")}
-                    gap={"none"}
-                    pad={{top: "small", bottom: "small", right: "medium", left: "medium"}}
-                    margin={(size === "xsmall" ? "medium" : "small")}
-                ><Text>Staker</Text>
-
-                </CardHeader>
-                <CardBody pad={"xxlarge"}>
-                    <Text pad={{top: "small", bottom: "large", right: "medium", left: "medium"}}>
-                        Time until Launch {timeLeft.formatted.days > 0 ? timeLeft.formatted.days+" Days" : ""} {timeLeft.formatted.hours > 0 ? timeLeft.formatted.hours+" Hours" : ""} {timeLeft.formatted.minutes > 0 ? timeLeft.formatted.minutes+" Minutes" : ""} {timeLeft.formatted.seconds > 0 ? timeLeft.formatted.seconds+" Seconds" : ""}
-                    </Text>
-                </CardBody>
-            </Card>
-        )
-    } else {
+    // if (timeLeft.ms > 0) {
+    //     return (
+    //         <Card
+    //
+    //             align={"center"}
+    //             // height={"large"}
+    //             small
+    //             round
+    //             // pad={{bottom:"large"}}
+    //             background={"spaceBlue"}
+    //             elevation={"large"}
+    //             style={{border: "solid 1px #21BBB1"}}>
+    //             <CardHeader
+    //
+    //                 flex={"shrink"}
+    //                 // direction={"column"}
+    //                 align={"center"}
+    //                 direction={(size === "xsmall" ? "column" : "row")}
+    //                 justify={(size === "xsmall" ? "evenly" : "between")}
+    //                 gap={"none"}
+    //                 pad={{top: "small", bottom: "small", right: "medium", left: "medium"}}
+    //                 margin={(size === "xsmall" ? "medium" : "small")}
+    //             ><Text>Staker</Text>
+    //
+    //             </CardHeader>
+    //             <CardBody pad={"xxlarge"}>
+    //                 <Text pad={{top: "small", bottom: "large", right: "medium", left: "medium"}}>
+    //                     Time until Launch {timeLeft.formatted.days > 0 ? timeLeft.formatted.days+" Days" : ""} {timeLeft.formatted.hours > 0 ? timeLeft.formatted.hours+" Hours" : ""} {timeLeft.formatted.minutes > 0 ? timeLeft.formatted.minutes+" Minutes" : ""} {timeLeft.formatted.seconds > 0 ? timeLeft.formatted.seconds+" Seconds" : ""}
+    //                 </Text>
+    //             </CardBody>
+    //         </Card>
+    //     )
+    // } else {
         return (
 
 
@@ -185,12 +189,12 @@ export default function Staker({timeLeft}){
                             <Box gap="medium" margin={"small"} align={"center"}>
                                 {/*<Button type="reset" label="Clear" size={"large"}/>*/}
                                 <StakeButton type="submit" label="Accept" size={"large"} asset={"SUSLS"}
-                                             amount={Web3.utils.toBN(amount * 10 ** 9)} primary/>
+                                             amount={Web3.utils.toBN((amount * 10 ** 9).toString(16))} primary/>
                             </Box>
                         </CardBody>
                         : ""
                 }
             </Card>
         );
-    }
+    // }
 }
