@@ -13,19 +13,27 @@ import Web3 from "web3";
 import {StatusGood, StatusCritical, FormClose} from "grommet-icons";
 import {bigIntStringFromBN} from "walletlink/dist/util";
 
+//fix: for issue #122
+const toHex = (amount) => {
+    return '0x' + amount.toString(16)
+};
+const fromHex = (amount) => {
+    return parseInt(amount);
+};
+const UINT256MAX = {HEX: Web3.utils.toBN(((2**256-1).toString(16))), DEC:parseInt(Web3.utils.toBN(((2**256-1).toString(16))), 16)};
 function bscErrorMessage(status, transactionReceipt) {
     return (
         <Anchor color={"white"} href={`https://bscscan.com/tx/${transactionReceipt.transactionHash}`} target={"_blank"}
                 label={`Transaction ${status ? "succeeded" : "failed"} click here for more details`}/>
     )
 }
-async function stake(wallet, asset, amount, setMessage, status, setStatus) {
-    let currentAllowance;
+async function executeStake(wallet, asset, amount, setMessage, status, setStatus) {
+    // let currentAllowance;
     let transactionReceipt = {};
-    let contractAddress = wallet.contracts["SUSLS"].contract._address;
+    // let contractAddress = wallet.contracts["SUSLS"].contract._address;
 
-    currentAllowance = await wallet.uselessContract.allowance(wallet.accountAddress, contractAddress);
-    if (currentAllowance >= amount) {
+    // currentAllowance = await wallet.uselessContract.allowance(wallet.accountAddress, contractAddress);
+    // if (currentAllowance >= amount) {
         wallet.contracts["SUSLS"].stakeUnderlyingAsset(amount).then(
             (receipt) => {
                 // console.error("receipt => ", receipt)
@@ -66,10 +74,10 @@ async function stake(wallet, asset, amount, setMessage, status, setStatus) {
             setMessage(bscErrorMessage(status, transactionReceipt));
         }
         setStatus(status);
-    }
+    // }
 }
 
-async function executeStake(wallet, asset, amount, setMessage, status, setStatus) {
+async function approve(wallet, asset, amount, setMessage, status, setStatus) {
     // console.log(Number.MAX_SAFE_INTEGER)
     // console.log(Number.MAX_VALUE)
     // console.error(amount * (10**9))
@@ -89,16 +97,29 @@ async function executeStake(wallet, asset, amount, setMessage, status, setStatus
 
     currentAllowance = await wallet.uselessContract.allowance(wallet.accountAddress, contractAddress);
     // currentAllowance = wallet.uselessContract.allowance(wallet.accountAddress, contractAddress).then(allowance => {
-    //     console.log(allowance)
+    //     console.log(currentAllowance)
+    //     console.log(UINT256MAX.HEX)
+    //     console.log(UINT256MAX.DEC)
+    // console.log(parseInt(currentAllowance,16))
+    // console.log(parseInt("00000000000000000001fcd28129b3bb800",16))
+    // console.log(parseInt(currentAllowance,16) >= UINT256MAX.DEC)
+
+        // console.log(Web3.utils.toBN(2**256-1))
+        // console.log(amount)
+        // console.log(fromHex(amount))
+    // console.log(parseInt(Web3.utils.toBN(((2**256)-1).toString(16)), 16))
+    // console.log(parseInt(Web3.utils.toBN(((2**256)).toString(16)), 16))
+    // console.log(parseInt(Web3.utils.toBN(((2**256-1).toString(16))), 16))
+        // console.log(fromHex("0x01e87f85809dc0000"))
     //     return allowance;
     // })
-    if (currentAllowance < amount)
-        wallet.uselessContract.approve(contractAddress, amount).then(
+    if (parseInt(currentAllowance,16) < UINT256MAX.DEC)
+        wallet.uselessContract.approve(contractAddress,UINT256MAX.HEX).then(
             (receipt) => {
                 // console.error("receipt => ", receipt)
                 transactionReceipt = receipt;
                 setStatus(true);
-                stake(wallet, asset, amount, setMessage, status, setStatus).then()
+                executeStake(wallet, asset, amount, setMessage, status, setStatus).then()
             },
             (error) => {
                 // console.error("error => ", error)
@@ -111,13 +132,16 @@ async function executeStake(wallet, asset, amount, setMessage, status, setStatus
                 setStatus(false);
             }
         );
-    else if (currentAllowance >= amount){
-        stake(wallet, asset, amount, setMessage, status, setStatus).then()
+    else if (parseInt(currentAllowance,16) >= UINT256MAX.DEC){
+        // console.error(wallet, asset, amount, status)
+        executeStake(wallet, asset, amount, setMessage, status, setStatus).then()
     }
     // console.error(wallet.uselessContract.methods)
 
 }
-
+function stake(wallet, asset, amount, setMessage, status, setStatus){
+    approve(wallet, asset, amount, setMessage, status, setStatus).then()
+}
 export default ({asset, amount, ...props}) => {
     const context = useContext(WalletContext);
     const [message, setMessage] = useState('');
@@ -125,7 +149,7 @@ export default ({asset, amount, ...props}) => {
 
     const doClick = () => {
         // if (!validAmount)
-            executeStake(context.wallet, asset, amount, setMessage, status, setStatus).then()
+            stake(context.wallet, asset, amount, setMessage, status, setStatus)
     }
 
     return (
