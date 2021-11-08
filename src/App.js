@@ -16,7 +16,7 @@ import state from "./state/state"
 // Grommet Stuff
 import grommetTheme from "./themes/theme.json";
 
-import {Box, Button, Grommet, ResponsiveContext} from "grommet";
+import {Box, Button, Grommet,Text, ResponsiveContext} from "grommet";
 import {Add} from 'grommet-icons';
 
 // Styles
@@ -196,6 +196,13 @@ function Main() {
                                     onClick={() => connected? userWallet.disconnect() : userWallet.connect()}
                                     label={connected ? account.slice(0, 4) + '...' + account.slice(38) : (size === "xsmall" ? "Wallet" : "Connect Wallet")}
                                 />
+                            </Box>
+                        </AppBar>
+                        <AppBar style={{color: 'black'}} background={{color: "yellow", opacity: "light"}}>
+                            <Box textAlign={"center"}>
+                            <Text textAlign={"center"}>
+                                xUSD is only available on our V2 beta dApp. Visit this link! <a href="https://appv2.xsurge.net">https://appv2.xsurge.net</a>
+                            </Text>
                             </Box>
                         </AppBar>
                             <Box
