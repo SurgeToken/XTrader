@@ -1,4 +1,4 @@
-# X Trader 
+# X Trader (Archived)
 
-This will soon be home to XTrader the trading platform for the Surge X Token ecosystem. Eventually this
-README will explain how to get started with development. 
+Please go to the current XTrader project located https://github.com/SurgeToken/XTrader2
+
